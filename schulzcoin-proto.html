@@ -26,27 +26,26 @@
 var game = new Phaser.Game(375, 667, Phaser.WEBGL, 'chuuulz', { preload: spdhacking, create: martingreeting, update: chuuulzvoting });
 
 function spdhacking() {
-    game.load.image('sky',        'assets/sky.png');
-    game.load.image('star',       'assets/star.png');
-    game.load.image('coin',       'assets/coin.png');
+    game.load.image('sky',        'assets/sky.50.jpg');
+    game.load.image('coin0',       'assets/Coin01.50.png');
+    game.load.image('coin1',       'assets/Coin02.50.png');
+    game.load.image('coin2',       'assets/Coin03.50.png');
 }
 
 function martingreeting() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.add.sprite(0,    0, 'sky');
-    game.add.sprite(0,  600, 'sky');
+    game.add.sprite(0, 0, 'sky');
 }
 
 function chuuulzvoting() {
     if (Math.random() < 0.05) {
-        let x = Math.floor((Math.random() * (375 - 280)));
-        let y = Math.floor((Math.random() * (667 - 280)));
-        let sprite = 'coin';
-        if (Math.random() < 0.9) {
-            sprite = 'star';
-            x = Math.floor((Math.random() * (375 - 32)));
-            y = Math.floor((Math.random() * (667 - 32)));
-        }
+        let x = Math.floor((Math.random() * (375 - 64) + 32));
+        let y = Math.floor((Math.random() * (667 - 64 - 260) + 260));
+        let sprite = 'coin0';
+        if (Math.random() < 0.667)
+            sprite = 'coin1';
+        if (Math.random() < 0.333)
+            sprite = 'coin2';
         game.add.sprite(x, y, sprite);
     }
 }
