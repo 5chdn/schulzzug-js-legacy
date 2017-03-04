@@ -23,34 +23,72 @@
 <body>
 <script type="text/javascript">
 
-var game = new Phaser.Game(375, 667, Phaser.WEBGL, 'chuuulz', { preload: spdhacking, create: martingreeting, update: chuuulzvoting });
+let game = new Phaser.Game(375, 667, Phaser.WEBGL, 'chuuulz', { preload: hackSPD, create: greetMartin, update: voteChuuulz });
 
-function spdhacking() {
-    game.load.image('sky',        'assets/sky.50.jpg');
-    game.load.image('coin0',       'assets/Coin01.50.png');
-    game.load.image('coin1',       'assets/Coin02.50.png');
-    game.load.image('coin2',       'assets/Coin03.50.png');
+function hackSPD() {
+    game.load.image('tree0',      'assets/Tree01.50.png');
+    game.load.image('tree1',      'assets/Tree02.50.png');
+    game.load.spritesheet('train','assets/Train.52.png', 120, 232);
+    game.load.image('landscape',  'assets/untergrund.50.png');
+    game.load.image('office',     'assets/Kanzleramt.50.png');
+    game.load.image('bush',       'assets/Bush01.50.png');
+    game.load.image('sign',       'assets/Sign01.50.png');
+    game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
 }
 
-function martingreeting() {
+function greetMartin() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.add.sprite(0, 0, 'sky');
+    game.add.sprite(0, 0, 'landscape');
+    
+    //game.add.sprite(8, 88, 'office');
+    
+    //game.add.sprite(8, 228, 'tree1');
+    //game.add.sprite(game.world.width - 100, 202, 'tree0');
+    
+    //game.add.sprite(123, 222, 'sign');
+    //game.add.sprite(166, 333, 'bush');
+    
+    let train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
+    game.physics.arcade.enable(train);
+    train.animations.add('smoke', [0, 1], 2, true);
+    train.animations.play('smoke');
+    
+    createCoin(64, 400);
+    createCoin(80, 360);
+    
 }
 
-function chuuulzvoting() {
-    if (Math.random() < 0.05) {
-        let x = Math.floor((Math.random() * (375 - 64) + 32));
-        let y = Math.floor((Math.random() * (667 - 64 - 260) + 260));
-        let texture = 'coin0';
-        if (Math.random() < 0.667)
-            texture = 'coin1';
-        if (Math.random() < 0.333)
-            texture = 'coin2';
-        let coin = game.add.sprite(x, y, texture);
-        coin.inputEnabled = true;
-        coin.input.useHandCursor = true;
-        coin.events.onInputDown.add(collectCoin, this);
+function voteChuuulz() {
+    //
+}
+
+function createCoin(x, y) {
+
+    let coin = game.add.sprite(x, y, 'coin');
+    game.physics.arcade.enable(coin);
+    
+    //coin.body.bounce.y = 0.3;
+    //coin.body.gravity.y = 300;
+    //coin.body.collideWorldBounds = true;
+    
+    coin.animations.add('rotate0', [0, 1, 2], 8, true);
+    coin.animations.add('rotate1', [1, 2, 0], 8, true);
+    coin.animations.add('rotate2', [2, 0, 1], 8, true);
+    
+    let flip = Math.random();
+    
+    if (flip < 0.333) {
+        coin.animations.play('rotate0');
+    } else if (flip < 0.667) {
+        coin.animations.play('rotate1');
+    } else {
+        coin.animations.play('rotate2');
     }
+    
+    coin.inputEnabled = true;
+    coin.input.useHandCursor = true;
+    coin.events.onInputDown.add(collectCoin, this);
+
 }
     
 function collectCoin (coin) {
