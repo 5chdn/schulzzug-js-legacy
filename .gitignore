@@ -3,6 +3,10 @@ logs
 *.log
 npm-debug.log*
 
+*.DS_Store
+.AppleDouble
+.LSOverride
+
 # Runtime data
 pids
 *.pid
