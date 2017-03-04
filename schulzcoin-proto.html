@@ -1,0 +1,58 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+	<title>Phaser - Making your first game, part 1</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            width: 100%;
+            margin: 0;
+            text-aling: center;
+        }
+        canvas {
+            width:375px;
+            height:667px;
+            margin:auto;
+            display:inline;
+            position:absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+
+var game = new Phaser.Game(375, 667, Phaser.WEBGL, 'chuuulz', { preload: spdhacking, create: martingreeting, update: chuuulzvoting });
+
+function spdhacking() {
+    game.load.image('sky',        'assets/sky.png');
+    game.load.image('ground',     'assets/plattform.png');
+    game.load.image('star',       'assets/star.png');
+    game.load.image('coin',       'assets/coin.png');
+    game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+}
+
+function martingreeting() {
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.add.sprite(0,    0, 'sky');
+    game.add.sprite(0,  600, 'sky');
+}
+
+function chuuulzvoting() {
+    if (Math.random() < 0.05) {
+        let x = Math.floor((Math.random() * (375 - 280)));
+        let y = Math.floor((Math.random() * (667 - 280)));
+        let sprite = 'coin';
+        if (Math.random() < 0.9) {
+            sprite = 'star';
+            x = Math.floor((Math.random() * (375 - 32)));
+            y = Math.floor((Math.random() * (667 - 32)));
+        }
+        game.add.sprite(x, y, sprite);
+    }
+}
+
+</script>
+</body>
+</html>
