@@ -51,14 +51,23 @@ console.log(y_collision_begin_range);
 let y_collision_end_range = y_collision_begin_range + 1000;
 
 function preload() {
+    game.load.image('landscape',  'assets/untergrund.50.png');
+    game.load.image('grass',      'assets/green.50.png');
+    game.load.image('dirt',       'assets/dirt.50.png');
+    game.load.image('sky',        'assets/sky.50.png');
+    
     game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
     game.load.image('tree1',      'assets/Tree02.50.png');
-    game.load.image('landscape',  'assets/untergrund.50.png');
+    game.load.image('cloud0',     'assets/cloud01.50.png');
+    game.load.image('cloud1',     'assets/cloud02.50.png');
+    game.load.image('cloud2',     'assets/cloud03.50.png');
     game.load.image('office',     'assets/Kanzleramt.50.png');
     game.load.image('bush',       'assets/Bush01.50.png');
     game.load.image('sign',       'assets/Sign01.50.png');
+    
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
+    game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
     game.load.spritesheet('train','assets/Train.52.png', 120, 232);
 }
 
@@ -76,7 +85,14 @@ function create() {
     
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'landscape');
+    game.add.sprite(0, 0, 'grass');
+    game.add.sprite(0, 0, 'dirt');
+    game.add.sprite(0, 0, 'sky');
     last_rail_object_time = game.time.now;
+    
+    let rails = game.add.sprite(0, 208, 'rails');
+    rails.animations.add('move', [0, 1, 2], 8, true);
+    rails.animations.play('move');
 
     railObjectGroup = game.add.group();
     
@@ -188,6 +204,25 @@ function update() {
         railObjects.push(getRailObject(kind));
         last_rail_object_time = t;
     }
+    
+    if (Math.random() < 0.01)
+        generateCloud();
+}
+
+function generateCloud() {
+    let seed = Math.random();
+    let cloud_height = seed * 176;
+    let cloud_type = 'cloud0';
+    if (seed < 0.667) {
+        cloud_type = 'cloud1'
+    } else if (seed < 0.333) {
+        cloud_type = 'cloud2'
+    } else {
+        cloud_type = 'cloud0'
+    }
+    let cloud = game.add.sprite(-60, cloud_height, cloud_type);
+    game.physics.arcade.enable(cloud);
+    cloud.body.gravity.x = 4;
 }
 
 function flip_z(z) {
