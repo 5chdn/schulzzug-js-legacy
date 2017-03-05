@@ -55,6 +55,8 @@ let bahndamm_probabilities = {
     "tree2": 0.0001,
     "bush": 0.01,
     "sign": 0.001,
+    "trump": 0.001,
+    "frauke": 0.001,
 };
 let last_bahndamm_object_time;
 
@@ -83,8 +85,10 @@ function preload() {
     game.load.image('sign',       'assets/Sign01.50.png');
     
     game.load.image('panel',      'assets/Panel.50.png');
-    game.load.image('frauke',     'assets/afd-wall.50.png');
-    game.load.image('trump',      'assets/Trump-Wall.50.png');
+    game.load.image('fraukewall',     'assets/afd-wall.50.png');
+    game.load.image('trumpwall',      'assets/trumpwall-Wall.50.png');
+    game.load.image('frauke',     'assets/Petry.png');
+    game.load.image('trump',      'assets/Trump.png');
     game.load.image('wall',       'assets/wall.png');
     
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
@@ -348,11 +352,12 @@ function update() {
         
         let kind = 'coin';
         let seed = Math.random();
-        if (seed < 0.05) {
-            kind = 'trump';
-        } else if (seed < 0.1) {
-            kind = 'frauke';
-        } else if (seed < 0.2) {
+        //if (seed < 0.05) {
+        //    kind = 'trumpwall';
+        //} else if (seed < 0.1) {
+        //    kind = 'fraukewall';
+        //} else 
+        if (seed < 0.2) {
             kind = 'wall';
         } else {
             kind = 'coin';
@@ -444,7 +449,7 @@ function collisionUpdate(object,train) {
         object.collision = false;
     }
 
-    if (object.kind == "wall" || object.kind == "frauke" || object.kind == "trump") {
+    if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
         let dt = game.time.now - object.t0;
         if (dt>mauer_animation_length) {
             object.sprite.destroy();
@@ -504,6 +509,12 @@ function getBahndammObject(kind)
     if (kind == "sign") {
         h_object = 20;
     }
+    if (kind == "frauke") {
+        h_object = 25;
+    }
+    if (kind == "trump") {
+        h_object = 25;
+    }
 
     
     sprite.anchor.setTo(0.5, 0.5);
@@ -556,11 +567,11 @@ function getRailObject(kind)
         h_object = raildistance_inner*0.8;
     }
     
-    if (kind == 'frauke') {
+    if (kind == 'fraukewall') {
         h_object = raildistance_inner * 1.5;
     }
     
-    if (kind == 'trump') {
+    if (kind == 'trumpwall') {
         h_object = raildistance_inner* 1.55;
     }
     
