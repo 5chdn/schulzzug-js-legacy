@@ -7,7 +7,7 @@ const height = 667;
 let object;
 
 // position of horizon on y-axis
-const horizon = height - 210;
+const horizon = height - 208;
 
 // Schulzzuggeschwindigkeit
 let v = 10;
@@ -22,8 +22,8 @@ let h_camera = 50;
 let x_camera = width / 2;
 
 // distances of rails
-let raildistance_inner = 10;
-let raildistance_outer = 6;
+const raildistance_inner = 10;
+const raildistance_outer = 6;
 
 // height/width of test object
 let h_object = raildistance_inner;
@@ -151,7 +151,7 @@ function draw_rails() {
 }
 
 function update() {
-    t = game.time.now;
+    let t = game.time.now;
 
     let remove_indices = Array();
 
@@ -167,7 +167,18 @@ function update() {
 
 
     if (t - last_rail_object_time > new_rail_object_rate) {
-        railObjects.push(getRailObject("coin"));
+        
+        let kind = 'coin';
+        let seed = Math.random();
+        if (seed < 0.125) {
+            kind = 'bush';
+        } else if (seed < 0.200) {
+            kind = 'sign';
+        } else {
+            kind = 'coin';
+        }
+        
+        railObjects.push(getRailObject(kind));
         last_rail_object_time = t;
     }
 }
@@ -192,12 +203,20 @@ function getRailObject(kind)
 
     let sprite = railObjectGroup.create(0, 0, kind);
     
-    if (kind == "dummy") {
+    if (kind == 'dummy') {
         h_object = raildistance_inner;
     }
     
-    if (kind == "coin") {
-        h_object = raildistance_inner;
+    if (kind == 'bush') {
+        h_object = raildistance_inner * 0.8;
+    }
+    
+    if (kind == 'sign') {
+        h_object = raildistance_inner * 1.6;
+    }
+    
+    if (kind == 'coin') {
+        h_object = raildistance_outer;
         
         sprite.animations.add('rotate0', [0, 1, 2], 8, true);
         sprite.animations.add('rotate1', [1, 2, 0], 8, true);
