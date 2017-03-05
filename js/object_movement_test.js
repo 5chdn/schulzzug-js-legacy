@@ -460,7 +460,6 @@ function collisionUpdate(object,train) {
     }
 
     if (object.kind == "wall" || object.kind == "frauke" || object.kind == "trump") {
-        smash.play();
         let dt = game.time.now - object.t0;
         if (dt>mauer_animation_length) {
             object.sprite.destroy();
@@ -468,6 +467,7 @@ function collisionUpdate(object,train) {
             train.animations.play(train_animations[train.rail]);
             train.indefetable = false;
         }else if (dt === 0.){
+            smash.play();
             if (coin_counter >= 10) {
                 coin_counter -= 10;
             } else {
