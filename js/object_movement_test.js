@@ -45,6 +45,16 @@ let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload:
 let new_rail_object_rate = 500;
 let last_rail_object_time;
 
+let new_bahndamm_object_rate = 200;
+let bahndamm_probabilities = {
+    "tree0": 0.01,
+    "tree1": 0.01,
+    "tree2": 0.0001,
+    "bush": 0.01,
+    "sign": 0.001,
+};
+let last_bahndamm_object_time;
+
 let coin_counter = 0;
 
 //collision ranges
@@ -80,6 +90,7 @@ let railObjects = Array();
 let collisionObjects = Array();
 let bahndammObjects = Array();
 let train;
+let bahndammKinds = ["tree0","tree1","tree2","bush","sign"];
 
 // create scenery
 function create() {
@@ -93,7 +104,9 @@ function create() {
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
+
     last_rail_object_time = game.time.now;
+    last_bahndamm_object_time = game.time.now;
     
     let rails = game.add.sprite(0, 208, 'rails');
     rails.animations.add('move', [0, 1, 2], 8, true);
@@ -185,6 +198,7 @@ function update() {
     let t = game.time.now;
 
     let remove_indices = Array();
+    let remove_bahndamm_indices = Array();
 
     for (let i = 0; i < railObjects.length; i++)
     {
@@ -199,6 +213,13 @@ function update() {
         }
     }
 
+    for (let i = 0; i < bahndammObjects.length; i++)
+    {
+        updateRailObject(bahndammObjects[i],train);
+        if (!bahndammObjects[i].active) {
+            remove_bahndamm_indices.push(i);
+        }
+    }
     let collision_indices = Array();
     for (let i=0; i<collisionObjects.length; i++) {
         collisionUpdate(collisionObjects[i]);
@@ -209,6 +230,7 @@ function update() {
 
     delete_indices_from_array(remove_indices,railObjects);
     delete_indices_from_array(collision_indices,collisionObjects);
+    delete_indices_from_array(remove_bahndamm_indices,bahndammObjects);
 
     // spawn new rail object
     if (t - last_rail_object_time > new_rail_object_rate) {
@@ -225,6 +247,17 @@ function update() {
         
         railObjects.push(getRailObject(kind));
         last_rail_object_time = t;
+    }
+
+    //spawn new bahndamm objects
+
+    for (var kind in bahndamm_probabilities) {
+        // skip loop if the property is from prototype
+        if (!bahndamm_probabilities.hasOwnProperty(kind)) continue;
+        var prob = bahndamm_probabilities[kind];
+        if (Math.random() < prob) {
+            bahndammObjects.push(getBahndammObject(kind));
+        }
     }
     
     if (Math.random() < 0.01)
@@ -283,33 +316,31 @@ function getBahndammObject(kind)
     //get spawn rail
     let seite = Math.floor(Math.random() * 2);
     //get corresponding starting position
-    let x_s = width / 2 - raildistance_outer - raildistance_inner + rail * (raildistance_outer + raildistance_inner);
-    //let x_s = seite * ();
+    let damm_width = width / 2 - 1.5*raildistance_outer - raildistance_inner-20;
+    let damm_offset = seite * (width / 2 + 1.5*raildistance_outer + raildistance_inner + 20);
+    let x_s = damm_width * Math.random() + damm_offset;
     let h_object;
     let w_object;
     let original_object_height;
 
     let sprite = railObjectGroup.create(0, 0, kind);
     
-    if (kind == "dummy") {
-        h_object = raildistance_inner;
+    if (kind == "tree0") {
+        h_object = 40;
     }
-    
-    if (kind == "coin") {
-        h_object = raildistance_inner;
-        
-        sprite.animations.add('rotate0', [0, 1, 2], 8, true);
-        sprite.animations.add('rotate1', [1, 2, 0], 8, true);
-        sprite.animations.add('rotate2', [2, 0, 1], 8, true);
-        let flip = Math.random();
-        if (flip < 0.333) {
-            sprite.animations.play('rotate0');
-        } else if (flip < 0.667) {
-            sprite.animations.play('rotate1');
-        } else {
-            sprite.animations.play('rotate2');
-        }
+    if (kind == "tree1") {
+        h_object = 35;
     }
+    if (kind == "tree2") {
+        h_object = 35;
+    }
+    if (kind == "bush") {
+        h_object = 10;
+    }
+    if (kind == "sign") {
+        h_object = 20;
+    }
+
     
     sprite.anchor.setTo(0.5, 0.5);
 
@@ -329,7 +360,7 @@ function getBahndammObject(kind)
 
     let railObject = {
         "kind": kind,
-        "rail": rail,
+        "rail": -1,
         "sprite": sprite,
         "original_object_height": original_object_height,
         "original_object_width": original_object_width,
