@@ -63,7 +63,6 @@ let meter_counter = 0;
 
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
-console.log(y_collision_begin_range);
 let y_collision_end_range = y_collision_begin_range + 1000;
 
 function preload() {
@@ -89,8 +88,6 @@ function preload() {
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
     //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
     game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
-    
-    document.fonts.load('32pt "SilkScreen"');
 }
 
 //let original_object_height;
@@ -103,10 +100,19 @@ let train;
 let bahndammKinds = ["tree0","tree1","tree2","bush","sign"];
 
 let train_position = Array();
-train_position.push(0);
+train_position.push(-10);
 train_position.push((width - 120) / 2);
-train_position.push(width - 120);
+train_position.push(width - 120+10);
+let can_change_rail = true;
 
+//key changing rate
+let key_change_rate = 200;
+let last_key_change_time;
+
+let jump_duration = 200;
+let last_jump_start;
+let new_train_rail;
+let train_std_y = 360;
 
 let panel;
 let text_score;
@@ -131,6 +137,7 @@ function create() {
 
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
+    last_key_change_time = game.time.now;
 
     cloudObjectGroup = game.add.group();
     
@@ -140,13 +147,15 @@ function create() {
     
     railObjectGroup = game.add.group();
     
-    train = game.add.sprite(train_position[1], 360, 'train');
+    train = game.add.sprite(train_position[1], train_std_y, 'train');
     game.physics.arcade.enable(train);
-    train.animations.add('mitte', [2, 3], 2, true);
-    train.animations.add('links', [0, 1], 2, true);
-    train.animations.add('rechts', [4, 5], 2, true);
-    train.animations.add('jump_left',[6],2,true);
-    train.animations.add('jump_right',[6],2,true);
+    train.animations.add('links', [0, 1], 7, true);
+    train.animations.add('mitte', [2, 3], 7, true);
+    train.animations.add('rechts', [4, 5], 7, true);
+    train.animations.add('jump_left',[6],10,true);
+    train.animations.add('jump_right',[7],10,true);
+    train.animations.add('collision',[8],10,true);
+    
     train.animations.play('mitte');
 
     //train is in middle rail
@@ -235,10 +244,61 @@ function update() {
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
 
-    if (key_left.isDown) {
-        jump_left_animation();
-    } else if (key_right.isDown) {
-        jump_right_animation();
+    if (can_change_rail && 
+        key_left.isDown && 
+        t-last_key_change_time>key_change_rate &&
+        train.rail > 0
+       ) {
+        console.log("left");
+        last_jump_start = t;
+        last_key_change_time = t;
+        can_change_rail = false;
+        train.animations.play("jump_left");
+        train.last_x = train.x;
+        train.last_y = train.y;
+        train.geschw_x = -1/jump_duration;
+        new_train_rail = train.rail -1;
+        train.rail = -1;
+    } else if (can_change_rail &&
+               key_right.isDown && 
+               t-last_key_change_time>key_change_rate &&
+               train.rail < 2    
+              ) {
+        console.log("right");
+        last_jump_start = t;
+        last_key_change_time = t;
+        can_change_rail = false;
+        train.animations.play("jump_right");
+        train.last_x = train.x;
+        train.last_y = train.y;
+        train.geschw_x = 1.0/jump_duration;
+        new_train_rail = train.rail + 1;
+        train.rail = -1;
+    }
+
+    if (!can_change_rail) {
+        let dt = (t-last_jump_start);
+        if (dt < jump_duration) {
+            train.x = train.last_x + 130*train.geschw_x * dt;
+            let a = 1/1000.;
+            train.y = train_std_y - dt*jump_duration*a + Math.pow(dt,2)*a;
+        } else {
+            train.x = train_position[new_train_rail];
+            train.y = train_std_y;
+            train.rail = new_train_rail;
+            can_change_rail = true;
+            console.log(train.rail);
+            if (train.rail === 0.0) {
+                console.log("play left animation");
+                train.animations.play("links");
+            } else if (train.rail === 1) {
+                train.animations.play("mitte");
+            } else if (train.rail === 2) {
+                train.animations.play("rechts");
+            }
+            console.log(train.rail);
+        }
+
     }
 
     for (let i = 0; i < railObjects.length; i++)
@@ -312,7 +372,6 @@ function update() {
         generateCloud();
     
     meter_counter++;
-    window.console.log("Distance: " + meter_counter + "m, Score: " + coin_counter);
     
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
     text_score.y = Math.floor(panel.y + panel.height / 2 + 4);
@@ -343,20 +402,6 @@ function nFormatter(num, digits) {
   return num.toFixed(digits).replace(rx, "$1");
 }
 
-function jump_left_animation() {
-    if (train.rail > 0)
-        train.rail -= 1;
-    
-    train.x = train_position[train.rail];
-    
-}
-
-function jump_right_animation() {
-    if (train.rail < 2)
-        train.rail += 1;
-        
-    train.x = train_position[train.rail];
-}
 
 function generateCloud() {
     let seed = Math.random();
