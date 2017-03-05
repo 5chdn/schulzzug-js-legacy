@@ -91,6 +91,11 @@ function preload() {
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
     //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
     game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+    
+    game.load.audio('jump', 'sounds/jump.wav');
+    game.load.audio('bling', 'sounds/coin.wav');
+    game.load.audio('smash', 'sounds/wall_smash.wav');
+
 }
 
 //let original_object_height;
@@ -122,6 +127,10 @@ let panel;
 let text_score;
 let text_distance;
 
+let bling;
+let smash;
+let jump;
+
 let mauer_animation_length = 1000;
 
 // create scenery
@@ -141,6 +150,10 @@ function create() {
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
 
+    bling = game.add.audio('bling');
+    smash = game.add.audio('smash');
+     jump = game.add.audio( 'jump');
+        
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
     last_key_change_time = game.time.now;
@@ -256,10 +269,10 @@ function update() {
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
        ) {
-        console.log("left");
         last_jump_start = t;
         last_key_change_time = t;
         can_change_rail = false;
+                jump.play();
         train.animations.play("jump_left");
         train.last_x = train.x;
         train.last_y = train.y;
@@ -271,10 +284,10 @@ function update() {
                t-last_key_change_time>key_change_rate &&
                train.rail < 2    
               ) {
-        console.log("right");
         last_jump_start = t;
         last_key_change_time = t;
         can_change_rail = false;
+                jump.play();
         train.animations.play("jump_right");
         train.last_x = train.x;
         train.last_y = train.y;
@@ -294,18 +307,14 @@ function update() {
             train.y = train_std_y;
             train.rail = new_train_rail;
             can_change_rail = true;
-            console.log(train.rail);
             if (train.rail === 0.0) {
-                console.log("play left animation");
                 train.animations.play("links");
             } else if (train.rail === 1) {
                 train.animations.play("mitte");
             } else if (train.rail === 2) {
                 train.animations.play("rechts");
             }
-            console.log(train.rail);
         }
-
     }
 
     for (let i = 0; i < railObjects.length; i++)
@@ -439,12 +448,14 @@ function delete_indices_from_array(indices,array){
 
 function collisionUpdate(object,train) {
     if (object.kind == "coin") {
+        bling.play();
         object.sprite.destroy();
         coin_counter += 1;
         object.collision = false;
     }
 
     if (object.kind == "wall" || object.kind == "frauke" || object.kind == "trump") {
+        smash.play();
         let dt = game.time.now - object.t0;
         if (dt>mauer_animation_length) {
             object.sprite.destroy();
