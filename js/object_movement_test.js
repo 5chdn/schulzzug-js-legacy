@@ -44,6 +44,8 @@ let t0;
 let new_rail_object_rate = 500;
 let last_rail_object_time;
 
+let coin_counter = 0;
+
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
 console.log(y_collision_begin_range);
@@ -64,6 +66,8 @@ function preload() {
 let original_object_height;
 let railObjectGroup;
 let railObjects = Array();
+let collisionObjects = Array();
+let bahndammObjects = Array();
 let train;
 
 // create scenery
@@ -83,6 +87,9 @@ function create() {
     game.physics.arcade.enable(train);
     train.animations.add('smoke', [0, 1], 2, true);
     train.animations.play('smoke');
+
+    //train is in middle rail
+    train.rail = 1;
 
 
     //schulzzug
@@ -163,20 +170,57 @@ function update() {
 
     for (let i = 0; i < railObjects.length; i++)
     {
-        updateRailObject(railObjects[i]);
-        if (!railObjects[i].active)
+        updateRailObject(railObjects[i],train);
+        if (!railObjects[i].active) {
             remove_indices.push(i);
+        }
+        
+        if (railObjects[i].collision) {
+            railObjects[i].t0 = t;
+            collisionObjects.push(railObjects[i]);
+        }
     }
 
-    for (let i = remove_indices.length - 1; i >= 0; i--)
-        railObjects.splice(remove_indices[i], 1);
+    let collision_indices = Array();
+    for (let i=0; i<collisionObjects.length; i++) {
+        collisionUpdate(collisionObjects[i]);
+        if (!collisionObjects[i].collision) {
+            collision_indices.push(i);
+        }
+    }
 
+    delete_indices_from_array(remove_indices,railObjects);
+    delete_indices_from_array(collision_indices,collisionObjects);
 
+    // spawn new rail object
     if (t - last_rail_object_time > new_rail_object_rate) {
         railObjects.push(getRailObject("coin"));
         last_rail_object_time = t;
     }
 }
+
+function delete_indices_from_array(indices,array){
+    // delete object from railObjects updated
+    for (let i = indices.length - 1; i >= 0; i--)
+        array.splice(indices[i], 1);
+}
+
+function collisionUpdate(object) {
+    if (object.kind == "coin") {
+        object.sprite.destroy();
+        coin_counter += 1;
+        object.collision = false;
+    }
+
+    if (object.kind == "mauer") {
+        let dt = game.time.now - object.t0;
+        if (dt>mauer_animation_length) {
+            object.sprite.destroy();
+            object.collision = false;
+        }
+    }
+}
+
 
 function flip_z(z) {
     return height - z;
@@ -184,6 +228,72 @@ function flip_z(z) {
 
 function flip_x(x) {
     return width - x;
+}
+
+function getBahndammObject(kind)
+{
+    //get spawn rail
+    let seite = Math.floor(Math.random() * 2);
+    //get corresponding starting position
+    let x_s = width / 2 - raildistance_outer - raildistance_inner + rail * (raildistance_outer + raildistance_inner);
+    //let x_s = seite * ();
+    let h_object;
+    let w_object;
+    let original_object_height;
+
+    let sprite = railObjectGroup.create(0, 0, kind);
+    
+    if (kind == "dummy") {
+        h_object = raildistance_inner;
+    }
+    
+    if (kind == "coin") {
+        h_object = raildistance_inner;
+        
+        sprite.animations.add('rotate0', [0, 1, 2], 8, true);
+        sprite.animations.add('rotate1', [1, 2, 0], 8, true);
+        sprite.animations.add('rotate2', [2, 0, 1], 8, true);
+        let flip = Math.random();
+        if (flip < 0.333) {
+            sprite.animations.play('rotate0');
+        } else if (flip < 0.667) {
+            sprite.animations.play('rotate1');
+        } else {
+            sprite.animations.play('rotate2');
+        }
+    }
+    
+    sprite.anchor.setTo(0.5, 0.5);
+
+    //set start x-value
+    sprite.x = x_s;
+    //flip_z is necessary due to different orientation of screen coordinates
+    sprite.y = flip_z(horizon + h_object / 2);
+
+    //get the original height of the object to scale it to the wanted heifht
+    original_object_height = sprite.height;
+    original_object_width = sprite.width;
+
+    //get and set new scale
+    let new_scale = h_object / original_object_height;
+    sprite.scale.setTo(new_scale, new_scale);
+    w_object = sprite.width;
+
+    let railObject = {
+        "kind": kind,
+        "rail": rail,
+        "sprite": sprite,
+        "original_object_height": original_object_height,
+        "original_object_width": original_object_width,
+        "t0": game.time.now,
+        "active": true,
+        "w_object": w_object,
+        "h_object": h_object,
+        "x_s": x_s,
+        "collision": false
+    };
+
+    return railObject;
 }
 
 function getRailObject(kind)
@@ -235,6 +345,7 @@ function getRailObject(kind)
     w_object = sprite.width;
 
     let railObject = {
+        "kind": kind,
         "rail": rail,
         "sprite": sprite,
         "original_object_height": original_object_height,
@@ -243,13 +354,14 @@ function getRailObject(kind)
         "active": true,
         "w_object": w_object,
         "h_object": h_object,
-        "x_s": x_s
+        "x_s": x_s,
+        "collision": false
     };
 
     return railObject;
 }
 
-function updateRailObject(object) {
+function updateRailObject(object,schulzzug) {
 
     //get current time
     t = game.time.now;
@@ -284,10 +396,9 @@ function updateRailObject(object) {
     }
 
     if (y>y_collision_begin_range && y<y_collision_end_range) {
-        //if object.rail
-    } else {
-
+        if (object.rail == schulzzug.rail) {
+            object.collision = true;
+            object.active = false;
+        }
     }
-
-
 }
