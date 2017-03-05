@@ -82,7 +82,8 @@ function preload() {
     
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
-    game.load.spritesheet('train','assets/Train.52.png', 120, 232);
+    //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
+    game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
 }
 
 //let original_object_height;
@@ -117,8 +118,12 @@ function create() {
     
     train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
     game.physics.arcade.enable(train);
-    train.animations.add('smoke', [0, 1], 2, true);
-    train.animations.play('smoke');
+    train.animations.add('mitte', [2, 3], 2, true);
+    train.animations.add('links', [0, 1], 2, true);
+    train.animations.add('rechts', [4, 5], 2, true);
+    train.animations.add('jump_left',[6],2,true);
+    train.animations.add('jump_right',[6],2,true);
+    train.animations.play('mitte');
 
     //train is in middle rail
     train.rail = 1;
@@ -238,13 +243,13 @@ function update() {
         
         let kind = 'coin';
         let seed = Math.random();
-        if (seed < 0.125) {
-            kind = 'bush';
-        } else if (seed < 0.200) {
-            kind = 'sign';
-        } else {
-            kind = 'coin';
-        }
+        //if (seed < 0.125) {
+        //    kind = 'bush';
+        //} else if (seed < 0.200) {
+        //    kind = 'sign';
+        //} else {
+        //    kind = 'coin';
+        //}
         
         railObjects.push(getRailObject(kind));
         for (var i = railObjects.length; i--; ) {
