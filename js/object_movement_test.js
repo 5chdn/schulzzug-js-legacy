@@ -496,8 +496,8 @@ function getBahndammObject(kind)
     //get spawn rail
     let seite = Math.floor(Math.random() * 2);
     //get corresponding starting position
-    let damm_width = width / 2 - 1.5*raildistance_outer - raildistance_inner-20;
-    let damm_offset = seite * (width / 2 + 1.5*raildistance_outer + raildistance_inner + 20);
+    let damm_width = width / 2 - 1.5*raildistance_outer - raildistance_inner-35;
+    let damm_offset = seite * (width / 2 + 1.5*raildistance_outer + raildistance_inner + 35);
     let x_s = damm_width * Math.random() + damm_offset;
     let h_object;
     let w_object;
