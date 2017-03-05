@@ -46,6 +46,7 @@ let new_rail_object_rate = 500;
 let last_rail_object_time;
 
 let key_left;
+let key_right;
 
 let new_bahndamm_object_rate = 200;
 let bahndamm_probabilities = {
@@ -97,6 +98,11 @@ let cloudObjectGroup;
 let train;
 let bahndammKinds = ["tree0","tree1","tree2","bush","sign"];
 
+let train_position = Array();
+train_position.push(0);
+train_position.push((width - 120) / 2);
+train_position.push(width - 120);
+
 // create scenery
 function create() {
     
@@ -125,7 +131,7 @@ function create() {
     
     railObjectGroup = game.add.group();
     
-    train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
+    train = game.add.sprite(train_position[1], 360, 'train');
     game.physics.arcade.enable(train);
     train.animations.add('mitte', [2, 3], 2, true);
     train.animations.add('links', [0, 1], 2, true);
@@ -136,7 +142,6 @@ function create() {
 
     //train is in middle rail
     train.rail = 1;
-
 
     //schulzzug
     //
@@ -215,6 +220,12 @@ function update() {
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
 
+    if (key_left.isDown) {
+        jump_left_animation();
+    } else if (key_right.isDown) {
+        jump_right_animation();
+    }
+
     for (let i = 0; i < railObjects.length; i++)
     {
         updateRailObject(railObjects[i],train);
@@ -287,6 +298,20 @@ function update() {
     
     meter_counter++;
     window.console.log("Distance: " + meter_counter + "m, Score: " + coin_counter);
+}
+
+function jump_left_animation() {
+    if (train.rail > 0)
+        train.rail -= 1;
+    
+    train.x = train_position[train.rail];
+}
+
+function jump_right_animation() {
+    if (train.rail < 2)
+        train.rail += 1;
+        
+    train.x = train_position[train.rail];
 }
 
 function generateCloud() {
