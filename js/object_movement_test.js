@@ -45,6 +45,8 @@ let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload:
 let new_rail_object_rate = 500;
 let last_rail_object_time;
 
+let key_left;
+
 let new_bahndamm_object_rate = 200;
 let bahndamm_probabilities = {
     "tree0": 0.01,
@@ -90,11 +92,16 @@ let railObjectGroup;
 let railObjects = Array();
 let collisionObjects = Array();
 let bahndammObjects = Array();
+let cloudObjectGroup;
 let train;
 let bahndammKinds = ["tree0","tree1","tree2","bush","sign"];
 
 // create scenery
 function create() {
+    
+    //keys
+    key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
     //add for gleise
     gfx = game.add.graphics(0, 0); 
@@ -108,11 +115,13 @@ function create() {
 
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
+
+    cloudObjectGroup = game.add.group();
     
     let rails = game.add.sprite(0, 208, 'rails');
     rails.animations.add('move', [0, 1, 2], 8, true);
     rails.animations.play('move');
-
+    
     railObjectGroup = game.add.group();
     
     train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
@@ -261,6 +270,10 @@ function update() {
         var prob = bahndamm_probabilities[kind];
         if (Math.random() < prob) {
             bahndammObjects.push(getBahndammObject(kind));
+            
+            for (var i = bahndammObjects.length; i--; ) {
+                bahndammObjects[i].sprite.bringToTop();
+            }
         }
     }
     
@@ -282,7 +295,7 @@ function generateCloud() {
     } else {
         cloud_type = 'cloud0';
     }
-    let cloud = game.add.sprite(-60, cloud_height, cloud_type);
+    let cloud = cloudObjectGroup.create(-60, cloud_height, cloud_type);
     game.physics.arcade.enable(cloud);
     cloud.body.gravity.x = 4;
 }
