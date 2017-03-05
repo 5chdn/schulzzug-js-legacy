@@ -46,6 +46,7 @@ let new_rail_object_rate = 500;
 let last_rail_object_time;
 
 let coin_counter = 0;
+let meter_counter = 0;
 
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
@@ -229,6 +230,9 @@ function update() {
     
     if (Math.random() < 0.01)
         generateCloud();
+    
+    meter_counter++;
+    window.console.log("Distance: " + meter_counter + "m, Score: " + coin_counter);
 }
 
 function generateCloud() {
