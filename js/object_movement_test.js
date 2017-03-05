@@ -56,6 +56,7 @@ let bahndamm_probabilities = {
 let last_bahndamm_object_time;
 
 let coin_counter = 0;
+let meter_counter = 0;
 
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
@@ -246,6 +247,9 @@ function update() {
         }
         
         railObjects.push(getRailObject(kind));
+        for (var i = railObjects.length; i--; ) {
+            railObjects[i].sprite.bringToTop();
+        }
         last_rail_object_time = t;
     }
 
@@ -262,6 +266,9 @@ function update() {
     
     if (Math.random() < 0.01)
         generateCloud();
+    
+    meter_counter++;
+    window.console.log("Distance: " + meter_counter + "m, Score: " + coin_counter);
 }
 
 function generateCloud() {
