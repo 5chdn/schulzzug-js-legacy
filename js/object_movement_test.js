@@ -83,6 +83,8 @@ function preload() {
     game.load.image('bush',       'assets/Bush01.50.png');
     game.load.image('sign',       'assets/Sign01.50.png');
     
+    game.load.image('panel',      'assets/Panel.50.png');
+    
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
     //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
@@ -102,6 +104,11 @@ let train_position = Array();
 train_position.push(0);
 train_position.push((width - 120) / 2);
 train_position.push(width - 120);
+
+
+let panel;
+let text_score;
+let text_distance;
 
 // create scenery
 function create() {
@@ -173,6 +180,11 @@ function create() {
     //console.log(railObjects);
     draw_rails(); 
 
+    panel = game.add.sprite(0, height - 72, 'panel');
+    text_score = game.add.text(0, height - 72, "0", "align:center");
+    text_distance = game.add.text(0, height - 72, "0m", "align:center");
+    text_score.anchor.set(0.5);
+    text_distance.anchor.set(0.5);
 }
 
 function draw_rails() {
@@ -298,6 +310,31 @@ function update() {
     
     meter_counter++;
     window.console.log("Distance: " + meter_counter + "m, Score: " + coin_counter);
+    
+    text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
+    text_score.y = Math.floor(panel.y + panel.height / 2 + 4);
+    text_score.setText(nFormatter(coin_counter, 2));
+    text_distance.x = Math.floor(panel.x + panel.width / 4 * 3 + 1);
+    text_distance.y = Math.floor(panel.y + panel.height / 2 + 4);
+    text_distance.setText(nFormatter(meter_counter, 2) + "m");
+}
+
+function nFormatter(num, digits) {
+  let si = [
+    { value: 1E18, symbol: "E" },
+    { value: 1E15, symbol: "P" },
+    { value: 1E12, symbol: "T" },
+    { value: 1E9,  symbol: "G" },
+    { value: 1E6,  symbol: "M" },
+    { value: 1E3,  symbol: "k" }
+  ], rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
+  for (i = 0; i < si.length; i++) {
+    if (num >= si[i].value) {
+      return (num / si[i].value).toFixed(digits).replace(rx, "$1")
+        + si[i].symbol;
+    }
+  }
+  return num.toFixed(digits).replace(rx, "$1");
 }
 
 function jump_left_animation() {
