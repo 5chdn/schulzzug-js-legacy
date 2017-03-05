@@ -66,12 +66,19 @@ function create() {
     //add for gleise
     gfx = game.add.graphics(0, 0); 
     gfx.lineStyle(1, 0xff0000, 1);
+    
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.add.sprite(0, 0, 'landscape');
+    last_rail_object_time = game.time.now;
 
     railObjectGroup = game.add.group();
+    
+    let train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
+    game.physics.arcade.enable(train);
+    train.animations.add('smoke', [0, 1], 2, true);
+    train.animations.play('smoke');
 
 
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    last_rail_object_time = game.time.now;
     //schulzzug
     //
     //
@@ -160,7 +167,7 @@ function update() {
 
 
     if (t - last_rail_object_time > new_rail_object_rate) {
-        railObjects.push(getRailObject("dummy"));
+        railObjects.push(getRailObject("coin"));
         last_rail_object_time = t;
     }
 }
@@ -183,11 +190,28 @@ function getRailObject(kind)
     let w_object;
     let original_object_height;
 
+    let sprite = railObjectGroup.create(0, 0, kind);
+    
     if (kind == "dummy") {
         h_object = raildistance_inner;
     }
-
-    let sprite = railObjectGroup.create(0, 0, 'coin');
+    
+    if (kind == "coin") {
+        h_object = raildistance_inner;
+        
+        sprite.animations.add('rotate0', [0, 1, 2], 8, true);
+        sprite.animations.add('rotate1', [1, 2, 0], 8, true);
+        sprite.animations.add('rotate2', [2, 0, 1], 8, true);
+        let flip = Math.random();
+        if (flip < 0.333) {
+            sprite.animations.play('rotate0');
+        } else if (flip < 0.667) {
+            sprite.animations.play('rotate1');
+        } else {
+            sprite.animations.play('rotate2');
+        }
+    }
+    
     sprite.anchor.setTo(0.5, 0.5);
 
     //set start x-value
