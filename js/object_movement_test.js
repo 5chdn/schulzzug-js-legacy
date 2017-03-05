@@ -390,7 +390,7 @@ function update() {
                 kind = 'coin';
             }
         } else {
-            if (seed < 0.4) {
+            if (seed < 0.2) {
                 kind = 'trumpwall';
             }
             else if (seed < 0.4) {
