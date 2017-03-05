@@ -83,6 +83,9 @@ function preload() {
     game.load.image('sign',       'assets/Sign01.50.png');
     
     game.load.image('panel',      'assets/Panel.50.png');
+    game.load.image('frauke',     'assets/afd-wall.50.png');
+    game.load.image('trump',      'assets/Trump-Wall.50.png');
+    game.load.image('wall',       'assets/wall.png');
     
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
@@ -104,6 +107,7 @@ train_position.push(-10);
 train_position.push((width - 120) / 2);
 train_position.push(width - 120+10);
 let can_change_rail = true;
+let train_animations  = ["links","mitte","rechts"];
 
 //key changing rate
 let key_change_rate = 200;
@@ -117,6 +121,8 @@ let train_std_y = 360;
 let panel;
 let text_score;
 let text_distance;
+
+let mauer_animation_length = 1000;
 
 // create scenery
 function create() {
@@ -154,12 +160,13 @@ function create() {
     train.animations.add('rechts', [4, 5], 7, true);
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
-    train.animations.add('collision',[8],10,true);
+    train.animations.add('collision',[8,9],10,true);
     
     train.animations.play('mitte');
 
     //train is in middle rail
     train.rail = 1;
+    train.indefetable = false;
 
     //schulzzug
     //
@@ -310,6 +317,9 @@ function update() {
         
         if (railObjects[i].collision) {
             railObjects[i].t0 = t;
+            railObjects[i].x_s = railObjects[i].sprite.x;
+            railObjects[i].y_s = railObjects[i].sprite.y;
+            railObjects[i].direction = 1-2*Math.floor(Math.random()*2);
             collisionObjects.push(railObjects[i]);
         }
     }
@@ -323,7 +333,7 @@ function update() {
     }
     let collision_indices = Array();
     for (let i=0; i<collisionObjects.length; i++) {
-        collisionUpdate(collisionObjects[i]);
+        collisionUpdate(collisionObjects[i],train);
         if (!collisionObjects[i].collision) {
             collision_indices.push(i);
         }
@@ -338,13 +348,15 @@ function update() {
         
         let kind = 'coin';
         let seed = Math.random();
-        //if (seed < 0.125) {
-        //    kind = 'bush';
-        //} else if (seed < 0.200) {
-        //    kind = 'sign';
-        //} else {
-        //    kind = 'coin';
-        //}
+        if (seed < 0.05) {
+            kind = 'trump';
+        } else if (seed < 0.1) {
+            kind = 'frauke';
+        } else if (seed < 0.2) {
+            kind = 'wall';
+        } else {
+            kind = 'coin';
+        }
         
         railObjects.push(getRailObject(kind));
         for (var i = railObjects.length; i--; ) {
@@ -425,18 +437,31 @@ function delete_indices_from_array(indices,array){
         array.splice(indices[i], 1);
 }
 
-function collisionUpdate(object) {
+function collisionUpdate(object,train) {
     if (object.kind == "coin") {
         object.sprite.destroy();
         coin_counter += 1;
         object.collision = false;
     }
 
-    if (object.kind == "mauer") {
+    if (object.kind == "wall" || object.kind == "frauke" || object.kind == "trump") {
         let dt = game.time.now - object.t0;
         if (dt>mauer_animation_length) {
             object.sprite.destroy();
             object.collision = false;
+            train.animations.play(train_animations[train.rail]);
+            train.indefetable = false;
+        }else if (dt === 0.){
+            if (coin_counter >= 10) {
+                coin_counter -= 10;
+            } else {
+                coin_counter = 0;
+            }
+        }else{            
+            train.animations.play("collision");
+            object.sprite.x = object.x_s + object.direction * dt;
+            object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
+            train.indefetable = true;
         }
     }
 }
@@ -527,16 +552,16 @@ function getRailObject(kind)
 
     let sprite = railObjectGroup.create(0, 0, kind);
     
-    if (kind == 'dummy') {
-        h_object = raildistance_inner;
+    if (kind == 'wall') {
+        h_object = raildistance_inner*0.8;
     }
     
-    if (kind == 'bush') {
-        h_object = raildistance_inner * 0.8;
+    if (kind == 'frauke') {
+        h_object = raildistance_inner * 1.5;
     }
     
-    if (kind == 'sign') {
-        h_object = raildistance_inner * 1.6;
+    if (kind == 'trump') {
+        h_object = raildistance_inner* 1.55;
     }
     
     if (kind == 'coin') {
@@ -622,7 +647,7 @@ function updateRailObject(object,schulzzug) {
         object.active = false;
     }
 
-    if (y>y_collision_begin_range && y<y_collision_end_range) {
+    if (y>y_collision_begin_range && y<y_collision_end_range && !schulzzug.indefetable) {
         if (object.rail == schulzzug.rail) {
             object.collision = true;
             object.active = false;
