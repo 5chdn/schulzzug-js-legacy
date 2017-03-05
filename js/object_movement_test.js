@@ -1,4 +1,5 @@
 /* global Phaser */
+/* global $ */
 
 // canvas size
 const width = 375;
@@ -47,6 +48,7 @@ let last_rail_object_time;
 
 let key_left;
 let key_right;
+let key_space;
 
 let new_bahndamm_object_rate = 200;
 let bahndamm_probabilities = {
@@ -66,6 +68,12 @@ let meter_counter = 0;
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
 let y_collision_end_range = y_collision_begin_range + 1000;
+
+let SESSION;
+let TOKEN;
+let USER = Math.random().toString(36).substring(7);
+
+
 
 function preload() {
     game.load.image('landscape',  'assets/untergrund.50.png');
@@ -99,6 +107,14 @@ function preload() {
     game.load.audio('jump', 'sounds/jump.wav');
     game.load.audio('bling', 'sounds/coin.wav');
     game.load.audio('smash', 'sounds/wall_smash.wav');
+    game.load.audio('tada', 'sounds/tada.wav');
+    game.load.audio('ratter', 'sounds/ratter.wav');
+    game.load.audio('whistle', 'sounds/whistle.wav');
+
+    window.console.log(USER);
+    $.post( "https://51.15.50.238:8080/register", { user: USER }, function ( response ) {
+        window.console.log(response);
+    });
 
 }
 
@@ -133,7 +149,10 @@ let text_distance;
 
 let bling;
 let smash;
-let jump;
+let  jump;
+let  tada;
+let whistle;
+let ratter;
 
 let mauer_animation_length = 1000;
 
@@ -143,6 +162,7 @@ function create() {
     //keys
     key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+	key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     //add for gleise
     gfx = game.add.graphics(0, 0); 
@@ -157,6 +177,12 @@ function create() {
     bling = game.add.audio('bling');
     smash = game.add.audio('smash');
      jump = game.add.audio( 'jump');
+    tada = game.add.audio('tada');
+    whistle = game.add.audio('whistle');
+     ratter = game.add.audio( 'ratter');
+     
+    ratter.loop = true;
+    ratter.play();
         
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
@@ -267,6 +293,9 @@ function update() {
 
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
+    
+    if (key_space.isDown)
+        whistle.play();
 
     if (can_change_rail && 
         key_left.isDown && 
