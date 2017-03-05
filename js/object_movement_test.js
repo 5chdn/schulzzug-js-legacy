@@ -1,10 +1,11 @@
+/* global Phaser */
 
 // canvas size
 const width = 375;
 const height = 667;
 
 // object to be displayed (coin and such)
-let object;
+//let object;
 
 // position of horizon on y-axis
 const horizon = height - 208;
@@ -26,11 +27,11 @@ const raildistance_inner = 10;
 const raildistance_outer = 6;
 
 // height/width of test object
-let h_object = raildistance_inner;
-let w_object;
+//let h_object = raildistance_inner;
+//let w_object;
 
 //start coordinate of test object
-let x_s = width / 2 - raildistance_outer - raildistance_inner;
+//let x_s = width / 2 - raildistance_outer - raildistance_inner;
 
 // graphics object for lines
 let gfx;
@@ -39,7 +40,7 @@ let gfx;
 let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload: preload, create: create, update: update });
 
 // after that time, movement will start
-let t0;
+//let t0;
 
 let new_rail_object_rate = 500;
 let last_rail_object_time;
@@ -48,15 +49,15 @@ function preload() {
     game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
     game.load.image('tree1',      'assets/Tree02.50.png');
-    game.load.spritesheet('train','assets/Train.52.png', 120, 232);
     game.load.image('landscape',  'assets/untergrund.50.png');
     game.load.image('office',     'assets/Kanzleramt.50.png');
     game.load.image('bush',       'assets/Bush01.50.png');
     game.load.image('sign',       'assets/Sign01.50.png');
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
+    game.load.spritesheet('train','assets/Train.52.png', 120, 232);
 }
 
-let original_object_height;
+//let original_object_height;
 let railObjectGroup;
 let railObjects = Array();
 
@@ -113,7 +114,7 @@ function create() {
 
 function draw_rails() {
 
-    let t0;
+    //let t0;
 
     let x_start = width / 2 - 1.5 * raildistance_inner - raildistance_outer;
     //vr linedd.graphics(x, y);1 = Phaser.Line(this_x_start,horizon,x_L,h);
@@ -200,6 +201,7 @@ function getRailObject(kind)
     let h_object;
     let w_object;
     let original_object_height;
+    let original_object_width;
 
     let sprite = railObjectGroup.create(0, 0, kind);
     
@@ -265,11 +267,11 @@ function getRailObject(kind)
 function updateRailObject(object) {
 
     //get current time
-    t = game.time.now;
+    let t = game.time.now;
     //object.sprite.anchor.setTo(0.5,0.5);
 
     //get position between horizon and camera
-    let y = v * (t-object.t0);
+    let y = v * (t - object.t0);
 
     //get center position of test object
     let x_o = x_camera - L / (L - y) * (x_camera - object.x_s);
@@ -291,7 +293,7 @@ function updateRailObject(object) {
     //destroy if out of scope
     if (y > L) 
     {
-        object.sprite.destroy()
+        object.sprite.destroy();
         object.active = false;
     }
 }
