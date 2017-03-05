@@ -59,6 +59,7 @@ function preload() {
     game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
     game.load.image('tree1',      'assets/Tree02.50.png');
+    game.load.image('tree2',      'assets/specialtree.50.png');
     game.load.image('cloud0',     'assets/cloud01.50.png');
     game.load.image('cloud1',     'assets/cloud02.50.png');
     game.load.image('cloud2',     'assets/cloud03.50.png');
@@ -214,11 +215,11 @@ function generateCloud() {
     let cloud_height = seed * 176;
     let cloud_type = 'cloud0';
     if (seed < 0.667) {
-        cloud_type = 'cloud1'
+        cloud_type = 'cloud1';
     } else if (seed < 0.333) {
-        cloud_type = 'cloud2'
+        cloud_type = 'cloud2';
     } else {
-        cloud_type = 'cloud0'
+        cloud_type = 'cloud0';
     }
     let cloud = game.add.sprite(-60, cloud_height, cloud_type);
     game.physics.arcade.enable(cloud);
