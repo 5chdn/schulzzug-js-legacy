@@ -89,6 +89,8 @@ function preload() {
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
     //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
     game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+    
+    document.fonts.load('32pt "SilkScreen"');
 }
 
 //let original_object_height;
@@ -179,10 +181,11 @@ function create() {
     //railObjects.push( getRailObject("dummy"));
     //console.log(railObjects);
     draw_rails(); 
-
+    
+    let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, height - 72, 'panel');
-    text_score = game.add.text(0, height - 72, "0", "align:center");
-    text_distance = game.add.text(0, height - 72, "0m", "align:center");
+    text_score = game.add.text(0, height - 72, "0", style);
+    text_distance = game.add.text(0, height - 72, "0m", style);
     text_score.anchor.set(0.5);
     text_distance.anchor.set(0.5);
 }
@@ -314,9 +317,12 @@ function update() {
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
     text_score.y = Math.floor(panel.y + panel.height / 2 + 4);
     text_score.setText(nFormatter(coin_counter, 2));
+    text_score.font = 'SilkScreen';
+    
     text_distance.x = Math.floor(panel.x + panel.width / 4 * 3 + 1);
     text_distance.y = Math.floor(panel.y + panel.height / 2 + 4);
     text_distance.setText(nFormatter(meter_counter, 2) + "m");
+    text_distance.font = 'SilkScreen';
 }
 
 function nFormatter(num, digits) {
