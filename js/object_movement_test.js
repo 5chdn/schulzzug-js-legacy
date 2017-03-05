@@ -45,6 +45,11 @@ let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload:
 let new_rail_object_rate = 500;
 let last_rail_object_time;
 
+//collision ranges
+let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
+console.log(y_collision_begin_range);
+let y_collision_end_range = y_collision_begin_range + 1000;
+
 function preload() {
     game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
@@ -60,6 +65,7 @@ function preload() {
 //let original_object_height;
 let railObjectGroup;
 let railObjects = Array();
+let train;
 
 // create scenery
 function create() {
@@ -74,7 +80,7 @@ function create() {
 
     railObjectGroup = game.add.group();
     
-    let train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
+    train = game.add.sprite((game.world.width - 120) / 2, 360, 'train');
     game.physics.arcade.enable(train);
     train.animations.add('smoke', [0, 1], 2, true);
     train.animations.play('smoke');
@@ -290,10 +296,19 @@ function updateRailObject(object) {
     let h = h_camera - L / (L - y) * (h_camera - object.h_object / 2) + horizon;
     object.sprite.y = flip_z(h);
     
+    //get collision range
     //destroy if out of scope
     if (y > L) 
     {
         object.sprite.destroy();
         object.active = false;
     }
+
+    if (y>y_collision_begin_range && y<y_collision_end_range) {
+        //if object.rail
+    } else {
+
+    }
+
+
 }
