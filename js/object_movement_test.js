@@ -225,6 +225,9 @@ function update() {
         }
         
         railObjects.push(getRailObject(kind));
+        for (var i = railObjects.length; i--; ) {
+            railObjects[i].sprite.bringToTop();
+        }
         last_rail_object_time = t;
     }
     
