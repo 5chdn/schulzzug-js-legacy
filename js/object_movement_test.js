@@ -305,6 +305,7 @@ function jump_left_animation() {
         train.rail -= 1;
     
     train.x = train_position[train.rail];
+    
 }
 
 function jump_right_animation() {
