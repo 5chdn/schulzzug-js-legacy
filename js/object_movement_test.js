@@ -40,7 +40,9 @@ let gfx;
 // game engine
 let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload: preload, create: create, update: update });
 //let Swipe = require('phaser-swipe');
-let swipe;
+//let swipe;
+
+var swipeDirection;
 
 // after that time, movement will start
 //let t0;
@@ -175,7 +177,8 @@ function create() {
     game.add.sprite(0, 0, 'sky');
 
     //enable swipe and reduce necessary swipe length
-    swipe = new Swipe(game);
+    //swipe = new Swipe(game);
+    swipe = 0;
     //swipe.dragLength = 10;
     //swipe.diagonalDelta = 5;
 
@@ -299,19 +302,19 @@ function draw_rails() {
 
 function update() {
     let t = game.time.now;
-    var direction = swipe.check();
-
+    var direction = swipe;
+    //reset swipe
+    swipe = 0;
+    
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
     
     if (key_space.isDown)
         whistle.play();
 
+    //go left
     if (can_change_rail && 
-        ((direction !== null && (direction.direction==swipe.DIRECTION_LEFT || 
-                                 direction.direction==swipe.DIRECTION_UP_LEFT ||
-                                 direction.direction==swipe.DIRECTION_DOWN_LEFT
-                )) || key_left.isDown) && 
+        (direction == 1 || key_left.isDown) &&
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
        ) {
@@ -326,11 +329,10 @@ function update() {
         train.geschw_x = -1/jump_duration;
         new_train_rail = train.rail -1;
         train.rail = -1;
+           
+           //go right
     } else if (can_change_rail &&
-               ((direction !== null && (direction.direction == swipe.DIRECTION_RIGHT ||  
-                                        direction.direction == swipe.DIRECTION_UP_RIGHT ||
-                                        direction.direction == swipe.DIRECTION_DOWN_RIGHT
-                                       ))|| key_right.isDown )&& 
+               (direction == 2 || key_right.isDown ) &&
                t-last_key_change_time>key_change_rate &&
                train.rail < 2    
               ) {
