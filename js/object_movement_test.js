@@ -38,6 +38,8 @@ let gfx;
 
 // game engine
 let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload: preload, create: create, update: update });
+//let Swipe = require('phaser-swipe');
+let swipe;
 
 // after that time, movement will start
 //let t0;
@@ -167,7 +169,9 @@ function create() {
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
+    swipe = new Swipe(game);
 
+    //sounds
     bling = game.add.audio('bling');
     smash = game.add.audio('smash');
      jump = game.add.audio( 'jump');
@@ -287,6 +291,7 @@ function draw_rails() {
 
 function update() {
     let t = game.time.now;
+    var direction = swipe.check();
 
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
@@ -295,7 +300,7 @@ function update() {
         whistle.play();
 
     if (can_change_rail && 
-        key_left.isDown && 
+        ((direction !== null && direction.direction==swipe.DIRECTION_LEFT) || key_left.isDown) && 
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
        ) {
@@ -311,7 +316,7 @@ function update() {
         new_train_rail = train.rail -1;
         train.rail = -1;
     } else if (can_change_rail &&
-               key_right.isDown && 
+               ((direction !== null) && direction.direction == swipe.DIRECTION_RIGHT || key_right.isDown )&& 
                t-last_key_change_time>key_change_rate &&
                train.rail < 2    
               ) {
