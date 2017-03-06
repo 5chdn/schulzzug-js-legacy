@@ -47,6 +47,7 @@ let last_rail_object_time;
 
 let key_left;
 let key_right;
+let key_space;
 
 let new_bahndamm_object_rate = 200;
 let bahndamm_probabilities = {
@@ -86,10 +87,11 @@ function preload() {
     
     game.load.image('panel',      'assets/Panel.50.png');
     game.load.image('fraukewall',     'assets/afd-wall.50.png');
-    game.load.image('trumpwall',      'assets/trumpwall-Wall.50.png');
+    game.load.image('trumpwall',      'assets/Trump-Wall.50.png');
     game.load.image('frauke',     'assets/Petry.png');
     game.load.image('trump',      'assets/Trump.png');
     game.load.image('wall',       'assets/wall.png');
+    game.load.image('stern',       'assets/star.png');
     
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
     game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
@@ -99,6 +101,10 @@ function preload() {
     game.load.audio('jump', 'sounds/jump.wav');
     game.load.audio('bling', 'sounds/coin.wav');
     game.load.audio('smash', 'sounds/wall_smash.wav');
+    game.load.audio('stern', 'sounds/bg_EU.wav');
+    game.load.audio('tada', 'sounds/tada.wav');
+    game.load.audio('ratter', 'sounds/ratter.wav');
+    game.load.audio('whistle', 'sounds/whistle.wav');
 
 }
 
@@ -133,9 +139,16 @@ let text_distance;
 
 let bling;
 let smash;
-let jump;
+let  jump;
+let  tada;
+let whistle;
+let ratter;
 
 let mauer_animation_length = 1000;
+
+let sternphase_duration = 10000;
+
+let sternsound;
 
 // create scenery
 function create() {
@@ -143,6 +156,7 @@ function create() {
     //keys
     key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+	key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     //add for gleise
     gfx = game.add.graphics(0, 0); 
@@ -157,6 +171,13 @@ function create() {
     bling = game.add.audio('bling');
     smash = game.add.audio('smash');
      jump = game.add.audio( 'jump');
+    sternsound = game.add.audio( 'stern');
+    tada = game.add.audio('tada');
+    whistle = game.add.audio('whistle');
+     ratter = game.add.audio( 'ratter');
+     
+    ratter.loop = true;
+    ratter.play();
         
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
@@ -178,12 +199,14 @@ function create() {
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
     train.animations.add('collision',[8,9],10,true);
+    train.animations.add('stern',[8],10,true);
     
     train.animations.play('mitte');
 
     //train is in middle rail
     train.rail = 1;
     train.indefetable = false;
+    train.sternphase = false;
 
     //schulzzug
     //
@@ -267,6 +290,9 @@ function update() {
 
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
+    
+    if (key_space.isDown)
+        whistle.play();
 
     if (can_change_rail && 
         key_left.isDown && 
@@ -277,7 +303,8 @@ function update() {
         last_key_change_time = t;
         can_change_rail = false;
                 jump.play();
-        train.animations.play("jump_left");
+        if (!train.sternphase)
+            train.animations.play("jump_left");
         train.last_x = train.x;
         train.last_y = train.y;
         train.geschw_x = -1/jump_duration;
@@ -292,7 +319,8 @@ function update() {
         last_key_change_time = t;
         can_change_rail = false;
                 jump.play();
-        train.animations.play("jump_right");
+        if (!train.sternphase)
+            train.animations.play("jump_right");
         train.last_x = train.x;
         train.last_y = train.y;
         train.geschw_x = 1.0/jump_duration;
@@ -311,13 +339,16 @@ function update() {
             train.y = train_std_y;
             train.rail = new_train_rail;
             can_change_rail = true;
-            if (train.rail === 0.0) {
-                train.animations.play("links");
-            } else if (train.rail === 1) {
-                train.animations.play("mitte");
-            } else if (train.rail === 2) {
-                train.animations.play("rechts");
-            }
+            if (!train.sternphase)
+                {
+                if (train.rail === 0.0) {
+                    train.animations.play("links");
+                } else if (train.rail === 1) {
+                    train.animations.play("mitte");
+                } else if (train.rail === 2) {
+                    train.animations.play("rechts");
+                }
+                }
         }
     }
 
@@ -366,10 +397,24 @@ function update() {
         //} else if (seed < 0.1) {
         //    kind = 'fraukewall';
         //} else 
-        if (seed < 0.2) {
-            kind = 'wall';
+        if (!train.sternphase){
+            if (seed < 0.1) {
+                kind = 'stern';
+            } else if (seed < 0.2) {
+                kind = 'wall';
+            } else {
+                kind = 'coin';
+            }
         } else {
-            kind = 'coin';
+            if (seed < 0.2) {
+                kind = 'trumpwall';
+            }
+            else if (seed < 0.4) {
+                kind = 'fraukewall';
+            } else {
+                kind = 'coin';     
+            }
+           
         }
         
         railObjects.push(getRailObject(kind));
@@ -459,25 +504,62 @@ function collisionUpdate(object,train) {
         object.collision = false;
     }
 
-    if (object.kind == "wall" || object.kind == "frauke" || object.kind == "trump") {
+    if (object.kind == "stern") {
         let dt = game.time.now - object.t0;
-        if (dt>mauer_animation_length) {
-            object.sprite.destroy();
+        if (dt>sternphase_duration) {
+            //train.animations.play(train_animations[train.rail]);
+            train.sternphase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
             train.indefetable = false;
         }else if (dt === 0.){
-            smash.play();
-            if (coin_counter >= 10) {
-                coin_counter -= 10;
-            } else {
-                coin_counter = 0;
+            sternsound.play()
+            train.animations.play("stern");
+            object.sprite.destroy();
+            train.indefetable = false;
+            train.sternphase = true;
+            coin_counter += 10;
+        }
+    }
+
+    if (train.sternphase)
+    {
+        if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
+            let dt = game.time.now - object.t0;
+            if (dt>mauer_animation_length) {
+                object.sprite.destroy();
+                object.collision = false;
+                train.animations.play(train_animations[train.rail]);
+                train.indefetable = false;
+            }else if (dt === 0.){
+                smash.play();
+                coin_counter += 10;
+            }else{            
+                object.sprite.x = object.x_s + object.direction * dt;
+                object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
             }
-        }else{            
-            train.animations.play("collision");
-            object.sprite.x = object.x_s + object.direction * dt;
-            object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
-            train.indefetable = true;
+        }
+      }  else {
+        if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
+            let dt = game.time.now - object.t0;
+            if (dt>mauer_animation_length) {
+                object.sprite.destroy();
+                object.collision = false;
+                train.animations.play(train_animations[train.rail]);
+                train.indefetable = false;
+            }else if (dt === 0.){
+                smash.play();
+                if (coin_counter >= 10) {
+                    coin_counter -= 10;
+                } else {
+                    coin_counter = 0;
+                }
+            }else{            
+                train.animations.play("collision");
+                object.sprite.x = object.x_s + object.direction * dt;
+                object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
+                train.indefetable = true;
+            }
         }
     }
 }
@@ -584,6 +666,10 @@ function getRailObject(kind)
     
     if (kind == 'trumpwall') {
         h_object = raildistance_inner* 1.55;
+    }
+    
+    if (kind == 'stern') {
+        h_object = raildistance_inner;
     }
     
     if (kind == 'coin') {
