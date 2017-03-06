@@ -112,7 +112,7 @@ function preload() {
     game.load.audio('tada', ['sounds/tada.mp3','sounds/tada.ogg']);
     game.load.audio('ratter', ['sounds/ratter.mp3','sounds/ratter.ogg']);
     game.load.audio('whistle', ['sounds/whistle.mp3','sounds/whistle.ogg']);
-
+    
 }
 
 //let original_object_height;
@@ -165,9 +165,9 @@ function create() {
     key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
+    
     //add for gleise
-    gfx = game.add.graphics(0, 0); 
+    gfx = game.add.graphics(0, 0);
     gfx.lineStyle(1, 0xff0000, 1);
     
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -175,29 +175,29 @@ function create() {
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
-
+    
     //enable swipe and reduce necessary swipe length
     //swipe = new Swipe(game);
     swipe = 0;
     //swipe.dragLength = 10;
     //swipe.diagonalDelta = 5;
-
+    
     //sounds
     bling = game.add.audio('bling');
     smash = game.add.audio('smash');
-     jump = game.add.audio( 'jump');
+    jump = game.add.audio( 'jump');
     sternsound = game.add.audio( 'stern');
     tada = game.add.audio('tada');
     whistle = game.add.audio('whistle');
-     ratter = game.add.audio( 'ratter');
-     
+    ratter = game.add.audio( 'ratter');
+    
     ratter.loop = true;
     ratter.play();
-        
+    
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
     last_key_change_time = game.time.now;
-
+    
     cloudObjectGroup = game.add.group();
     
     let rails = game.add.sprite(0, 208, 'rails');
@@ -217,41 +217,41 @@ function create() {
     train.animations.add('stern',[8],10,true);
     
     train.animations.play('mitte');
-
+    
     //train is in middle rail
     train.rail = 1;
     train.indefetable = false;
     train.sternphase = false;
-
+    
     //schulzzug
     //
     //
     //add test object
     //
     /*
-    object = game.add.sprite(0,0,'dummy');
-    object.anchor.setTo(0.5,0.5);
-
-    //set start x-value
-    object.x = x_s;
-    //flip_z is necessary due to different orientation of screen coordinates
-    object.y = flip_z(horizon + h_object/2);
-
-    //get the original height of the object to scale it to the wanted heifht
-    original_object_height = object.height;
-
-    //get and set new scale
-    let new_scale = h_object / original_object_height;
-    object.scale.setTo(new_scale,new_scale);
-    w_object = object.width;
-    
-
-    //set object start time to now
-    t0 = game.time.now;
-    */
+     object = game.add.sprite(0,0,'dummy');
+     object.anchor.setTo(0.5,0.5);
+     
+     //set start x-value
+     object.x = x_s;
+     //flip_z is necessary due to different orientation of screen coordinates
+     object.y = flip_z(horizon + h_object/2);
+     
+     //get the original height of the object to scale it to the wanted heifht
+     original_object_height = object.height;
+     
+     //get and set new scale
+     let new_scale = h_object / original_object_height;
+     object.scale.setTo(new_scale,new_scale);
+     w_object = object.width;
+     
+     
+     //set object start time to now
+     t0 = game.time.now;
+     */
     //railObjects.push( getRailObject("dummy"));
     //console.log(railObjects);
-    draw_rails(); 
+    draw_rails();
     
     let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, height - 72, 'panel');
@@ -262,9 +262,9 @@ function create() {
 }
 
 function draw_rails() {
-
+    
     //let t0;
-
+    
     let x_start = width / 2 - 1.5 * raildistance_inner - raildistance_outer;
     //vr linedd.graphics(x, y);1 = Phaser.Line(this_x_start,horizon,x_L,h);
     let y_g = height / 2 * L / (h_camera+height / 2);
@@ -277,16 +277,16 @@ function draw_rails() {
         let h = h_camera - L / (L - y_g) * h_camera + horizon;
         
         /*
-        console.log("h =", h);
-        console.log("y_g=",y_g);
-
-        console.log(this_x_start,horizon,x_L,h);
-        console.log(this_x_start,x_L,horizon);
-        console.log(horizon);
-        console.log(x_L);
-        console.log(x_L);
-        console.log(x_R);
-        */
+         console.log("h =", h);
+         console.log("y_g=",y_g);
+         
+         console.log(this_x_start,horizon,x_L,h);
+         console.log(this_x_start,x_L,horizon);
+         console.log(horizon);
+         console.log(x_L);
+         console.log(x_L);
+         console.log(x_R);
+         */
         
         gfx.moveTo(this_x_start, flip_z(horizon));
         gfx.lineTo(flip_x(x_L), flip_z(h));
@@ -311,17 +311,17 @@ function update() {
     
     if (key_space.isDown)
         whistle.play();
-
+    
     //go left
-    if (can_change_rail && 
+    if (can_change_rail &&
         (direction == 1 || key_left.isDown) &&
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
-       ) {
+        ) {
         last_jump_start = t;
         last_key_change_time = t;
         can_change_rail = false;
-                jump.play();
+        jump.play();
         if (!train.sternphase)
             train.animations.play("jump_left");
         train.last_x = train.x;
@@ -329,17 +329,17 @@ function update() {
         train.geschw_x = -1/jump_duration;
         new_train_rail = train.rail -1;
         train.rail = -1;
-           
-           //go right
+        
+        //go right
     } else if (can_change_rail &&
                (direction == 2 || key_right.isDown ) &&
                t-last_key_change_time>key_change_rate &&
-               train.rail < 2    
-              ) {
+               train.rail < 2
+               ) {
         last_jump_start = t;
         last_key_change_time = t;
         can_change_rail = false;
-                jump.play();
+        jump.play();
         if (!train.sternphase)
             train.animations.play("jump_right");
         train.last_x = train.x;
@@ -348,7 +348,7 @@ function update() {
         new_train_rail = train.rail + 1;
         train.rail = -1;
     }
-
+    
     if (!can_change_rail) {
         let dt = (t-last_jump_start);
         if (dt < jump_duration) {
@@ -361,7 +361,7 @@ function update() {
             train.rail = new_train_rail;
             can_change_rail = true;
             if (!train.sternphase)
-                {
+            {
                 if (train.rail === 0.0) {
                     train.animations.play("links");
                 } else if (train.rail === 1) {
@@ -369,10 +369,10 @@ function update() {
                 } else if (train.rail === 2) {
                     train.animations.play("rechts");
                 }
-                }
+            }
         }
     }
-
+    
     for (let i = 0; i < railObjects.length; i++)
     {
         updateRailObject(railObjects[i],train);
@@ -384,11 +384,22 @@ function update() {
             railObjects[i].t0 = t;
             railObjects[i].x_s = railObjects[i].sprite.x;
             railObjects[i].y_s = railObjects[i].sprite.y;
-            railObjects[i].direction = 1-2*Math.floor(Math.random()*2);
+            
+            let leftRight;
+            if(railObjects[i].rail == 0) {
+                leftRight = 1;
+            } else if(railObjects[i].rail == 1) {
+                leftRight = 1-2*Math.floor(Math.random()*2);
+            } else if(railObjects[i].rail == 2) {
+                leftRight = -1;
+            }
+            
+            railObjects[i].direction = leftRight;
+            
             collisionObjects.push(railObjects[i]);
         }
     }
-
+    
     for (let i = 0; i < bahndammObjects.length; i++)
     {
         updateRailObject(bahndammObjects[i],train);
@@ -403,11 +414,11 @@ function update() {
             collision_indices.push(i);
         }
     }
-
+    
     delete_indices_from_array(remove_indices,railObjects);
     delete_indices_from_array(collision_indices,collisionObjects);
     delete_indices_from_array(remove_bahndamm_indices,bahndammObjects);
-
+    
     // spawn new rail object
     if (t - last_rail_object_time > new_rail_object_rate) {
         
@@ -417,7 +428,7 @@ function update() {
         //    kind = 'trumpwall';
         //} else if (seed < 0.1) {
         //    kind = 'fraukewall';
-        //} else 
+        //} else
         if (!train.sternphase){
             if (seed < 0.1) {
                 kind = 'stern';
@@ -433,9 +444,9 @@ function update() {
             else if (seed < 0.4) {
                 kind = 'fraukewall';
             } else {
-                kind = 'coin';     
+                kind = 'coin';
             }
-           
+            
         }
         
         railObjects.push(getRailObject(kind));
@@ -444,9 +455,9 @@ function update() {
         }
         last_rail_object_time = t;
     }
-
+    
     //spawn new bahndamm objects
-
+    
     for (var kind in bahndamm_probabilities) {
         // skip loop if the property is from prototype
         if (!bahndamm_probabilities.hasOwnProperty(kind)) continue;
@@ -477,21 +488,21 @@ function update() {
 }
 
 function nFormatter(num, digits) {
-  let si = [
-    { value: 1E18, symbol: "E" },
-    { value: 1E15, symbol: "P" },
-    { value: 1E12, symbol: "T" },
-    { value: 1E9,  symbol: "G" },
-    { value: 1E6,  symbol: "M" },
-    { value: 1E3,  symbol: "k" }
-  ], rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
-  for (i = 0; i < si.length; i++) {
-    if (num >= si[i].value) {
-      return (num / si[i].value).toFixed(digits).replace(rx, "$1")
-        + si[i].symbol;
+    let si = [
+              { value: 1E18, symbol: "E" },
+              { value: 1E15, symbol: "P" },
+              { value: 1E12, symbol: "T" },
+              { value: 1E9,  symbol: "G" },
+              { value: 1E6,  symbol: "M" },
+              { value: 1E3,  symbol: "k" }
+              ], rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
+    for (i = 0; i < si.length; i++) {
+        if (num >= si[i].value) {
+            return (num / si[i].value).toFixed(digits).replace(rx, "$1")
+            + si[i].symbol;
+        }
     }
-  }
-  return num.toFixed(digits).replace(rx, "$1");
+    return num.toFixed(digits).replace(rx, "$1");
 }
 
 
@@ -524,7 +535,7 @@ function collisionUpdate(object,train) {
         coin_counter += 1;
         object.collision = false;
     }
-
+    
     if (object.kind == "stern") {
         let dt = game.time.now - object.t0;
         if (dt>sternphase_duration) {
@@ -548,24 +559,24 @@ function collisionUpdate(object,train) {
             coin_counter += 10;
         }
     }
-
-    if (train.sternphase)
-    {
+    
+    if (train.sternphase) {
         if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
             let dt = game.time.now - object.t0;
             if (dt>mauer_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
                 train.indefetable = false;
-            }else if (dt === 0.){
+            } else if (dt === 0.) {
                 smash.play();
                 coin_counter += 10;
-            }else{            
+            } else{ 
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
+                object.sprite.angle = dt;
             }
         }
-      }  else {
+    }  else {
         if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
             let dt = game.time.now - object.t0;
             if (dt>mauer_animation_length) {
@@ -580,10 +591,11 @@ function collisionUpdate(object,train) {
                 } else {
                     coin_counter = 0;
                 }
-            }else{            
+            }else{
                 train.animations.play("collision");
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
+                object.sprite.angle = dt;
                 train.indefetable = true;
             }
         }
@@ -610,7 +622,7 @@ function getBahndammObject(kind)
     let h_object;
     let w_object;
     let original_object_height;
-
+    
     let sprite = railObjectGroup.create(0, 0, kind);
     
     if (kind == "tree0") {
@@ -634,24 +646,24 @@ function getBahndammObject(kind)
     if (kind == "trump") {
         h_object = 25;
     }
-
+    
     
     sprite.anchor.setTo(0.5, 0.5);
-
+    
     //set start x-value
     sprite.x = x_s;
     //flip_z is necessary due to different orientation of screen coordinates
     sprite.y = flip_z(horizon + h_object / 2);
-
+    
     //get the original height of the object to scale it to the wanted heifht
     original_object_height = sprite.height;
     original_object_width = sprite.width;
-
+    
     //get and set new scale
     let new_scale = h_object / original_object_height;
     sprite.scale.setTo(new_scale, new_scale);
     w_object = sprite.width;
-
+    
     let railObject = {
         "kind": kind,
         "rail": -1,
@@ -666,7 +678,7 @@ function getBahndammObject(kind)
         "y": 0,
         "collision": false
     };
-
+    
     return railObject;
 }
 
@@ -680,7 +692,7 @@ function getRailObject(kind)
     let w_object;
     let original_object_height;
     let original_object_width;
-
+    
     let sprite = railObjectGroup.create(0, 0, kind);
     
     if (kind == 'wall') {
@@ -716,21 +728,21 @@ function getRailObject(kind)
     }
     
     sprite.anchor.setTo(0.5, 0.5);
-
+    
     //set start x-value
     sprite.x = x_s;
     //flip_z is necessary due to different orientation of screen coordinates
     sprite.y = flip_z(horizon + h_object / 2);
-
+    
     //get the original height of the object to scale it to the wanted heifht
     original_object_height = sprite.height;
     original_object_width = sprite.width;
-
+    
     //get and set new scale
     let new_scale = h_object / original_object_height;
     sprite.scale.setTo(new_scale, new_scale);
     w_object = sprite.width;
-
+    
     let railObject = {
         "kind": kind,
         "rail": rail,
@@ -745,47 +757,47 @@ function getRailObject(kind)
         "x_s": x_s,
         "collision": false
     };
-
+    
     return railObject;
 }
 
 function updateRailObject(object,schulzzug) {
-
+    
     //get current time
     let t = game.time.now;
     let dt = t - object.t0;
-    object.t0 = t; 
+    object.t0 = t;
     //object.sprite.anchor.setTo(0.5,0.5);
-
+    
     //get position between horizon and camera
     let y = object.y + v * dt;
     object.y = y;
-
+    
     //get center position of test object
     let x_o = x_camera - L / (L - y) * (x_camera - object.x_s);
-
+    
     //set center position of object
     object.sprite.x = x_o;
-
+    
     //get new width
     let w = -L * ((x_camera - (object.x_s + object.w_object / 2)) / (L - y) - (x_camera - (object.x_s - object.w_object / 2)) / (L - y));
-
+    
     //get and set new scale of object
     let wScale = w / object.original_object_width;
     object.sprite.scale.setTo(wScale);
-
+    
     //get vertical coordinate
     let h = h_camera - L / (L - y) * (h_camera - object.h_object / 2) + horizon;
     object.sprite.y = flip_z(h);
     
     //get collision range
     //destroy if out of scope
-    if (y > L) 
+    if (y > L)
     {
         object.sprite.destroy();
         object.active = false;
     }
-
+    
     if (y>y_collision_begin_range && y<y_collision_end_range && !schulzzug.indefetable) {
         if (object.rail == schulzzug.rail) {
             object.collision = true;
