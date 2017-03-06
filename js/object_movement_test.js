@@ -11,7 +11,8 @@ const height = 667;
 const horizon = height - 208;
 
 // Schulzzuggeschwindigkeit
-let v = 10;
+let std_v = 10;
+let v = std_v;
 
 // distance to horizon
 let L = 40000;
@@ -44,14 +45,16 @@ let swipe;
 // after that time, movement will start
 //let t0;
 
-let new_rail_object_rate = 500;
+let std_new_rail_object_rate = 500;
+let new_rail_object_rate = std_new_rail_object_rate;
 let last_rail_object_time;
 
 let key_left;
 let key_right;
 let key_space;
 
-let new_bahndamm_object_rate = 200;
+let std_new_bahndamm_object_rate = 200;
+let new_bahndamm_object_rate = std_new_bahndamm_object_rate;
 let bahndamm_probabilities = {
     "tree0": 0.01,
     "tree1": 0.01,
@@ -148,7 +151,8 @@ let ratter;
 
 let mauer_animation_length = 1000;
 
-let sternphase_duration = 10000;
+let sternphase_duration = 8000;
+let sternphase_factor = 3;
 
 let sternsound;
 
@@ -523,11 +527,17 @@ function collisionUpdate(object,train) {
         let dt = game.time.now - object.t0;
         if (dt>sternphase_duration) {
             //train.animations.play(train_animations[train.rail]);
+            v = std_v;
+            new_rail_object_rate = std_new_rail_object_rate;
+            new_bahndamm_object_rate = std_new_bahndamm_object_rate;
             train.sternphase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
             train.indefetable = false;
         }else if (dt === 0.){
+            v = std_v * sternphase_factor;
+            new_rail_object_rate = std_new_rail_object_rate / sternphase_factor;
+            new_bahndamm_object_rate = std_new_bahndamm_object_rate / sternphase_factor;
             sternsound.play()
             train.animations.play("stern");
             object.sprite.destroy();
@@ -544,7 +554,6 @@ function collisionUpdate(object,train) {
             if (dt>mauer_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
-                train.animations.play(train_animations[train.rail]);
                 train.indefetable = false;
             }else if (dt === 0.){
                 smash.play();
@@ -652,6 +661,7 @@ function getBahndammObject(kind)
         "w_object": w_object,
         "h_object": h_object,
         "x_s": x_s,
+        "y": 0,
         "collision": false
     };
 
@@ -726,6 +736,7 @@ function getRailObject(kind)
         "original_object_height": original_object_height,
         "original_object_width": original_object_width,
         "t0": game.time.now,
+        "y": 0,
         "active": true,
         "w_object": w_object,
         "h_object": h_object,
@@ -740,10 +751,13 @@ function updateRailObject(object,schulzzug) {
 
     //get current time
     let t = game.time.now;
+    let dt = t - object.t0;
+    object.t0 = t; 
     //object.sprite.anchor.setTo(0.5,0.5);
 
     //get position between horizon and camera
-    let y = v * (t - object.t0);
+    let y = object.y + v * dt;
+    object.y = y;
 
     //get center position of test object
     let x_o = x_camera - L / (L - y) * (x_camera - object.x_s);
