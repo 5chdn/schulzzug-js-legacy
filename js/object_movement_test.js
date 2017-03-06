@@ -127,10 +127,10 @@ let can_change_rail = true;
 let train_animations  = ["links","mitte","rechts"];
 
 //key changing rate
-let key_change_rate = 200;
+let key_change_rate = 160;
 let last_key_change_time;
 
-let jump_duration = 200;
+let jump_duration = 160;
 let last_jump_start;
 let new_train_rail;
 let train_std_y = 360;
@@ -158,7 +158,7 @@ function create() {
     //keys
     key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     //add for gleise
     gfx = game.add.graphics(0, 0); 
@@ -169,7 +169,11 @@ function create() {
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
+
+    //enable swipe and reduce necessary swipe length
     swipe = new Swipe(game);
+    //swipe.dragLength = 10;
+    //swipe.diagonalDelta = 5;
 
     //sounds
     bling = game.add.audio('bling');
@@ -300,7 +304,10 @@ function update() {
         whistle.play();
 
     if (can_change_rail && 
-        ((direction !== null && direction.direction==swipe.DIRECTION_LEFT) || key_left.isDown) && 
+        ((direction !== null && (direction.direction==swipe.DIRECTION_LEFT || 
+                                 direction.direction==swipe.DIRECTION_UP_LEFT ||
+                                 direction.direction==swipe.DIRECTION_DOWN_LEFT
+                )) || key_left.isDown) && 
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
        ) {
@@ -316,7 +323,10 @@ function update() {
         new_train_rail = train.rail -1;
         train.rail = -1;
     } else if (can_change_rail &&
-               ((direction !== null) && direction.direction == swipe.DIRECTION_RIGHT || key_right.isDown )&& 
+               ((direction !== null && (direction.direction == swipe.DIRECTION_RIGHT ||  
+                                        direction.direction == swipe.DIRECTION_UP_RIGHT ||
+                                        direction.direction == swipe.DIRECTION_DOWN_RIGHT
+                                       ))|| key_right.isDown )&& 
                t-last_key_change_time>key_change_rate &&
                train.rail < 2    
               ) {
@@ -337,7 +347,7 @@ function update() {
         let dt = (t-last_jump_start);
         if (dt < jump_duration) {
             train.x = train.last_x + 130*train.geschw_x * dt;
-            let a = 1/1000.;
+            let a = 1/500.;
             train.y = train_std_y - dt*jump_duration*a + Math.pow(dt,2)*a;
         } else {
             train.x = train_position[new_train_rail];
