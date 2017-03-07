@@ -40,6 +40,7 @@ let swipeGestureRecognizer;
 // input keys
 let key_left;
 let key_right;
+let key_up;
 let key_space;
 
 // key changing rate (ms)
@@ -90,9 +91,15 @@ let train_animations  = ["links","mitte","rechts"];              // names of the
 
 let can_change_rail = true;          // this is false if the train jumps
 let is_changing_rail = false;        // this is only true if the train is currently changing its rail
-let jump_duration = key_change_rate; // time the train needs to jump
+let rail_jump_duration = key_change_rate; // time the train needs to jump
 let last_rail_jump_start;            // when the last jump started
 let new_train_rail;                  // the next train rail after finishing the rail jump (0, 1 or 2)
+
+let can_jump_up = true;
+let is_jumping_up = false;
+let up_jump_duration = 300;
+let last_up_jump_start;
+
 let train_std_y = 360;               // the usual distance to the top of the screen.
 
 // ================= SOUNDS ========================
@@ -163,6 +170,7 @@ function create() {
     //keys
     key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     
     //start physics and add basic sprites
@@ -268,7 +276,7 @@ function update() {
     
     // check if player can change rail
     if (
-        can_change_rail &&
+        train.rail !== -1 &&
         t-last_key_change_time>key_change_rate
        ) 
     {
@@ -302,29 +310,66 @@ function update() {
         
         if (is_changing_rail) 
         {
-                train.geschw_x = jump_direction/jump_duration;
+                train.geschw_x = jump_direction/rail_jump_duration;
                 new_train_rail = train.rail + jump_direction;
                 last_rail_jump_start = t;
                 last_key_change_time = t;
                 can_change_rail = false;
+                can_jump_up = false;
                 train.rail = -1;
                 train.last_x = train.x;
                 train.last_y = train.y;
+                jump.play();
+        }
+    }
+
+    // check if train should jump up
+    if (train.rail !== -1 &&
+        t-last_key_change_time>key_change_rate
+       )
+    {
+        if (  ( direction !== null && direction == swipeGestureRecognizer.DIRECTION_UP ) || 
+                key_up.isDown
+             ) 
+        {
+            is_jumping_up = true;
+            new_train_rail = train.rail;
+            last_up_jump_start = t;
+            train.rail = -1;
+            can_jump_up = false;
+                jump.play();
+        }
+    }
+
+    if (is_jumping_up) {
+        let dt = (t-last_up_jump_start);
+        if (dt < up_jump_duration) {
+            let a = 1/300.;           
+            train.y = train_std_y - dt*up_jump_duration*a + Math.pow(dt,2)*a;
+        } else {
+            train.y = train_std_y;
+            train.rail = new_train_rail;
+            can_change_rail = true;
+            can_jump_up = true;
+            is_jumping_up = false;
+            if (!train.sternphase)
+                train.animations.play(train_animations[train.rail]);
         }
     }
     
     // rail change animation 
     if (is_changing_rail) {
         let dt = (t-last_rail_jump_start);
-        if (dt < jump_duration) {
+        if (dt < rail_jump_duration) {
             train.x = train.last_x + distance_between_train_positions*train.geschw_x * dt;
             let a = 1/500.;
-            train.y = train_std_y - dt*jump_duration*a + Math.pow(dt,2)*a;
+            train.y = train_std_y - dt*rail_jump_duration*a + Math.pow(dt,2)*a;
         } else {
             train.x = train_position[new_train_rail];
             train.y = train_std_y;
             train.rail = new_train_rail;
             can_change_rail = true;
+            can_jump_up = true;
             is_changing_rail = false;
             if (!train.sternphase)
                 train.animations.play(train_animations[train.rail]);
