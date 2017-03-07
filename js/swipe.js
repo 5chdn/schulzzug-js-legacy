@@ -31,19 +31,21 @@ function Swipe(game, model) {
   self.tmpCallback = null;
   self.diagonalDisabled = true;
   self.last_direction = null;
-  self.last_active_position = null;
+  self.last_active_position = { "x": 0, "y": 0};
   self.last_event_time = game.time.now;
   self.next_event_rate = null;
 
   this.game.input.onDown.add(function () {
     self.swiping = true;
     self.last_direction = null;
-    self.last_active_position = self.game.input.activePointer.positionDown;
+    self.last_active_position.x = self.game.input.activePointer.positionDown.x;
+    self.last_active_position.y = self.game.input.activePointer.positionDown.y;
+    console.log("onDown");
   });
   this.game.input.onUp.add(function () {
     self.swiping = false;
     self.last_direction = null;
-    self.last_active_position = null;
+    self.last_active_position = {"x": 0, "y":0};
   })
 
   this.setupKeyboard();
@@ -171,18 +173,27 @@ Swipe.prototype.check = function () {
   if (!this.swiping) return null;
 
   if (t-this.last_event_time < this.next_event_rate) {
+      this.updated_active_position = false;
       return null;
   }
-  else if (t-5-this.last_event_time < this.next_event_rate) {
-      this.last_active_position = this.game.input.activePointer.position;
+  else if (t-this.last_event_time > this.next_event_rate &&
+           !this.updated_active_position)
+           {
+      this.last_active_position.x = this.game.input.activePointer.position.x;
+      this.last_active_position.y = this.game.input.activePointer.position.y;
+      this.updated_active_position = true;
+
+      console.log("hello");
   }
-  console.log("hello");
+
+  console.log(this.game.input.activePointer.position.x,this.last_active_position.x);
+  console.log(Phaser.Point.distance(this.game.input.activePointer.position, this.last_active_position));
 
 
   if (Phaser.Point.distance(this.game.input.activePointer.position, this.last_active_position) < this.dragLength) return null;
 
+  console.log(this.last_active_position)
   //this.swiping = false;
-  this.last_event_time = t;
   //this.last_active_position = t;
 
   var direction = null;
@@ -235,6 +246,7 @@ Swipe.prototype.check = function () {
   if (direction !== null) {
     result['direction'] = direction;
     this.last_direction = direction;
+      this.last_event_time = t;
     //this.game.input.activePointer.positionDown = this.game.input.activePointer.position;
     //console.log(this.game.input.activePointer.positionDown);
     return result;
