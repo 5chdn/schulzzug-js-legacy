@@ -28,7 +28,7 @@ let v = std_v;   // current velocity
 
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
-let y_collision_end_range = y_collision_begin_range + 1000;
+let y_collision_end_range = y_collision_begin_range + 2000;
 
 // ===================== DEFINE CONTROL VARIABLES ==================
 
@@ -97,7 +97,7 @@ let new_train_rail;                  // the next train rail after finishing the 
 
 let can_jump_up = true;
 let is_jumping_up = false;
-let up_jump_duration = 300;
+let up_jump_duration = 400;
 let last_up_jump_start;
 
 let train_std_y = 360;               // the usual distance to the top of the screen.
