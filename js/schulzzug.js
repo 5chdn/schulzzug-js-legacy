@@ -82,47 +82,6 @@ let text_score;     // label
 let text_distance;  // label
 
 
-function preload() {
-    game.load.image('landscape',  'assets/untergrund.50.png');
-    game.load.image('grass',      'assets/green.50.png');
-    game.load.image('dirt',       'assets/dirt.50.png');
-    game.load.image('sky',        'assets/sky.50.png');
-    
-    game.load.image('dummy',      'assets/1pixel.png');
-    game.load.image('tree0',      'assets/Tree01.50.png');
-    game.load.image('tree1',      'assets/Tree02.50.png');
-    game.load.image('tree2',      'assets/specialtree.50.png');
-    game.load.image('cloud0',     'assets/cloud01.50.png');
-    game.load.image('cloud1',     'assets/cloud02.50.png');
-    game.load.image('cloud2',     'assets/cloud03.50.png');
-    game.load.image('office',     'assets/Kanzleramt.50.png');
-    game.load.image('bush',       'assets/Bush01.50.png');
-    game.load.image('sign',       'assets/Sign01.50.png');
-    
-    game.load.image('panel',      'assets/Panel.50.png');
-    game.load.image('fraukewall',     'assets/afd-wall.50.png');
-    game.load.image('trumpwall',      'assets/Trump-Wall.50.png');
-    game.load.image('frauke',     'assets/Petry.png');
-    game.load.image('trump',      'assets/Trump.png');
-    game.load.image('wall',       'assets/wall.png');
-    game.load.image('stern',       'assets/star.png');
-    
-    game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
-    game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
-    //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
-    game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
-    
-    game.load.audio('jump', ['sounds/jump.mp3','sounds/jump.ogg','sounds/jump.wav']);
-    game.load.audio('bling', ['sounds/coin.mp3','sounds/coin.ogg','sounds/coin.wav']);
-    game.load.audio('smash', ['sounds/wall_smash.mp3','sounds/wall_smash.ogg','sounds/wall_smash.wav']);
-    game.load.audio('stern', ['sounds/bg_EU.mp3','sounds/bg_EU.ogg','sounds/bg_EU.wav']);
-    game.load.audio('tada', ['sounds/tada.mp3','sounds/tada.ogg','sounds/tada.wav']);
-    game.load.audio('ratter', ['sounds/ratter.mp3','sounds/ratter.ogg','sounds/ratter.wav']);
-    game.load.audio('whistle', ['sounds/whistle.mp3','sounds/whistle.ogg','sounds/whistle.wav']);
-    
-}
-
-
 // ==================== SCHULZZUG DEFINITIONS ====================
 let train;                                                       // sprite
 let train_position = [ -10, (width - 120) / 2, width - 120+10 ]; // positions of sprite for the three rails
@@ -156,9 +115,48 @@ let sternsound;
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let current_time;
 
+
 // ======================================= CREATE GAME ENGINE =============================================================
 let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload: preload, create: create, update: update });
 
+function preload() {
+    game.load.image('landscape',  'assets/untergrund.50.png');
+    game.load.image('grass',      'assets/green.50.png');
+    game.load.image('dirt',       'assets/dirt.50.png');
+    game.load.image('sky',        'assets/sky.50.png');
+    
+    game.load.image('dummy',      'assets/1pixel.png');
+    game.load.image('tree0',      'assets/Tree01.50.png');
+    game.load.image('tree1',      'assets/Tree02.50.png');
+    game.load.image('tree2',      'assets/specialtree.50.png');
+    game.load.image('cloud0',     'assets/cloud01.50.png');
+    game.load.image('cloud1',     'assets/cloud02.50.png');
+    game.load.image('cloud2',     'assets/cloud03.50.png');
+    game.load.image('office',     'assets/Kanzleramt.50.png');
+    game.load.image('bush',       'assets/Bush01.50.png');
+    game.load.image('sign',       'assets/Sign01.50.png');
+    
+    game.load.image('panel',      'assets/Panel.50.png');
+    game.load.image('fraukewall', 'assets/afd-wall.50.png');
+    game.load.image('trumpwall',  'assets/Trump-Wall.50.png');
+    game.load.image('frauke',     'assets/Petry.png');
+    game.load.image('trump',      'assets/Trump.png');
+    game.load.image('wall',       'assets/wall.png');
+    game.load.image('stern',      'assets/star.png');
+    
+    game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
+    game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
+    game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+    
+    game.load.audio('jump',    ['sounds/jump.mp3','sounds/jump.ogg','sounds/jump.wav']);
+    game.load.audio('bling',   ['sounds/coin.mp3','sounds/coin.ogg','sounds/coin.wav']);
+    game.load.audio('smash',   ['sounds/wall_smash.mp3','sounds/wall_smash.ogg','sounds/wall_smash.wav']);
+    game.load.audio('stern',   ['sounds/bg_EU.mp3','sounds/bg_EU.ogg','sounds/bg_EU.wav']);
+    game.load.audio('tada',    ['sounds/tada.mp3','sounds/tada.ogg','sounds/tada.wav']);
+    game.load.audio('ratter',  ['sounds/ratter.mp3','sounds/ratter.ogg','sounds/ratter.wav']);
+    game.load.audio('whistle', ['sounds/whistle.mp3','sounds/whistle.ogg','sounds/whistle.wav']);
+    
+}
 function create() {
     
     //keys
@@ -166,24 +164,19 @@ function create() {
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     
-    //add for gleise
-    gfx = game.add.graphics(0, 0);
-    gfx.lineStyle(1, 0xff0000, 1);
-    
+    //start physics and add basic sprites
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'landscape');
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
     
-    //enable swipe and reduce necessary swipe length
+    //enable swipe and set time delta between swipe events
     swipeGestureRecognizer = new Swipe(game);
     swipeGestureRecognizer.next_event_rate = key_change_rate;
     swipeDirection = 0;
-    //swipe.dragLength = 10;
-    //swipe.diagonalDelta = 5;
     
-    //sounds
+    // sounds
     bling = game.add.audio('bling');
     smash = game.add.audio('smash');
     jump = game.add.audio( 'jump');
@@ -192,21 +185,28 @@ function create() {
     whistle = game.add.audio('whistle');
     ratter = game.add.audio( 'ratter');
     
+    // start background train sound as loop
     ratter.loop = true;
     ratter.play();
     
+    // set some time variables so thehy are not undefined
     last_rail_object_time = game.time.now;
     last_bahndamm_object_time = game.time.now;
     last_key_change_time = game.time.now;
+    current_time = game.time.now;
     
+    // sprite group for clouds
     cloudObjectGroup = game.add.group();
     
+    // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
     rails.animations.add('move', [0, 1, 2], 8, true);
     rails.animations.play('move');
     
+    // sprite group fot rail objects
     railObjectGroup = game.add.group();
     
+    // add player (train)
     train = game.add.sprite(train_position[1], train_std_y, 'train');
     game.physics.arcade.enable(train);
     train.animations.add('links', [0, 1], 7, true);
@@ -217,89 +217,19 @@ function create() {
     train.animations.add('collision',[8,9],10,true);
     train.animations.add('stern',[8],10,true);
     
+    // train is in middle rail
     train.animations.play('mitte');
-    
-    //train is in middle rail
     train.rail = 1;
     train.indefetable = false;
     train.sternphase = false;
     
-    //schulzzug
-    //
-    //
-    //add test object
-    //
-    /*
-     object = game.add.sprite(0,0,'dummy');
-     object.anchor.setTo(0.5,0.5);
-     
-     //set start x-value
-     object.x = x_s;
-     //flip_z is necessary due to different orientation of screen coordinates
-     object.y = flip_z(horizon + h_object/2);
-     
-     //get the original height of the object to scale it to the wanted heifht
-     original_object_height = object.height;
-     
-     //get and set new scale
-     let new_scale = h_object / original_object_height;
-     object.scale.setTo(new_scale,new_scale);
-     w_object = object.width;
-     
-     
-     //set object start time to now
-     t0 = game.time.now;
-     */
-    //railObjects.push( getRailObject("dummy"));
-    //console.log(railObjects);
-    //draw_rails();
-    current_time = game.time.now;
-    
+    // statistics display 
     let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, height - 72, 'panel');
     text_score = game.add.text(0, height - 72, "0", style);
     text_distance = game.add.text(0, height - 72, "0m", style);
     text_score.anchor.set(0.5);
     text_distance.anchor.set(0.5);
-}
-
-function draw_rails() {
-    
-    //let t0;
-    
-    let x_start = width / 2 - 1.5 * raildistance_inner - raildistance_outer;
-    //vr linedd.graphics(x, y);1 = Phaser.Line(this_x_start,horizon,x_L,h);
-    let y_g = height / 2 * L / (h_camera+height / 2);
-    
-    for(let rail = 0; rail < 3; rail++)
-    {
-        let this_x_start = x_start + rail * (raildistance_inner + raildistance_outer);
-        let x_L = x_camera - L * (x_camera - this_x_start) / (h_camera - (L - y_g));
-        let x_R = x_camera - L * (x_camera - (this_x_start + raildistance_inner)) / (h_camera - (L - y_g));
-        let h = h_camera - L / (L - y_g) * h_camera + horizon;
-        
-        /*
-         console.log("h =", h);
-         console.log("y_g=",y_g);
-         
-         console.log(this_x_start,horizon,x_L,h);
-         console.log(this_x_start,x_L,horizon);
-         console.log(horizon);
-         console.log(x_L);
-         console.log(x_L);
-         console.log(x_R);
-         */
-        
-        gfx.moveTo(this_x_start, flip_z(horizon));
-        gfx.lineTo(flip_x(x_L), flip_z(h));
-        gfx.moveTo(this_x_start + raildistance_inner, flip_z(horizon));
-        gfx.lineTo(flip_x(x_R), flip_z(h));
-        
-        //let line1 = Phaser.Line(this_x_start,horizon,x_L,h);
-        //gleis_lines.push(new Phaser.Line(this_x_start,horizon,x_L,h));
-        //gleis_lines.push(new Phaser.Line(this_x_start+raildistance_inner,flip_z(horizon),x_R,flip_z(h)));
-        
-    }
 }
 
 function update() {
@@ -310,7 +240,7 @@ function update() {
     let t = current_time;
     let dt = t - last_time;
 
-    
+    // ========================= PLAYER CONTROL ===========================
     var direction = null;
     if(IOS_MODE) {
         
@@ -331,9 +261,6 @@ function update() {
         }
         
     }
-    
-    let remove_indices = Array();
-    let remove_bahndamm_indices = Array();
     
     if (key_space.isDown)
         whistle.play();
@@ -407,6 +334,11 @@ function update() {
             }
         }
     }
+
+    // ====================== UPDATING RAIL AND BAHNDAMM OBJECTS ===================
+    
+    let remove_indices = Array();
+    let remove_bahndamm_indices = Array();
     
     for (let i = 0; i < railObjects.length; i++)
     {
@@ -442,7 +374,9 @@ function update() {
             remove_bahndamm_indices.push(i);
         }
     }
+
     let collision_indices = Array();
+
     for (let i=0; i<collisionObjects.length; i++) {
         collisionUpdate(collisionObjects[i],train);
         if (!collisionObjects[i].collision) {
