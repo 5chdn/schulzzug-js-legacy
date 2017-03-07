@@ -474,9 +474,9 @@ function update() {
         
         // there's different objects if the train is in sternphase
         if (!train.sternphase){
-            if (random_float < 0.5) {
+            if (random_float < 0.1) {
                 kind = 'stern';
-            } else if (random_float < 0.7) {
+            } else if (random_float < 0.2) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
