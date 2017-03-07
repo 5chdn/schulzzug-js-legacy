@@ -182,6 +182,7 @@ function create() {
     
     //enable swipe and reduce necessary swipe length
     swipeGestureRecognizer = new Swipe(game);
+    swipeGestureRecognizer.next_event_rate = key_change_rate;
     swipeDirection = 0;
     //swipe.dragLength = 10;
     //swipe.diagonalDelta = 5;

@@ -1,4 +1,4 @@
-# Schulzzug-JS
+# Schulzzug-JS – Bremsenloser Spielspaß
 
 Glück auf, Glück auf!
 Der Schulzzug rollt!
