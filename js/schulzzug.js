@@ -160,6 +160,8 @@ let sternphase_factor = 3;
 
 let sternsound;
 
+let current_time;
+
 // create scenery
 function create() {
     
@@ -253,7 +255,8 @@ function create() {
      */
     //railObjects.push( getRailObject("dummy"));
     //console.log(railObjects);
-    draw_rails();
+    //draw_rails();
+    current_time = game.time.now;
     
     let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, height - 72, 'panel');
@@ -303,7 +306,13 @@ function draw_rails() {
 }
 
 function update() {
-    let t = game.time.now;
+
+    //time handling
+    let last_time = current_time;
+    current_time = game.time.now; 
+    let t = current_time;
+    let dt = t - last_time;
+
     
     var direction = null;
     if(IOS_MODE) {
@@ -500,16 +509,16 @@ function update() {
     if (Math.random() < 0.01)
         generateCloud();
     
-    meter_counter++;
+    meter_counter += dt*v/1000;
     
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
     text_score.y = Math.floor(panel.y + panel.height / 2 + 4);
-    text_score.setText(nFormatter(coin_counter, 2));
+    text_score.setText(nFormatter(Math.floor(coin_counter), 2));
     text_score.font = 'SilkScreen';
     
     text_distance.x = Math.floor(panel.x + panel.width / 4 * 3 + 1);
     text_distance.y = Math.floor(panel.y + panel.height / 2 + 4);
-    text_distance.setText(nFormatter(meter_counter, 2) + "m");
+    text_distance.setText(nFormatter(Math.floor(meter_counter), 2) + "m");
     text_distance.font = 'SilkScreen';
 }
 
