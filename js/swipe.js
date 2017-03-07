@@ -31,14 +31,19 @@ function Swipe(game, model) {
   self.tmpCallback = null;
   self.diagonalDisabled = true;
   self.last_direction = null;
+  self.last_active_position = null;
+  self.last_event_time = game.time.now;
+  self.next_event_rate = null;
 
   this.game.input.onDown.add(function () {
     self.swiping = true;
     self.last_direction = null;
+    self.last_active_position = self.game.input.activePointer.positionDown;
   });
   this.game.input.onUp.add(function () {
     self.swiping = false;
     self.last_direction = null;
+    self.last_active_position = null;
   })
 
   this.setupKeyboard();
@@ -156,6 +161,8 @@ Swipe.prototype.keyUp = function() {
 }
 
 Swipe.prototype.check = function () {
+  var t = this.game.time.now;
+
   if (this.direction !== null) {
     var result = {x: 0, y: 0, direction: this.direction};
     this.direction = null;
@@ -163,18 +170,29 @@ Swipe.prototype.check = function () {
   }
   if (!this.swiping) return null;
 
-  if (Phaser.Point.distance(this.game.input.activePointer.position, this.game.input.activePointer.positionDown) < this.dragLength) return null;
+  if (t-this.last_event_time < this.next_event_rate) {
+      return null;
+  }
+  else if (t-5-this.last_event_time < this.next_event_rate) {
+      this.last_active_position = this.game.input.activePointer.position;
+  }
+  console.log("hello");
+
+
+  if (Phaser.Point.distance(this.game.input.activePointer.position, this.last_active_position) < this.dragLength) return null;
 
   //this.swiping = false;
+  this.last_event_time = t;
+  //this.last_active_position = t;
 
   var direction = null;
-  var deltaX = this.game.input.activePointer.position.x - this.game.input.activePointer.positionDown.x;
-  var deltaY = this.game.input.activePointer.position.y - this.game.input.activePointer.positionDown.y;
+  var deltaX = this.game.input.activePointer.position.x - this.last_active_position.x;
+  var deltaY = this.game.input.activePointer.position.y - this.last_active_position.y;
   //console.log(this.game.input.activePointer.positionDown);
 
   var result = {
-    x: this.game.input.activePointer.positionDown.x,
-    y: this.game.input.activePointer.positionDown.y
+    x: this.last_active_position.x,
+    y: this.last_active_position.y
   };
 
   var deltaXabs = Math.abs(deltaX);
@@ -213,7 +231,8 @@ Swipe.prototype.check = function () {
       }
     }
   }
-  if (direction !== null && direction !== this.last_direction) {
+  //if (direction !== null && direction !== this.last_direction) {
+  if (direction !== null) {
     result['direction'] = direction;
     this.last_direction = direction;
     //this.game.input.activePointer.positionDown = this.game.input.activePointer.position;
