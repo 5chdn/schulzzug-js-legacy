@@ -85,6 +85,7 @@ let text_distance;  // label
 // ==================== SCHULZZUG DEFINITIONS ====================
 let train;                                                       // sprite
 let train_position = [ -10, (width - 120) / 2, width - 120+10 ]; // positions of sprite for the three rails
+let distance_between_train_positions = 130;
 let train_animations  = ["links","mitte","rechts"];              // names of the animation for each rail
 
 let can_change_rail = true;          // this is false if the train jumps
@@ -265,55 +266,58 @@ function update() {
     if (key_space.isDown)
         whistle.play();
     
-    //go left
-    if (can_change_rail &&
-        ((direction !== null && (direction ==swipeGestureRecognizer.DIRECTION_LEFT ||
-                                 direction ==swipeGestureRecognizer.DIRECTION_UP_LEFT ||
-                                 direction ==swipeGestureRecognizer.DIRECTION_DOWN_LEFT
-                                 )) || key_left.isDown) &&
-        t-last_key_change_time>key_change_rate &&
-        train.rail > 0
-        ) {
-        last_rail_jump_start = t;
-        last_key_change_time = t;
-        can_change_rail = false;
-        is_changing_rail = true;
-        jump.play();
-        if (!train.sternphase)
-            train.animations.play("jump_left");
-        train.last_x = train.x;
-        train.last_y = train.y;
-        train.geschw_x = -1/jump_duration;
-        new_train_rail = train.rail -1;
-        train.rail = -1;
+    // check if player can change rail
+    if (
+        can_change_rail &&
+        t-last_key_change_time>key_change_rate
+       ) 
+    {
+        let jump_direction = null;
+        //go left
+        if (
+             (  ( direction !== null && direction == swipeGestureRecognizer.DIRECTION_LEFT ) || 
+                key_left.isDown
+             ) &&
+            train.rail > 0
+           ) 
+        {
+                is_changing_rail = true;
+                if (!train.sternphase)
+                    train.animations.play("jump_left");
+                jump_direction = -1;
         
         //go right
-    } else if (can_change_rail &&
-               ((direction !== null && (direction == swipeGestureRecognizer.DIRECTION_RIGHT ||
-                                        direction == swipeGestureRecognizer.DIRECTION_UP_RIGHT ||
-                                        direction == swipeGestureRecognizer.DIRECTION_DOWN_RIGHT
-                                        ))|| key_right.isDown )&&
-               t-last_key_change_time>key_change_rate &&
-               train.rail < 2
-               ) {
-        last_rail_jump_start = t;
-        last_key_change_time = t;
-        can_change_rail = false;
-        is_changing_rail = true;
-        jump.play();
-        if (!train.sternphase)
-            train.animations.play("jump_right");
-        train.last_x = train.x;
-        train.last_y = train.y;
-        train.geschw_x = 1.0/jump_duration;
-        new_train_rail = train.rail + 1;
-        train.rail = -1;
+        } else if (
+             (  ( direction !== null &&  direction == swipeGestureRecognizer.DIRECTION_RIGHT ) || 
+                key_right.isDown 
+             ) &&
+             train.rail < 2
+          ) 
+        {
+                is_changing_rail = true;
+                if (!train.sternphase)
+                    train.animations.play("jump_right");
+                jump_direction = +1;
+        }
+        
+        if (is_changing_rail) 
+        {
+                train.geschw_x = jump_direction/jump_duration;
+                new_train_rail = train.rail + jump_direction;
+                last_rail_jump_start = t;
+                last_key_change_time = t;
+                can_change_rail = false;
+                train.rail = -1;
+                train.last_x = train.x;
+                train.last_y = train.y;
+        }
     }
     
+    // rail change animation 
     if (is_changing_rail) {
         let dt = (t-last_rail_jump_start);
         if (dt < jump_duration) {
-            train.x = train.last_x + 130*train.geschw_x * dt;
+            train.x = train.last_x + distance_between_train_positions*train.geschw_x * dt;
             let a = 1/500.;
             train.y = train_std_y - dt*jump_duration*a + Math.pow(dt,2)*a;
         } else {
@@ -323,23 +327,17 @@ function update() {
             can_change_rail = true;
             is_changing_rail = false;
             if (!train.sternphase)
-            {
-                if (train.rail === 0.0) {
-                    train.animations.play("links");
-                } else if (train.rail === 1) {
-                    train.animations.play("mitte");
-                } else if (train.rail === 2) {
-                    train.animations.play("rechts");
-                }
-            }
+                train.animations.play(train_animations[train.rail]);
         }
     }
 
     // ====================== UPDATING RAIL AND BAHNDAMM OBJECTS ===================
     
+    // for saving the indices of objects being out of scope
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
     
+    // loop trough all rail objects
     for (let i = 0; i < railObjects.length; i++)
     {
         updateRailObject(railObjects[i],train);
