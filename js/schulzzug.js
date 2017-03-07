@@ -570,7 +570,7 @@ function collisionUpdate(object,train) {
     }
     
     if (object.kind == "stern") {
-        let dt = game.time.now - object.t0;
+        let dt = current_time - object.t0;
         if (dt>sternphase_duration) {
             //train.animations.play(train_animations[train.rail]);
             v = std_v;
@@ -595,7 +595,7 @@ function collisionUpdate(object,train) {
     
     if (train.sternphase) {
         if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
-            let dt = game.time.now - object.t0;
+            let dt = current_time - object.t0;
             if (dt>mauer_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
@@ -612,7 +612,7 @@ function collisionUpdate(object,train) {
         }
     }  else {
         if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "trumpwall") {
-            let dt = game.time.now - object.t0;
+            let dt = current_time - object.t0;
             if (dt>mauer_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
