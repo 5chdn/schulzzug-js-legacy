@@ -257,6 +257,8 @@ function update() {
             direction = swipeGestureRecognizer.DIRECTION_LEFT;
         } else if(swipeDirection == 2) {
             direction = swipeGestureRecognizer.DIRECTION_RIGHT;
+        } else if(swipeDirection == 3) {
+            direction = swipeGestureRecognizer.DIRECTION_UP;
         }
         
         
