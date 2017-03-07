@@ -1,18 +1,13 @@
 /* global Phaser */
 
+
+// ===================== DEFINE WORLD CONSTANTS ====================
 // canvas size
 const width = 375;
 const height = 667;
 
-// object to be displayed (coin and such)
-//let object;
-
 // position of horizon on y-axis
 const horizon = height - 208;
-
-// Schulzzuggeschwindigkeit
-let std_v = 10;
-let v = std_v;
 
 // distance to horizon
 let L = 40000;
@@ -23,42 +18,43 @@ let h_camera = 50;
 // x position of camera
 let x_camera = width / 2;
 
-// distances of rails
+// distances of rails at horizon
 const raildistance_inner = 10;
 const raildistance_outer = 6;
 
-// height/width of test object
-//let h_object = raildistance_inner;
-//let w_object;
+// Schulzzuggeschwindigkeit
+let std_v = 10;  // standard velocity
+let v = std_v;   // current velocity
 
-//start coordinate of test object
-//let x_s = width / 2 - raildistance_outer - raildistance_inner;
+//collision ranges
+let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
+let y_collision_end_range = y_collision_begin_range + 1000;
 
-// graphics object for lines
-let gfx;
+// ===================== DEFINE CONTROL VARIABLES ==================
 
-// game engine
-let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload: preload, create: create, update: update });
-//let Swipe = require('phaser-swipe');
-//let swipe;
-
+// swipe handling
 var IOS_MODE;
 var swipeDirection;
 let swipeGestureRecognizer;
 
-// after that time, movement will start
-//let t0;
-
-let std_new_rail_object_rate = 500;
-let new_rail_object_rate = std_new_rail_object_rate;
-let last_rail_object_time;
-
+// input keys
 let key_left;
 let key_right;
 let key_space;
 
+// key changing rate (ms)
+let key_change_rate = 160; // time after which a new control command can be given
+let last_key_change_time;  // last time a control command was given
+
+// ====================== RAIL AND BAHNDAMM OBJECT PROPERTIES =========================
+
+// rate of rail object appearance
+let std_new_rail_object_rate = 500;
+let new_rail_object_rate = std_new_rail_object_rate; // this is needed for changes in velocity
+let last_rail_object_time; //time of last appearance
+
 let std_new_bahndamm_object_rate = 200;
-let new_bahndamm_object_rate = std_new_bahndamm_object_rate;
+let new_bahndamm_object_rate = std_new_bahndamm_object_rate; // the current rate (changes when there's changes in velocity)
 let bahndamm_probabilities = {
     "tree0": 0.01,
     "tree1": 0.01,
@@ -68,14 +64,23 @@ let bahndamm_probabilities = {
     "trump": 0.001,
     "frauke": 0.001,
 };
-let last_bahndamm_object_time;
 
+// object storing arrays and sprite groups
+let railObjectGroup;       // for creating an object sprite in the right group
+let railObjects = Array(); // storing the rail objects, s.t. they can be updated while approaching the train
+let collisionObjects = Array(); // storing the collisionobjects s.t. they can be updated when a collision took place
+let bahndammObjects = Array();  // same for bahndamm objects
+let cloudObjectGroup;
+let last_bahndamm_object_time; // time of last Bahndamm object appearance
+
+
+// ====================== STATS COUNTERS ================================
 let coin_counter = 0;
 let meter_counter = 0;
+let panel;          // sprite
+let text_score;     // label
+let text_distance;  // label
 
-//collision ranges
-let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
-let y_collision_end_range = y_collision_begin_range + 1000;
 
 function preload() {
     game.load.image('landscape',  'assets/untergrund.50.png');
@@ -117,52 +122,43 @@ function preload() {
     
 }
 
-//let original_object_height;
-let railObjectGroup;
-let railObjects = Array();
-let collisionObjects = Array();
-let bahndammObjects = Array();
-let cloudObjectGroup;
-let train;
-let bahndammKinds = ["tree0","tree1","tree2","bush","sign"];
 
-let train_position = Array();
-train_position.push(-10);
-train_position.push((width - 120) / 2);
-train_position.push(width - 120+10);
-let can_change_rail = true;
-let train_animations  = ["links","mitte","rechts"];
+// ==================== SCHULZZUG DEFINITIONS ====================
+let train;                                                       // sprite
+let train_position = [ -10, (width - 120) / 2, width - 120+10 ]; // positions of sprite for the three rails
+let train_animations  = ["links","mitte","rechts"];              // names of the animation for each rail
 
-//key changing rate
-let key_change_rate = 160;
-let last_key_change_time;
+let can_change_rail = true;          // this is false if the train jumps
+let is_changing_rail = false;        // this is only true if the train is currently changing its rail
+let jump_duration = key_change_rate; // time the train needs to jump
+let last_rail_jump_start;            // when the last jump started
+let new_train_rail;                  // the next train rail after finishing the rail jump (0, 1 or 2)
+let train_std_y = 360;               // the usual distance to the top of the screen.
 
-let jump_duration = 160;
-let last_jump_start;
-let new_train_rail;
-let train_std_y = 360;
-
-let panel;
-let text_score;
-let text_distance;
-
+// ================= SOUNDS ========================
 let bling;
 let smash;
-let  jump;
-let  tada;
+let jump;
+let tada;
 let whistle;
 let ratter;
 
+
+// duration of collision animation for crashes
 let mauer_animation_length = 1000;
 
+
+// ===================== STERNPHASE DEFINTIIONS ==================
 let sternphase_duration = 8000;
 let sternphase_factor = 3;
-
 let sternsound;
 
+// ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let current_time;
 
-// create scenery
+// ======================================= CREATE GAME ENGINE =============================================================
+let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload: preload, create: create, update: update });
+
 function create() {
     
     //keys
@@ -351,9 +347,10 @@ function update() {
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
         ) {
-        last_jump_start = t;
+        last_rail_jump_start = t;
         last_key_change_time = t;
         can_change_rail = false;
+        is_changing_rail = true;
         jump.play();
         if (!train.sternphase)
             train.animations.play("jump_left");
@@ -372,9 +369,10 @@ function update() {
                t-last_key_change_time>key_change_rate &&
                train.rail < 2
                ) {
-        last_jump_start = t;
+        last_rail_jump_start = t;
         last_key_change_time = t;
         can_change_rail = false;
+        is_changing_rail = true;
         jump.play();
         if (!train.sternphase)
             train.animations.play("jump_right");
@@ -385,8 +383,8 @@ function update() {
         train.rail = -1;
     }
     
-    if (!can_change_rail) {
-        let dt = (t-last_jump_start);
+    if (is_changing_rail) {
+        let dt = (t-last_rail_jump_start);
         if (dt < jump_duration) {
             train.x = train.last_x + 130*train.geschw_x * dt;
             let a = 1/500.;
@@ -396,6 +394,7 @@ function update() {
             train.y = train_std_y;
             train.rail = new_train_rail;
             can_change_rail = true;
+            is_changing_rail = false;
             if (!train.sternphase)
             {
                 if (train.rail === 0.0) {
