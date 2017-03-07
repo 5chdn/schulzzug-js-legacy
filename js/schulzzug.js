@@ -232,7 +232,7 @@ function create() {
     train.indefetable = false;
     train.sternphase = false;
     
-    // statistics display 
+    // statistics display
     let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, height - 72, 'panel');
     text_score = game.add.text(0, height - 72, "0", style);
@@ -242,13 +242,13 @@ function create() {
 }
 
 function update() {
-
+    
     //time handling
     let last_time = current_time;
-    current_time = game.time.now; 
+    current_time = game.time.now;
     let t = current_time;
     let dt = t - last_time;
-
+    
     // ========================= PLAYER CONTROL ===========================
     var direction = null;
     if(IOS_MODE) {
@@ -257,6 +257,8 @@ function update() {
             direction = swipeGestureRecognizer.DIRECTION_LEFT;
         } else if(swipeDirection == 2) {
             direction = swipeGestureRecognizer.DIRECTION_RIGHT;
+        } else if(swipeDirection == 3) {
+            direction = swipeGestureRecognizer.DIRECTION_UP;
         }
         
         
@@ -278,73 +280,73 @@ function update() {
     if (
         train.rail !== -1 &&
         t-last_key_change_time>key_change_rate
-       ) 
+        )
     {
         let jump_direction = null;
         //go left
         if (
-             (  ( direction !== null && direction == swipeGestureRecognizer.DIRECTION_LEFT ) || 
-                key_left.isDown
+            (  ( direction !== null && direction == swipeGestureRecognizer.DIRECTION_LEFT ) ||
+             key_left.isDown
              ) &&
             train.rail > 0
-           ) 
+            )
         {
-                is_changing_rail = true;
-                if (!train.sternphase)
-                    train.animations.play("jump_left");
-                jump_direction = -1;
-        
-        //go right
+            is_changing_rail = true;
+            if (!train.sternphase)
+                train.animations.play("jump_left");
+            jump_direction = -1;
+            
+            //go right
         } else if (
-             (  ( direction !== null &&  direction == swipeGestureRecognizer.DIRECTION_RIGHT ) || 
-                key_right.isDown 
-             ) &&
-             train.rail < 2
-          ) 
+                   (  ( direction !== null &&  direction == swipeGestureRecognizer.DIRECTION_RIGHT ) ||
+                    key_right.isDown
+                    ) &&
+                   train.rail < 2
+                   )
         {
-                is_changing_rail = true;
-                if (!train.sternphase)
-                    train.animations.play("jump_right");
-                jump_direction = +1;
+            is_changing_rail = true;
+            if (!train.sternphase)
+                train.animations.play("jump_right");
+            jump_direction = +1;
         }
         
-        if (is_changing_rail) 
+        if (is_changing_rail)
         {
-                train.geschw_x = jump_direction/rail_jump_duration;
-                new_train_rail = train.rail + jump_direction;
-                last_rail_jump_start = t;
-                last_key_change_time = t;
-                can_change_rail = false;
-                can_jump_up = false;
-                train.rail = -1;
-                train.last_x = train.x;
-                train.last_y = train.y;
-                jump.play();
+            train.geschw_x = jump_direction/rail_jump_duration;
+            new_train_rail = train.rail + jump_direction;
+            last_rail_jump_start = t;
+            last_key_change_time = t;
+            can_change_rail = false;
+            can_jump_up = false;
+            train.rail = -1;
+            train.last_x = train.x;
+            train.last_y = train.y;
+            jump.play();
         }
     }
-
+    
     // check if train should jump up
     if (train.rail !== -1 &&
         t-last_key_change_time>key_change_rate
-       )
+        )
     {
-        if (  ( direction !== null && direction == swipeGestureRecognizer.DIRECTION_UP ) || 
-                key_up.isDown
-             ) 
+        if (  ( direction !== null && direction == swipeGestureRecognizer.DIRECTION_UP ) ||
+            key_up.isDown
+            )
         {
             is_jumping_up = true;
             new_train_rail = train.rail;
             last_up_jump_start = t;
             train.rail = -1;
             can_jump_up = false;
-                jump.play();
+            jump.play();
         }
     }
-
+    
     if (is_jumping_up) {
         let dt = (t-last_up_jump_start);
         if (dt < up_jump_duration) {
-            let a = 1/300.;           
+            let a = 1/300.;
             train.y = train_std_y - dt*up_jump_duration*a + Math.pow(dt,2)*a;
         } else {
             train.y = train_std_y;
@@ -357,7 +359,7 @@ function update() {
         }
     }
     
-    // rail change animation 
+    // rail change animation
     if (is_changing_rail) {
         let dt = (t-last_rail_jump_start);
         if (dt < rail_jump_duration) {
@@ -375,7 +377,7 @@ function update() {
                 train.animations.play(train_animations[train.rail]);
         }
     }
-
+    
     // ====================== UPDATING RAIL AND BAHNDAMM OBJECTS ===================
     
     // for saving the indices of objects being out of scope
@@ -388,7 +390,7 @@ function update() {
         // update according to new time
         // pass the train object to see if there's a collision
         updateRailObject(railObjects[i],train);
-
+        
         // remove if the object is now out of scope
         if (!railObjects[i].active) {
             remove_indices.push(i);
@@ -396,7 +398,7 @@ function update() {
         
         // if there's a collision with the train
         if (railObjects[i].collision) {
-
+            
             // set a new starting point for this object
             // both in time and space
             railObjects[i].t0 = t;
@@ -429,15 +431,15 @@ function update() {
             remove_bahndamm_indices.push(i);
         }
     }
-
+    
     // loop through collision objects
     let collision_indices = Array();
-
+    
     for (let i=0; i<collisionObjects.length; i++) {
-
+        
         // update according to their logic
         collisionUpdate(collisionObjects[i],train);
-
+        
         // remove if collision animation is over (set in collisionUpdate())
         if (!collisionObjects[i].collision) {
             collision_indices.push(i);
@@ -455,7 +457,7 @@ function update() {
         
         let kind = 'coin';
         let random_float = Math.random();
-
+        
         // there's different objects if the train is in sternphase
         if (!train.sternphase){
             if (random_float < 0.1) {
@@ -478,12 +480,12 @@ function update() {
         }
         
         railObjects.push(getRailObject(kind));
-
+        
         // bring the older objects to the top again
         for (var i = railObjects.length; i--; ) {
             railObjects[i].sprite.bringToTop();
         }
-
+        
         last_rail_object_time = t;
     }
     
@@ -842,11 +844,13 @@ function updateRailObject(object,schulzzug) {
 }
 
 function notifyObjetciveC(notifciation) {
-    var iframe = document.createElement("IFRAME");
-    iframe.setAttribute("src", "ios-js://"+notifciation);
-    document.documentElement.appendChild(iframe);
-    iframe.parentNode.removeChild(iframe);
-    iframe = null;
+    if(IOS_MODE) {
+        var iframe = document.createElement("IFRAME");
+        iframe.setAttribute("src", "ios-js://"+notifciation);
+        document.documentElement.appendChild(iframe);
+        iframe.parentNode.removeChild(iframe);
+        iframe = null;
+    }
 }
 
 function activateIosMode() {
