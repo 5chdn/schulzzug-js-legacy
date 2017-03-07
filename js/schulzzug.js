@@ -340,16 +340,26 @@ function update() {
     // loop trough all rail objects
     for (let i = 0; i < railObjects.length; i++)
     {
+        // update according to new time
+        // pass the train object to see if there's a collision
         updateRailObject(railObjects[i],train);
+
+        // remove if the object is now out of scope
         if (!railObjects[i].active) {
             remove_indices.push(i);
         }
         
+        // if there's a collision with the train
         if (railObjects[i].collision) {
+
+            // set a new starting point for this object
+            // both in time and space
             railObjects[i].t0 = t;
             railObjects[i].x_s = railObjects[i].sprite.x;
             railObjects[i].y_s = railObjects[i].sprite.y;
             
+            // save direction of the object in case
+            // it's a wall and has to fly somewhere
             let leftRight;
             if(railObjects[i].rail == 0) {
                 leftRight = 1;
@@ -361,10 +371,12 @@ function update() {
             
             railObjects[i].direction = leftRight;
             
+            // give this object to the collision updates
             collisionObjects.push(railObjects[i]);
         }
     }
     
+    // update all Bahndamm objects in a similar manner
     for (let i = 0; i < bahndammObjects.length; i++)
     {
         updateRailObject(bahndammObjects[i],train);
@@ -373,42 +385,46 @@ function update() {
         }
     }
 
+    // loop through collision objects
     let collision_indices = Array();
 
     for (let i=0; i<collisionObjects.length; i++) {
+
+        // update according to their logic
         collisionUpdate(collisionObjects[i],train);
+
+        // remove if collision animation is over (set in collisionUpdate())
         if (!collisionObjects[i].collision) {
             collision_indices.push(i);
         }
     }
     
+    // delete all objects that are out of scope or have been collected
     delete_indices_from_array(remove_indices,railObjects);
     delete_indices_from_array(collision_indices,collisionObjects);
     delete_indices_from_array(remove_bahndamm_indices,bahndammObjects);
     
-    // spawn new rail object
+    // ========================= SPAWNING NEW OBJECTS ============================
+    //
     if (t - last_rail_object_time > new_rail_object_rate) {
         
         let kind = 'coin';
-        let seed = Math.random();
-        //if (seed < 0.05) {
-        //    kind = 'trumpwall';
-        //} else if (seed < 0.1) {
-        //    kind = 'fraukewall';
-        //} else
+        let random_float = Math.random();
+
+        // there's different objects if the train is in sternphase
         if (!train.sternphase){
-            if (seed < 0.1) {
+            if (random_float < 0.1) {
                 kind = 'stern';
-            } else if (seed < 0.2) {
+            } else if (random_float < 0.2) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
             }
         } else {
-            if (seed < 0.2) {
+            if (random_float < 0.2) {
                 kind = 'trumpwall';
             }
-            else if (seed < 0.4) {
+            else if (random_float < 0.4) {
                 kind = 'fraukewall';
             } else {
                 kind = 'coin';
@@ -417,9 +433,12 @@ function update() {
         }
         
         railObjects.push(getRailObject(kind));
+
+        // bring the older objects to the top again
         for (var i = railObjects.length; i--; ) {
             railObjects[i].sprite.bringToTop();
         }
+
         last_rail_object_time = t;
     }
     
@@ -438,9 +457,11 @@ function update() {
         }
     }
     
+    //spawn new clouds
     if (Math.random() < 0.01)
         generateCloud();
     
+    // update statistics
     meter_counter += dt*v/1000;
     
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
