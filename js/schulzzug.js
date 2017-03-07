@@ -7,7 +7,8 @@ const width = 375;
 const height = 667;
 
 // position of horizon on y-axis
-const horizon = height - 208;
+const horizon_height = 208;
+const horizon = height - horizon_height;
 
 // distance to horizon
 let L = 40000;
@@ -29,6 +30,19 @@ let v = std_v;   // current velocity
 //collision ranges
 let y_collision_begin_range = height / 2 * L / (h_camera+height / 2);
 let y_collision_end_range = y_collision_begin_range + 2000;
+
+// ====================== EU STAR STUFF ===========================
+let eu_radius = horizon_height / 4;
+let eu_pos = {
+    'x': width/2,
+    'y': horizon_height/2
+};
+let N_eu_stars = 12;
+let d_phi = 360 / N_eu_stars;
+let eu_stars_indices = Array();
+for(let i=0; i<N_eu_stars; i++)
+    eu_stars_indices.push(i);
+let star_objects = Array();
 
 // ===================== DEFINE CONTROL VARIABLES ==================
 
@@ -204,9 +218,6 @@ function create() {
     last_key_change_time = game.time.now;
     current_time = game.time.now;
     
-    // sprite group for clouds
-    cloudObjectGroup = game.add.group();
-    
     // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
     rails.animations.add('move', [0, 1, 2], 8, true);
@@ -214,6 +225,9 @@ function create() {
     
     // sprite group fot rail objects
     railObjectGroup = game.add.group();
+    
+    // sprite group for clouds
+    cloudObjectGroup = game.add.group();
     
     // add player (train)
     train = game.add.sprite(train_position[1], train_std_y, 'train');
@@ -229,7 +243,7 @@ function create() {
     // train is in middle rail
     train.animations.play('mitte');
     train.rail = 1;
-    train.indefetable = false;
+    train.indefeatable = false;
     train.sternphase = false;
     
     // statistics display
@@ -460,9 +474,9 @@ function update() {
         
         // there's different objects if the train is in sternphase
         if (!train.sternphase){
-            if (random_float < 0.1) {
+            if (random_float < 0.5) {
                 kind = 'stern';
-            } else if (random_float < 0.2) {
+            } else if (random_float < 0.7) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
@@ -567,7 +581,7 @@ function collisionUpdate(object,train) {
     if (object.kind == "coin") {
         bling.play();
         object.sprite.destroy();
-        coin_counter += 1;
+        update_coin_counter(1,object.sprite.position);
         object.collision = false;
     }
     
@@ -581,17 +595,33 @@ function collisionUpdate(object,train) {
             train.sternphase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
-            train.indefetable = false;
+            train.indefeatable = false;
         }else if (dt === 0.){
+
+            //gameplay actions
+            sternsound.play()
+            update_coin_counter(10,object.sprite.position);
+
+            //set new object properties
+            new_pos = get_next_eu_star_position();
+            object.sprite.anchor.setTo(0.5,0.5);
+            object.sprite.x = new_pos.x;
+            object.sprite.y = new_pos.y;
+            let new_scale = raildistance_inner*1.5 / object.original_object_height;
+            object.sprite.scale.setTo(new_scale,new_scale);
+            star_objects.push(object);
+            //old:object.sprite.destroy();
+
+            //set train properties
+            train.indefeatable = false;
+            train.sternphase = true;
+            train.animations.play("stern");
+
+            //velocities
             v = std_v * sternphase_factor;
             new_rail_object_rate = std_new_rail_object_rate / sternphase_factor;
             new_bahndamm_object_rate = std_new_bahndamm_object_rate / sternphase_factor;
-            sternsound.play()
-            train.animations.play("stern");
-            object.sprite.destroy();
-            train.indefetable = false;
-            train.sternphase = true;
-            coin_counter += 10;
+
         }
     }
     
@@ -601,11 +631,11 @@ function collisionUpdate(object,train) {
             if (dt>mauer_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
-                train.indefetable = false;
+                train.indefeatable = false;
             } else if (dt === 0.) {
                 smash.play();
                 notifyObjetciveC("smashed-wall");
-                coin_counter += 10;
+                update_coin_counter(10);
             } else{
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
@@ -619,7 +649,7 @@ function collisionUpdate(object,train) {
                 object.sprite.destroy();
                 object.collision = false;
                 train.animations.play(train_animations[train.rail]);
-                train.indefetable = false;
+                train.indefeatable = false;
             }else if (dt === 0.){
                 smash.play();
                 notifyObjetciveC("smashed-wall");
@@ -633,7 +663,7 @@ function collisionUpdate(object,train) {
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
                 object.sprite.angle = object.direction*dt/5;
-                train.indefetable = true;
+                train.indefeatable = true;
             }
         }
     }
@@ -707,7 +737,7 @@ function getBahndammObject(kind)
         "sprite": sprite,
         "original_object_height": original_object_height,
         "original_object_width": original_object_width,
-        "t0": game.time.now,
+        "t0": current_time,
         "active": true,
         "w_object": w_object,
         "h_object": h_object,
@@ -835,7 +865,7 @@ function updateRailObject(object,schulzzug) {
         object.active = false;
     }
     
-    if (y>y_collision_begin_range && y<y_collision_end_range && !schulzzug.indefetable) {
+    if (y>y_collision_begin_range && y<y_collision_end_range && !schulzzug.indefeatable) {
         if (object.rail == schulzzug.rail) {
             object.collision = true;
             object.active = false;
@@ -855,4 +885,30 @@ function notifyObjetciveC(notifciation) {
 
 function activateIosMode() {
     IOS_MODE = true;
+}
+
+function update_coin_counter(coins,pos) {
+    coin_counter += coins;
+}
+
+function eu_flag_complete_event() {
+}
+
+function get_next_eu_star_position() {
+    let idx = Math.floor(Math.random()*eu_stars_indices.length);
+    let i_phi = eu_stars_indices[idx];
+    eu_stars_indices.splice(idx,1);
+    let angle = (d_phi * i_phi - 90) / 180 * Math.PI;
+    let new_pos = {
+        'x': eu_pos.x + eu_radius * Math.cos(angle), 
+        'y': eu_pos.y + eu_radius * Math.sin(angle)
+    };
+
+    if (eu_stars_indices.length === 0) {
+        eu_flag_complete_event();
+        for(var i=0; i<N_eu_stars; i++)
+            eu_stars_indices.push(i);
+    }
+
+    return new_pos;
 }
