@@ -609,7 +609,7 @@ function collisionUpdate(object,train) {
             } else{
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
-                object.sprite.angle = dt;
+                object.sprite.angle = object.direction*dt/5;
             }
         }
     }  else {
@@ -632,7 +632,7 @@ function collisionUpdate(object,train) {
                 train.animations.play("collision");
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
-                object.sprite.angle = dt;
+                object.sprite.angle = object.direction*dt/5;
                 train.indefetable = true;
             }
         }
