@@ -42,7 +42,9 @@ let game = new Phaser.Game(width, height, Phaser.AUTO, 'phaser-game', { preload:
 //let Swipe = require('phaser-swipe');
 //let swipe;
 
+var IOS_MODE;
 var swipeDirection;
+let swipeGestureRecognizer;
 
 // after that time, movement will start
 //let t0;
@@ -177,8 +179,8 @@ function create() {
     game.add.sprite(0, 0, 'sky');
     
     //enable swipe and reduce necessary swipe length
-    //swipe = new Swipe(game);
-    swipe = 0;
+    swipeGestureRecognizer = new Swipe(game);
+    swipeDirection = 0;
     //swipe.dragLength = 10;
     //swipe.diagonalDelta = 5;
     
@@ -302,9 +304,27 @@ function draw_rails() {
 
 function update() {
     let t = game.time.now;
-    var direction = swipe;
-    //reset swipe
-    swipe = 0;
+    
+    var direction = null;
+    if(IOS_MODE) {
+        
+        if(swipeDirection == 1) {
+            direction = swipeGestureRecognizer.DIRECTION_LEFT;
+        } else if(swipeDirection == 2) {
+            direction = swipeGestureRecognizer.DIRECTION_RIGHT;
+        }
+        
+        
+        //reset swipe
+        swipeDirection = 0;
+    } else {
+        
+        var swipe = swipeGestureRecognizer.check();
+        if(swipe != null) {
+            direction = swipe.direction;
+        }
+        
+    }
     
     let remove_indices = Array();
     let remove_bahndamm_indices = Array();
@@ -314,7 +334,10 @@ function update() {
     
     //go left
     if (can_change_rail &&
-        (direction == 1 || key_left.isDown) &&
+        ((direction !== null && (direction ==swipeGestureRecognizer.DIRECTION_LEFT ||
+                                 direction ==swipeGestureRecognizer.DIRECTION_UP_LEFT ||
+                                 direction ==swipeGestureRecognizer.DIRECTION_DOWN_LEFT
+                                 )) || key_left.isDown) &&
         t-last_key_change_time>key_change_rate &&
         train.rail > 0
         ) {
@@ -332,7 +355,10 @@ function update() {
         
         //go right
     } else if (can_change_rail &&
-               (direction == 2 || key_right.isDown ) &&
+               ((direction !== null && (direction == swipeGestureRecognizer.DIRECTION_RIGHT ||
+                                        direction == swipeGestureRecognizer.DIRECTION_UP_RIGHT ||
+                                        direction == swipeGestureRecognizer.DIRECTION_DOWN_RIGHT
+                                        ))|| key_right.isDown )&&
                t-last_key_change_time>key_change_rate &&
                train.rail < 2
                ) {
@@ -814,4 +840,8 @@ function notifyObjetciveC(notifciation) {
     document.documentElement.appendChild(iframe);
     iframe.parentNode.removeChild(iframe);
     iframe = null;
+}
+
+function activateIosMode() {
+    IOS_MODE = true;
 }
