@@ -107,13 +107,13 @@ function preload() {
     //game.load.spritesheet('train','assets/Train.52.png', 120, 232);
     game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
     
-    game.load.audio('jump', ['sounds/jump.mp3','sounds/jump.ogg']);
-    game.load.audio('bling', ['sounds/coin.mp3','sounds/coin.ogg']);
-    game.load.audio('smash', ['sounds/wall_smash.mp3','sounds/wall_smash.ogg']);
-    game.load.audio('stern', ['sounds/bg_EU.mp3','sounds/bg_EU.ogg']);
-    game.load.audio('tada', ['sounds/tada.mp3','sounds/tada.ogg']);
-    game.load.audio('ratter', ['sounds/ratter.mp3','sounds/ratter.ogg']);
-    game.load.audio('whistle', ['sounds/whistle.mp3','sounds/whistle.ogg']);
+    game.load.audio('jump', ['sounds/jump.mp3','sounds/jump.ogg','sounds/jump.wav']);
+    game.load.audio('bling', ['sounds/coin.mp3','sounds/coin.ogg','sounds/coin.wav']);
+    game.load.audio('smash', ['sounds/wall_smash.mp3','sounds/wall_smash.ogg','sounds/wall_smash.wav']);
+    game.load.audio('stern', ['sounds/bg_EU.mp3','sounds/bg_EU.ogg','sounds/bg_EU.wav']);
+    game.load.audio('tada', ['sounds/tada.mp3','sounds/tada.ogg','sounds/tada.wav']);
+    game.load.audio('ratter', ['sounds/ratter.mp3','sounds/ratter.ogg','sounds/ratter.wav']);
+    game.load.audio('whistle', ['sounds/whistle.mp3','sounds/whistle.ogg','sounds/whistle.wav']);
     
 }
 
