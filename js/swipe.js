@@ -40,7 +40,6 @@ function Swipe(game, model) {
     self.last_direction = null;
     self.last_active_position.x = self.game.input.activePointer.positionDown.x;
     self.last_active_position.y = self.game.input.activePointer.positionDown.y;
-    console.log("onDown");
   });
   this.game.input.onUp.add(function () {
     self.swiping = false;
@@ -183,23 +182,14 @@ Swipe.prototype.check = function () {
       this.last_active_position.y = this.game.input.activePointer.position.y;
       this.updated_active_position = true;
 
-      console.log("hello");
   }
-
-  console.log(this.game.input.activePointer.position.x,this.last_active_position.x);
-  console.log(Phaser.Point.distance(this.game.input.activePointer.position, this.last_active_position));
 
 
   if (Phaser.Point.distance(this.game.input.activePointer.position, this.last_active_position) < this.dragLength) return null;
 
-  console.log(this.last_active_position)
-  //this.swiping = false;
-  //this.last_active_position = t;
-
   var direction = null;
   var deltaX = this.game.input.activePointer.position.x - this.last_active_position.x;
   var deltaY = this.game.input.activePointer.position.y - this.last_active_position.y;
-  //console.log(this.game.input.activePointer.positionDown);
 
   var result = {
     x: this.last_active_position.x,
