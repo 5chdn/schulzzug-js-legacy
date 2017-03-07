@@ -23,20 +23,22 @@ function Swipe(game, model) {
 
   self.game = game;
   self.model = model !== undefined ? model : null;
-  self.dragLength = 6;
+  self.dragLength = 3;
   self.diagonalDelta = 3;
   self.swiping = false;
   self.direction = null;
   self.tmpDirection = null;
   self.tmpCallback = null;
-  self.diagonalDisabled = false;
+  self.diagonalDisabled = true;
   self.last_direction = null;
 
   this.game.input.onDown.add(function () {
     self.swiping = true;
+    self.last_direction = null;
   });
   this.game.input.onUp.add(function () {
     self.swiping = false;
+    self.last_direction = null;
   })
 
   this.setupKeyboard();
