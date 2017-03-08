@@ -687,7 +687,7 @@ function collisionUpdate(object,train) {
                 train.indefeatable = false;
             } else if (dt === 0.) {
                 smash.play();
-                notifyObjetciveC("smashed-wall");
+                notifyObjectiveC("smashed-wall");
                 update_coin_counter(10);
             } else{
                 object.sprite.x = object.x_s + object.direction * dt;
@@ -705,18 +705,18 @@ function collisionUpdate(object,train) {
                 train.indefeatable = false;
             }else if (dt === 0.){
                 smash.play();
-                notifyObjetciveC("smashed-wall");
+                notifyObjectiveC("smashed-wall");
+                train.animations.play("collision");
+                train.indefeatable = true;
                 if (coin_counter >= 10) {
                     coin_counter -= 10;
                 } else {
                     coin_counter = 0;
                 }
             }else{
-                train.animations.play("collision");
                 object.sprite.x = object.x_s + object.direction * dt;
                 object.sprite.y = object.y_s - dt / 100. + Math.pow(dt,2)/1000.;
                 object.sprite.angle = object.direction*dt/5;
-                train.indefeatable = true;
             }
         }
     }
@@ -926,7 +926,7 @@ function updateRailObject(object,schulzzug) {
     }
 }
 
-function notifyObjetciveC(notifciation) {
+function notifyObjectiveC(notifciation) {
     if(IOS_MODE) {
         var iframe = document.createElement("IFRAME");
         iframe.setAttribute("src", "ios-js://"+notifciation);
