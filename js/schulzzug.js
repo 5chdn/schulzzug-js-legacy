@@ -37,7 +37,7 @@ let eu_pos = {
     'x': width/2,
     'y': horizon_height/2
 };
-let N_eu_stars = 10;
+let N_eu_stars = 12;
 let d_phi = 360 / N_eu_stars;
 let eu_stars_indices = Array();
 for(let i=0; i<N_eu_stars; i++)
@@ -46,9 +46,10 @@ let star_objects = Array();
 let eu_star_travel_time = 1000;
 let can_spawn_new_star = true;
 let delta_v_eu_event = 10;
+let stern_appearance_probability = 1.0; // each time it's possible, a star will appear
 
 // ===================== STERNPHASE DEFINTIIONS ==================
-let sternphase_duration = 3000;
+let sternphase_duration = 8000;
 let sternphase_factor = 2;
 let sternsound;
 
@@ -481,13 +482,13 @@ function update() {
         
         // there's different objects if the train is in sternphase
         if (!train.sternphase){
-            if (can_spawn_new_star) {
-                if (random_float < 1) {
-                    kind = 'stern';
-                    can_spawn_new_star = false;
-                }
+            let dp = 0;
+            if (can_spawn_new_star && random_float < stern_appearance_probability) {
+                kind = 'stern';
+                can_spawn_new_star = false;
+                dp = stern_appearance_probability;
             }
-            else if (random_float < 0.3) {
+            else if (random_float < dp+0.3) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
@@ -942,7 +943,7 @@ function update_coin_counter(coins,pos) {
 }
 
 function eu_flag_complete_event() {
-    let new_eu_radius = height/4.;
+    let new_eu_radius = width/1.5;
     let new_height = width/3.;
     let new_eu_pos = { 
        x: width/2,
@@ -961,7 +962,25 @@ function eu_flag_complete_event() {
         let autoStart = false;
         let delay = sternphase_duration - eu_star_travel_time;
 
-        //let s_pulse = game.add.tween(
+        let N_pulse = 12;
+        let pulse_duration = delay / (2*N_pulse);
+        let pulse_scale = s.sprite.height / s.original_object_height * 1.3;
+        let pulse_delay = 0;
+        let yoyo = true;
+
+        let s_pulse = game.add.tween(s.sprite.scale).to(
+                        {
+                            x: pulse_scale,
+                            y: pulse_scale
+                        },
+                        pulse_duration,
+                        Phaser.Easing.Bounce.InOut,
+                        autoStart,
+                        pulse_delay,
+                        N_pulse,
+                        yoyo
+                     );
+
 
         let s_travel = game.add.tween(s.sprite).to(
                         {
@@ -971,8 +990,7 @@ function eu_flag_complete_event() {
                         },
                         eu_star_travel_time,
                         Phaser.Easing.Cubic.In,
-                        autoStart,
-                        delay
+                        autoStart
                         );
         let s_scale = game.add.tween(s.sprite.scale).to(
                         {
@@ -981,8 +999,7 @@ function eu_flag_complete_event() {
                         },
                         eu_star_travel_time,
                         Phaser.Easing.Cubic.In,
-                        autoStart,
-                        delay
+                        autoStart
                         );
         if (i==0) {
             s_travel.onComplete.add( function (target,tween) {
@@ -1003,8 +1020,12 @@ function eu_flag_complete_event() {
         }
         star_objects.pop();
 
-        s_travel.start();
-        s_scale.start();
+        s_pulse.onComplete.add( function (target,tween) {
+            s_travel.start();
+            s_scale.start();
+        });
+
+        s_pulse.start();
     }
 }
 
