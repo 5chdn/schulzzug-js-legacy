@@ -1,10 +1,10 @@
 var webservice = {
 	baseUrl: "http://example.com",
 	updateScore: function(score) {
-
+		return request("POST", "/score", {"score": score})
 	},
 	fetchCurrentScore: function() {
-
+		return request("GET", "/score")
 	},
 	fetchToken: function() {
 		return request("POST", "/token")
