@@ -233,13 +233,15 @@ function create() {
     // add player (train)
     train = game.add.sprite(train_position[1], train_std_y, 'train');
     game.physics.arcade.enable(train);
+    
+    //sprite name, array of positions within sprite, (?), (?)
     train.animations.add('links', [0, 1], 7, true);
     train.animations.add('mitte', [2, 3], 7, true);
     train.animations.add('rechts', [4, 5], 7, true);
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
-    train.animations.add('collision',[8,9],10,true);
-    train.animations.add('stern',[8],10,true);
+    train.animations.add('collision',[9,14],10,true);
+    train.animations.add('stern', [12], 10, true);
     
     // train is in middle rail
     train.animations.play('mitte');
