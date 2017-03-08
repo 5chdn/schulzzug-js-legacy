@@ -44,6 +44,14 @@ for(let i=0; i<N_eu_stars; i++)
     eu_stars_indices.push(i);
 let star_objects = Array();
 let eu_star_travel_time = 1000;
+let can_spawn_new_star = true;
+let delta_v_eu_event = 10;
+let stern_appearance_probability = 1.0; // each time it's possible, a star will appear
+
+// ===================== STERNPHASE DEFINTIIONS ==================
+let sternphase_duration = 8000;
+let sternphase_factor = 2;
+let sternsound;
 
 // ===================== DEFINE CONTROL VARIABLES ==================
 
@@ -72,13 +80,13 @@ let last_rail_object_time; //time of last appearance
 let std_new_bahndamm_object_rate = 200;
 let new_bahndamm_object_rate = std_new_bahndamm_object_rate; // the current rate (changes when there's changes in velocity)
 let bahndamm_probabilities = {
-    "tree0": 0.01,
-    "tree1": 0.01,
-    "tree2": 0.0001,
-    "bush": 0.01,
-    "sign": 0.001,
-    "trump": 0.001,
-    "frauke": 0.001,
+    "tree0": 0.02,
+    "tree1": 0.02,
+    "tree2": 0.0002,
+    "bush": 0.02,
+    "sign": 0.002,
+    "trump": 0.002,
+    "frauke": 0.002,
 };
 
 // object storing arrays and sprite groups
@@ -130,10 +138,6 @@ let ratter;
 let mauer_animation_length = 1000;
 
 
-// ===================== STERNPHASE DEFINTIIONS ==================
-let sternphase_duration = 8000;
-let sternphase_factor = 3;
-let sternsound;
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let current_time;
@@ -194,6 +198,9 @@ function create() {
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
+    // sprite group for clouds
+    cloudObjectGroup = game.add.group();
+    
     
     //enable swipe and set time delta between swipe events
     swipeGestureRecognizer = new Swipe(game);
@@ -226,9 +233,6 @@ function create() {
     
     // sprite group fot rail objects
     railObjectGroup = game.add.group();
-    
-    // sprite group for clouds
-    cloudObjectGroup = game.add.group();
     
     // add player (train)
     train = game.add.sprite(train_position[1], train_std_y, 'train');
@@ -411,6 +415,9 @@ function update() {
         // remove if the object is now out of scope
         if (!railObjects[i].active) {
             remove_indices.push(i);
+            if (railObjects[i].kind == "stern") {
+                can_spawn_new_star = true;
+            }
         }
         
         // if there's a collision with the train
@@ -477,9 +484,13 @@ function update() {
         
         // there's different objects if the train is in sternphase
         if (!train.sternphase){
-            if (random_float < 0.1) {
+            let dp = 0;
+            if (can_spawn_new_star && random_float < stern_appearance_probability) {
                 kind = 'stern';
-            } else if (random_float < 0.3) {
+                can_spawn_new_star = false;
+                dp = stern_appearance_probability;
+            }
+            else if (random_float < dp+0.3) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
@@ -519,6 +530,10 @@ function update() {
                 bahndammObjects[i].sprite.bringToTop();
             }
         }
+    }
+
+    for (var i = 0; i<star_objects.length; i++) {
+        star_objects[i].sprite.bringToTop();
     }
     
     //spawn new clouds
@@ -608,6 +623,7 @@ function collisionUpdate(object,train) {
             //set new object properties
             new_pos = get_next_eu_star_position();
             object.sprite.anchor.setTo(0.5,0.5);
+            object.angle_index = new_pos.angle_index;
             //object.sprite.x = new_pos.x;
             //object.sprite.y = new_pos.y;
             let new_scale = raildistance_inner*1.5 / object.original_object_height;
@@ -636,6 +652,15 @@ function collisionUpdate(object,train) {
                                             autoStart,
                                             delay
                                             );
+
+            if (new_pos.is_last_star) {
+                can_spawn_new_star = false;
+                sky_travel.onComplete.add(eu_flag_complete_event);
+            } else {
+                can_spawn_new_star = true;
+            }
+                
+
             sky_travel.start();
             sky_scale.start();
             //old:object.sprite.destroy();
@@ -920,23 +945,114 @@ function update_coin_counter(coins,pos) {
 }
 
 function eu_flag_complete_event() {
+    let new_eu_radius = width/1.5;
+    let new_height = width/3.;
+    let new_eu_pos = { 
+       x: width/2,
+       y: height+new_eu_radius+ new_height/2.
+    };
+
+    for(var i=N_eu_stars-1; i>=0; i--) {
+        let s = star_objects[i];
+        let angle = get_angle_from_index(s.angle_index);
+        let new_pos = {
+            x: new_eu_pos.x + new_eu_radius * Math.cos(angle),
+            y: new_eu_pos.y + new_eu_radius * Math.sin(angle)
+        };
+        let new_scale = new_height / s.original_object_height;
+        let new_alpha = 0;
+        let autoStart = false;
+        let delay = sternphase_duration - eu_star_travel_time;
+
+        let N_pulse = 12;
+        let pulse_duration = delay / (2*N_pulse);
+        let pulse_scale = s.sprite.height / s.original_object_height * 1.3;
+        let pulse_delay = 0;
+        let yoyo = true;
+
+        let s_pulse = game.add.tween(s.sprite.scale).to(
+                        {
+                            x: pulse_scale,
+                            y: pulse_scale
+                        },
+                        pulse_duration,
+                        Phaser.Easing.Bounce.InOut,
+                        autoStart,
+                        pulse_delay,
+                        N_pulse,
+                        yoyo
+                     );
+
+
+        let s_travel = game.add.tween(s.sprite).to(
+                        {
+                            alpha: new_alpha,
+                            x: new_pos.x,
+                            y: new_pos.y
+                        },
+                        eu_star_travel_time,
+                        Phaser.Easing.Cubic.In,
+                        autoStart
+                        );
+        let s_scale = game.add.tween(s.sprite.scale).to(
+                        {
+                            x: new_scale,
+                            y: new_scale
+                        },
+                        eu_star_travel_time,
+                        Phaser.Easing.Cubic.In,
+                        autoStart
+                        );
+        if (i==0) {
+            s_travel.onComplete.add( function (target,tween) {
+                target.destroy();
+                let v_scale = std_v / (std_v+delta_v_eu_event);
+                std_v += delta_v_eu_event;
+                v = std_v;
+                std_new_rail_object_rate *= v_scale;
+                std_new_bahndamm_object_rate *= v_scale;
+                new_rail_object_rate = std_new_rail_object_rate;
+                new_bahndamm_object_rate = std_new_bahndamm_object_rate;
+                can_spawn_new_star = true;
+            });
+        } else {
+            s_travel.onComplete.add( function (target,tween) {
+                target.destroy();
+            });
+        }
+        star_objects.pop();
+
+        s_pulse.onComplete.add( function (target,tween) {
+            s_travel.start();
+            s_scale.start();
+        });
+
+        s_pulse.start();
+    }
 }
 
 function get_next_eu_star_position() {
     let idx = Math.floor(Math.random()*eu_stars_indices.length);
     let i_phi = eu_stars_indices[idx];
     eu_stars_indices.splice(idx,1);
-    let angle = (d_phi * i_phi - 90) / 180 * Math.PI;
+    let angle = get_angle_from_index(i_phi);
     let new_pos = {
-        'x': eu_pos.x + eu_radius * Math.cos(angle), 
-        'y': eu_pos.y + eu_radius * Math.sin(angle)
+        x: eu_pos.x + eu_radius * Math.cos(angle), 
+        y: eu_pos.y + eu_radius * Math.sin(angle),
+        is_last_star: false,
+        angle_index: i_phi
     };
 
     if (eu_stars_indices.length === 0) {
-        eu_flag_complete_event();
+        new_pos.is_last_star = true;
         for(var i=0; i<N_eu_stars; i++)
             eu_stars_indices.push(i);
     }
 
     return new_pos;
+}
+
+function get_angle_from_index(i_phi) {
+    let angle = (d_phi * i_phi - 90) / 180 * Math.PI;
+    return angle;
 }
