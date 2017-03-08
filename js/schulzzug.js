@@ -43,6 +43,7 @@ let eu_stars_indices = Array();
 for(let i=0; i<N_eu_stars; i++)
     eu_stars_indices.push(i);
 let star_objects = Array();
+let eu_star_travel_time = 1000;
 
 // ===================== DEFINE CONTROL VARIABLES ==================
 
@@ -476,7 +477,7 @@ function update() {
         if (!train.sternphase){
             if (random_float < 0.1) {
                 kind = 'stern';
-            } else if (random_float < 0.2) {
+            } else if (random_float < 0.3) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
@@ -605,11 +606,36 @@ function collisionUpdate(object,train) {
             //set new object properties
             new_pos = get_next_eu_star_position();
             object.sprite.anchor.setTo(0.5,0.5);
-            object.sprite.x = new_pos.x;
-            object.sprite.y = new_pos.y;
+            //object.sprite.x = new_pos.x;
+            //object.sprite.y = new_pos.y;
             let new_scale = raildistance_inner*1.5 / object.original_object_height;
-            object.sprite.scale.setTo(new_scale,new_scale);
+            //object.sprite.scale.setTo(new_scale,new_scale);
             star_objects.push(object);
+            let autoStart = false;
+            let delay = 0;
+
+            let sky_travel = game.add.tween(object.sprite).to(
+                                            { 
+                                               x: new_pos.x, 
+                                               y: new_pos.y
+                                            },
+                                            eu_star_travel_time,
+                                            Phaser.Easing.Cubic.Out,
+                                            autoStart,
+                                            delay
+                                            );
+            let sky_scale = game.add.tween(object.sprite.scale).to(
+                                            { 
+                                               x: new_scale, 
+                                               y: new_scale
+                                            },
+                                            eu_star_travel_time,
+                                            Phaser.Easing.Cubic.Out,
+                                            autoStart,
+                                            delay
+                                            );
+            sky_travel.start();
+            sky_scale.start();
             //old:object.sprite.destroy();
 
             //set train properties
