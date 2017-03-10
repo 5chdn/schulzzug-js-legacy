@@ -213,9 +213,15 @@ function preload() {
     game.load.image('wall',       'assets/wall.png');
     game.load.image('star',       'assets/star.png');
 
-    game.load.spritesheet('coin',  'assets/Coin.50.png', 32, 32);
-    game.load.spritesheet('rails', 'assets/rails_animation.50.png', 375, 460);
-    game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
+    game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
+    
+    if(isRetina()) {
+        game.load.spritesheet('rails','assets/rails_animation.png', 750, 919);
+        game.load.spritesheet('train','assets/Trains_animation.png', 240, 464);
+    } else {
+        game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
+        game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+    }
 
     game.load.audio('jump',   [
             'sounds/jump.mp3',
@@ -300,6 +306,11 @@ function create() {
 
     // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
+    
+    if(isRetina()) {
+        rails.scale.setTo(0.5, 0.5);
+    }
+    
     rails.animations.add('move', [0, 1, 2], 8, true);
     rails.animations.play('move');
 
@@ -309,13 +320,18 @@ function create() {
     // add player (train)
     train = game.add.sprite(train_position[1], train_spacing_y, 'train');
     game.physics.arcade.enable(train);
+
+    //sprite name, array of positions within sprite, (?), (?)
     train.animations.add('train_left', [0, 1], 7, true);
     train.animations.add('train_center', [2, 3], 7, true);
     train.animations.add('train_right', [4, 5], 7, true);
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
-    train.animations.add('collision',[8,9],10,true);
-    train.animations.add('star',[8],10,true);
+    train.animations.add('collision',[9,14],10,true);
+    train.animations.add('star',[12],10,true);
+    if(isRetina()) {
+        train.scale.setTo(0.5, 0.5);
+    }
 
     // train is at center rail
     train.animations.play('train_center');
@@ -760,7 +776,7 @@ function collision_update(object,train) {
                 train.indefeatable = false;
             } else if (time_delta === 0.) {
                 sound_smash.play();
-                notifyObjetciveC("smashed-wall");
+                notifyObjectiveC("smashed-wall");
                 update_coin_counter(10);
             } else{
                 object.sprite.x = object.point_start_x + object.direction * time_delta;
@@ -778,18 +794,18 @@ function collision_update(object,train) {
                 train.indefeatable = false;
             }else if (time_delta === 0.){
                 sound_smash.play();
-                notifyObjetciveC("smashed-wall");
+                notifyObjectiveC("smashed-wall");
+                train.animations.play("collision");
+                train.indefeatable = true;
                 if (coin_counter >= 10) {
                     coin_counter -= 10;
                 } else {
                     coin_counter = 0;
                 }
             }else{
-                train.animations.play("collision");
                 object.sprite.x = object.point_start_x + object.direction * time_delta;
                 object.sprite.y = object.point_start_y - time_delta / 100. + Math.pow(time_delta,2)/1000.;
                 object.sprite.angle = object.direction*time_delta/5;
-                train.indefeatable = true;
             }
         }
     }
@@ -999,7 +1015,7 @@ function update_rail_object(object,schulzzug) {
     }
 }
 
-function notifyObjetciveC(notifciation) {
+function notifyObjectiveC(notifciation) {
     if(IOS_MODE) {
         let iframe = document.createElement("IFRAME");
         iframe.setAttribute("src", "ios-js://"+notifciation);
@@ -1128,4 +1144,15 @@ function get_next_eu_star_position() {
 function get_angle_from_index(i_phi) {
     let angle = (delta_phi * i_phi - 90) / 180 * Math.PI;
     return angle;
+}
+
+function isRetina() {
+    var query = "(-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2), (min-resolution: 192dpi)";
+    
+    if (matchMedia(query).matches) {
+        return true;
+    } else {
+        // do non high-dpi stuff
+    }
+    return false;
 }
