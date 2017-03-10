@@ -65,9 +65,11 @@ let key_left;
 let key_right;
 let key_up;
 let key_space;
+let key_mute;
 
 // time after which a new control command can be given (ms)
 const key_change_time_block = 160;
+let key_mute_block = key_change_time_block;
 
 // last time a control command was given
 let key_change_time;
@@ -285,6 +287,7 @@ function create() {
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
     // start physics and add basic sprites
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -311,6 +314,7 @@ function create() {
     sound_background = game.add.audio('ratter');
 
     // start background train sound as loop
+    game.sound.mute = false;
     sound_background.loop = true;
     sound_background.play();
 
@@ -347,9 +351,9 @@ function create() {
     train.animations.add('star_left', [11,12], 10, true);
     train.animations.add('star_right', [15,16], 10, true);
     train.animations.add('star_center', [13,14], 10, true);
-    
-    
-    
+
+
+
     if(is_retina()) {
         train.scale.setTo(0.5, 0.5);
     }
@@ -372,6 +376,17 @@ function create() {
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
 
 function update() {
+
+    // mute and unmute sound
+    if (key_mute.isDown && key_mute_block == key_change_time_block) {
+        game.sound.mute = !game.sound.mute;
+        key_mute_block -= 10;
+    } else if (key_mute_block < key_change_time_block &&
+               key_mute_block > 0) {
+        key_mute_block -= 10;
+    } else {
+        key_mute_block = key_change_time_block;
+    }
 
     //time handling
     let time_last = time_now;
@@ -783,8 +798,8 @@ function collision_update(object, train) {
             // set train properties
             train.indefeatable = false;
             train.star_phase = true;
-            
-            
+
+
             train.animations.play(train_star_animations[train.rail]);
 
             // velocities
