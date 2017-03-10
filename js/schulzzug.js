@@ -482,6 +482,8 @@ function update() {
             train_is_jumping_up = false;
             if (!train.star_phase) {
                 train.animations.play(train_animations[train.rail]);
+            } else {
+                train.animations.play(train_star_animations[train.rail]);
             }
         }
     }
