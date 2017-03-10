@@ -134,6 +134,8 @@ const train_position_distance = 130;
 // names of the animation for each rail
 let train_animations  = ["train_left", "train_center", "train_right"];
 
+let train_star_animations = ["star_left", "star_center", "star_right"];
+
 // this is false if the train jumps
 let rail_can_change = true;
 
@@ -335,14 +337,17 @@ function create() {
     train = game.add.sprite(train_position[1], train_spacing_y, 'train');
     game.physics.arcade.enable(train);
 
-    //sprite name, array of positions within sprite, (?), (?)
+    //sprite name, array of positions within sprite, fps, should loop
     train.animations.add('train_left', [0, 1], 7, true);
     train.animations.add('train_center', [2, 3], 7, true);
     train.animations.add('train_right', [4, 5], 7, true);
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
     train.animations.add('collision',[9,17],10,true);
-    train.animations.add('star', [13,14], 10, true);
+    train.animations.add('star_left', [11,12], 10, true);
+    train.animations.add('star_right', [15,16], 10, true);
+    train.animations.add('star_center', [13,14], 10, true);
+    
     
     
     if(is_retina()) {
@@ -774,7 +779,9 @@ function collision_update(object, train) {
             // set train properties
             train.indefeatable = false;
             train.star_phase = true;
-            train.animations.play("star");
+            
+            
+            train.animations.play(train_star_animations[train.rail]);
 
             // velocities
             v = v_default * eu_star_phase_factor;
