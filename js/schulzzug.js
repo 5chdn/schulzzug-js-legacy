@@ -1,4 +1,4 @@
-/* global Phaser */
+/* global Phaser, Swipe, matchMedia */
 
 // ===================== DEFINE WORLD CONSTANTS ================================
 // canvas size (half iphone 7 retina resolution)
@@ -87,11 +87,11 @@ let rail_object_time;
 
 const dam_object_rate_default = 200;
 
- // the current rate (changes when there's changes in velocity)
-let dam_object_rate = dam_object_rate_default;
+// the current rate (changes when there's changes in velocity)
+// let dam_object_rate = dam_object_rate_default;                               // never used
 
 // time of last dam object appearance
-let dam_object_time;
+// let dam_object_time;                                                         // never used
 
 const dam_probabilities = {
     "tree0" : 0.0200,
@@ -163,13 +163,13 @@ const train_spacing_y = 360;
 let sound_bling;
 let sound_smash;
 let sound_jump;
-let sound_win;
+// let sound_win;                                                               // never used
 let sound_whistle;
 let sound_background;
 let sound_eu_star;
 
 // duration of collision animation for crashes
-const mauer_animation_length = 1000;
+const wall_animation_length = 1000;
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let time_now;
@@ -290,7 +290,7 @@ function create() {
     sound_smash = game.add.audio('smash');
     sound_jump = game.add.audio('jump');
     sound_eu_star = game.add.audio('star');
-    sound_win = game.add.audio('tada');
+    // sound_win = game.add.audio('tada');                                      // never used
     sound_whistle = game.add.audio('whistle');
     sound_background = game.add.audio('ratter');
 
@@ -300,7 +300,7 @@ function create() {
 
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
-    dam_object_time = game.time.now;
+    // dam_object_time = game.time.now;                                         // never used
     key_change_time = game.time.now;
     time_now = game.time.now;
 
@@ -695,22 +695,22 @@ function collision_update(object,train) {
     if (object.kind == "star") {
         let time_delta = time_now - object.time_start;
         if (time_delta>eu_star_phase_duration) {
-            //train.animations.play(train_animations[train.rail]);
+            // train.animations.play(train_animations[train.rail]);             // no animation in eu_star mode
             v = v_default;
             rail_object_rate = rail_object_rate_default;
-            dam_object_rate = dam_object_rate_default;
+            // dam_object_rate = dam_object_rate_default;                       // never used
             train.star_phase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
             train.indefeatable = false;
-        }else if (time_delta === 0.){
+        } else if (time_delta === 0.){
 
             //gameplay actions
-            sound_eu_star.play()
+            sound_eu_star.play();
             update_coin_counter(10,object.sprite.position);
 
             //set new object properties
-            new_pos = get_next_eu_star_position();
+            let new_pos = get_next_eu_star_position();
             object.sprite.anchor.setTo(0.5,0.5);
             object.angle_index = new_pos.angle_index;
             //object.sprite.x = new_pos.x;
@@ -762,7 +762,7 @@ function collision_update(object,train) {
             //velocities
             v = v_default * eu_star_phase_factor;
             rail_object_rate = rail_object_rate_default / eu_star_phase_factor;
-            dam_object_rate = dam_object_rate_default / eu_star_phase_factor;
+            // dam_object_rate = dam_object_rate_default / eu_star_phase_factor;// never used
 
         }
     }
@@ -770,7 +770,7 @@ function collision_update(object,train) {
     if (train.star_phase) {
         if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "donaldwall") {
             let time_delta = time_now - object.time_start;
-            if (time_delta>mauer_animation_length) {
+            if (time_delta>wall_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
                 train.indefeatable = false;
@@ -787,7 +787,7 @@ function collision_update(object,train) {
     }  else {
         if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "donaldwall") {
             let time_delta = time_now - object.time_start;
-            if (time_delta>mauer_animation_length) {
+            if (time_delta>wall_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
                 train.animations.play(train_animations[train.rail]);
@@ -817,7 +817,7 @@ function flip_z(z) {
 }
 
 function flip_x(x) {
-    return canvas_width - x;
+    return canvas_width - x;                                                 
 }
 
 function getBahndammObject(kind)
@@ -831,6 +831,7 @@ function getBahndammObject(kind)
     let h_object;
     let w_object;
     let original_object_height;
+    let original_object_width;
 
     let sprite = rail_object_group.create(0, 0, kind);
 
@@ -1101,7 +1102,7 @@ function eu_flag_complete_event() {
                 rail_object_rate_default *= v_scale;
                 dam_object_rate_default *= v_scale;
                 rail_object_rate = rail_object_rate_default;
-                dam_object_rate = dam_object_rate_default;
+                // dam_object_rate = dam_object_rate_default;                   // never used
                 eu_star_can_spawn = true;
             });
         } else {
