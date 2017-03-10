@@ -1,5 +1,3 @@
-/* global Phaser, Swipe, matchMedia */
-
 // ===================== DEFINE WORLD CONSTANTS ================================
 // canvas size (half iphone 7 retina resolution)
 const canvas_width = 375;
@@ -206,8 +204,8 @@ function preload() {
     game.load.image('sign',       'assets/Sign01.50.png');
 
     game.load.image('panel',      'assets/Panel.50.png');
-    game.load.image('fraukewall', 'assets/afd-wall.50.png');
-    game.load.image('donaldwall', 'assets/Trump-Wall.50.png');
+    game.load.image('wall_frauke','assets/afd-wall.50.png');
+    game.load.image('wall_donald','assets/Trump-Wall.50.png');
     game.load.image('frauke',     'assets/Petry.png');
     game.load.image('donald',     'assets/Trump.png');
     game.load.image('wall',       'assets/wall.png');
@@ -599,10 +597,10 @@ function update() {
             }
         } else {
             if (random_float < 0.2) {
-                kind = 'donaldwall';
+                kind = 'wall_donald';
             }
             else if (random_float < 0.4) {
-                kind = 'fraukewall';
+                kind = 'wall_frauke';
             } else {
                 kind = 'coin';
             }
@@ -697,24 +695,25 @@ function generate_cloud() {
     cloud.body.gravity.x = 2 + Math.random() * 4;
 }
 
-function delete_indices_from_array(indices,array){
+function delete_indices_from_array(indices, array) {
+
     // delete object from rail_objects updated
-    for (let i = indices.length - 1; i >= 0; i--)
+    for (let i = indices.length - 1; i >= 0; i--) {
         array.splice(indices[i], 1);
+    }
 }
 
-function collision_update(object,train) {
-    if (object.kind == "coin") {
+function collision_update(object, train) {
+    if (object.kind == "coin") {                                                // make them fly @TODO #35
         sound_bling.play();
         object.sprite.destroy();
-        update_coin_counter(1,object.sprite.position);
+        update_coin_counter(1);
         object.collision = false;
     }
 
     if (object.kind == "star") {
         let time_delta = time_now - object.time_start;
-        if (time_delta>eu_star_phase_duration) {
-            // train.animations.play(train_animations[train.rail]);             // no animation in eu_star mode
+        if (time_delta > eu_star_phase_duration) {
             v = v_default;
             rail_object_rate = rail_object_rate_default;
             // dam_object_rate = dam_object_rate_default;                       // never used @TODO #37
@@ -722,46 +721,44 @@ function collision_update(object,train) {
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
             train.indefeatable = false;
-        } else if (time_delta === 0.){
+        } else if (time_delta === 0.0){
 
             //gameplay actions
             sound_eu_star.play();
-            update_coin_counter(10,object.sprite.position);
+            update_coin_counter(10);
 
             //set new object properties
-            let new_pos = get_next_eu_star_position();
-            object.sprite.anchor.setTo(0.5,0.5);
-            object.angle_index = new_pos.angle_index;
-            //object.sprite.x = new_pos.x;
-            //object.sprite.y = new_pos.y;
-            let new_scale = rail_distance_inner*1.5 / object.original_object_height;
-            //object.sprite.scale.setTo(new_scale,new_scale);
+            let position_next = get_next_eu_star_position();
+            object.sprite.anchor.setTo(0.5, 0.5);
+            object.angle_index = position_next.angle_index;
+            let scale_next = rail_distance_inner * 1.5
+                           / object.object_height_original;
             eu_star_objects.push(object);
-            let autoStart = false;
+            let auto_start = false;
             let delay = 0;
 
             let sky_travel = game.add.tween(object.sprite).to(
                                             {
-                                               x: new_pos.x,
-                                               y: new_pos.y
+                                               x: position_next.x,
+                                               y: position_next.y
                                             },
                                             eu_star_travel_time,
                                             Phaser.Easing.Cubic.Out,
-                                            autoStart,
+                                            auto_start,
                                             delay
                                             );
             let sky_scale = game.add.tween(object.sprite.scale).to(
                                             {
-                                               x: new_scale,
-                                               y: new_scale
+                                               x: scale_next,
+                                               y: scale_next
                                             },
                                             eu_star_travel_time,
                                             Phaser.Easing.Cubic.Out,
-                                            autoStart,
+                                            auto_start,
                                             delay
                                             );
 
-            if (new_pos.star_is_last) {
+            if (position_next.star_is_last) {
                 eu_star_can_spawn = false;
                 sky_travel.onComplete.add(eu_flag_complete_event);
             } else {
@@ -771,14 +768,13 @@ function collision_update(object,train) {
 
             sky_travel.start();
             sky_scale.start();
-            //old:object.sprite.destroy();
 
-            //set train properties
+            // set train properties
             train.indefeatable = false;
             train.star_phase = true;
             train.animations.play("star");
 
-            //velocities
+            // velocities
             v = v_default * eu_star_phase_factor;
             rail_object_rate = rail_object_rate_default / eu_star_phase_factor;
             // dam_object_rate = dam_object_rate_default / eu_star_phase_factor;// never used @TODO #37
@@ -787,33 +783,41 @@ function collision_update(object,train) {
     }
 
     if (train.star_phase) {
-        if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "donaldwall") {
+        if (object.kind == "wall" ||
+            object.kind == "wall_frauke" ||
+            object.kind == "wall_donald") {
             let time_delta = time_now - object.time_start;
-            if (time_delta>wall_animation_length) {
+            if (time_delta > wall_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
                 train.indefeatable = false;
-            } else if (time_delta === 0.) {
+            } else if (time_delta === 0.0) {
                 sound_smash.play();
-                notifyObjectiveC("smashed-wall");
+                notify_objective_c("smashed-wall");
                 update_coin_counter(10);
             } else{
-                object.sprite.x = object.point_start_x + object.direction * time_delta;
-                object.sprite.y = object.point_start_y - time_delta / 100. + Math.pow(time_delta,2)/1000.;
-                object.sprite.angle = object.direction*time_delta/5;
+                object.sprite.x = object.point_start_x
+                                + object.direction
+                                * time_delta;
+                object.sprite.y = object.point_start_y
+                                - time_delta / 100.0
+                                + Math.pow(time_delta, 2) / 1000.0;
+                object.sprite.angle = object.direction * time_delta / 5;
             }
         }
     }  else {
-        if (object.kind == "wall" || object.kind == "fraukewall" || object.kind == "donaldwall") {
+        if (object.kind == "wall" ||
+            object.kind == "wall_frauke" ||
+            object.kind == "wall_donald") {
             let time_delta = time_now - object.time_start;
-            if (time_delta>wall_animation_length) {
+            if (time_delta > wall_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
                 train.animations.play(train_animations[train.rail]);
                 train.indefeatable = false;
-            }else if (time_delta === 0.){
+            } else if (time_delta === 0.0){
                 sound_smash.play();
-                notifyObjectiveC("smashed-wall");
+                notify_objective_c("smashed-wall");
                 train.animations.play("collision");
                 train.indefeatable = true;
                 if (coin_counter >= 10) {
@@ -821,15 +825,17 @@ function collision_update(object,train) {
                 } else {
                     coin_counter = 0;
                 }
-            }else{
-                object.sprite.x = object.point_start_x + object.direction * time_delta;
-                object.sprite.y = object.point_start_y - time_delta / 100. + Math.pow(time_delta,2)/1000.;
-                object.sprite.angle = object.direction*time_delta/5;
+            } else {
+                object.sprite.x = object.point_start_x
+                                + object.direction * time_delta;
+                object.sprite.y = object.point_start_y
+                                - time_delta / 100.0
+                                + Math.pow(time_delta, 2) / 1000.0;
+                object.sprite.angle = object.direction * time_delta / 5;
             }
         }
     }
 }
-
 
 function flip_z(z) {
     return canvas_height - z;
@@ -839,109 +845,103 @@ function flip_x(x) {
     return canvas_width - x;
 }
 
-function get_dam_object(kind)
-{
-    //get spawn rail
-    let seite = Math.floor(Math.random() * 2);
-    //get corresponding starting position
-    let dam_width = canvas_width / 2 - 1.5*rail_distance_outer - rail_distance_inner-35;
-    let dam_offset = seite * (canvas_width / 2 + 1.5*rail_distance_outer + rail_distance_inner + 35);
+function get_dam_object(kind) {
+
+    // get spawn rail
+    let random_rail = Math.floor(Math.random() * 2);
+
+    // get corresponding starting position
+    let dam_width = canvas_width / 2
+                  - 1.5 * rail_distance_outer
+                  - rail_distance_inner - 35;
+    let dam_offset = random_rail * (canvas_width / 2
+                   + 1.5 * rail_distance_outer
+                   + rail_distance_inner + 35);
     let point_start_x = dam_width * Math.random() + dam_offset;
-    let h_object;
-    let w_object;
-    let original_object_height;
-    let original_object_width;
+    let object_height;
+    let object_width;
+    let object_height_original;
+    let object_width_original;
 
     let sprite = rail_object_group.create(0, 0, kind);
 
     if (kind == "tree0") {
-        h_object = 40;
+        object_height = 40;
+    } else if (kind == "tree1") {
+        object_height = 35;
+    } else if (kind == "tree2") {
+        object_height = 35;
+    } else if (kind == "bush") {
+        object_height = 10;
+    } else if (kind == "sign") {
+        object_height = 20;
+    } else if (kind == "frauke") {
+        object_height = 25;
+    } else if (kind == "donald") {
+        object_height = 25;
     }
-    if (kind == "tree1") {
-        h_object = 35;
-    }
-    if (kind == "tree2") {
-        h_object = 35;
-    }
-    if (kind == "bush") {
-        h_object = 10;
-    }
-    if (kind == "sign") {
-        h_object = 20;
-    }
-    if (kind == "frauke") {
-        h_object = 25;
-    }
-    if (kind == "donald") {
-        h_object = 25;
-    }
-
 
     sprite.anchor.setTo(0.5, 0.5);
 
-    //set start x-value
+    // set start x-value
     sprite.x = point_start_x;
-    //flip_z is necessary due to different orientation of screen coordinates
-    sprite.y = flip_z(horizon + h_object / 2);
+    // flip_z is necessary due to different orientation of screen coordinates
+    sprite.y = flip_z(horizon + object_height / 2);
 
-    //get the original height of the object to scale it to the wanted heifht
-    original_object_height = sprite.height;
-    original_object_width = sprite.width;
+    // get the original height of the object to scale it to the wanted heifht
+    object_height_original = sprite.height;
+    object_width_original = sprite.width;
 
     //get and set new scale
-    let new_scale = h_object / original_object_height;
-    sprite.scale.setTo(new_scale, new_scale);
-    w_object = sprite.width;
+    let scale_next = object_height / object_height_original;
+    sprite.scale.setTo(scale_next, scale_next);
+    object_width = sprite.width;
 
-    let railObject = {
+    let rail_object = {
         "kind": kind,
         "rail": -1,
         "sprite": sprite,
-        "original_object_height": original_object_height,
-        "original_object_width": original_object_width,
+        "object_height_original": object_height_original,
+        "object_width_original": object_width_original,
         "time_start": time_now,
         "active": true,
-        "w_object": w_object,
-        "h_object": h_object,
+        "object_width": object_width,
+        "object_height": object_height,
         "point_start_x": point_start_x,
         "y": 0,
         "collision": false
     };
 
-    return railObject;
+    return rail_object;
 }
 
 function get_rail_object(kind)
 {
-    //get spawn rail
-    let rail = Math.floor(Math.random() * 3);
+    // get spawn rail
+    let random_rail = Math.floor(Math.random() * 3);
+
     //get corresponding starting position
-    let point_start_x = canvas_width / 2 - rail_distance_outer - rail_distance_inner + rail * (rail_distance_outer + rail_distance_inner);
-    let h_object;
-    let w_object;
-    let original_object_height;
-    let original_object_width;
+    let point_start_x = canvas_width / 2
+                      - rail_distance_outer - rail_distance_inner
+                      + random_rail * (rail_distance_outer
+                      + rail_distance_inner);
+    let object_height;
+    let object_width;
+    let object_height_original;
+    let object_width_original;
 
     let sprite = rail_object_group.create(0, 0, kind);
 
     if (kind == 'wall') {
-        h_object = rail_distance_inner*0.8;
-    }
-
-    if (kind == 'fraukewall') {
-        h_object = rail_distance_inner * 1.5;
-    }
-
-    if (kind == 'donaldwall') {
-        h_object = rail_distance_inner* 1.55;
-    }
-
-    if (kind == 'star') {
-        h_object = rail_distance_inner;
-    }
-
-    if (kind == 'coin') {
-        h_object = rail_distance_outer;
+        object_height = rail_distance_inner * 0.80;
+    } else if (kind == 'wall_frauke') {
+        object_height = rail_distance_inner * 1.50;
+    } else if (kind == 'wall_donald') {
+        object_height = rail_distance_inner * 1.55;
+    } else if (kind == 'star') {
+        object_height = rail_distance_inner;
+    } else if (kind == 'coin') {
+        object_height = rail_distance_outer;
 
         sprite.animations.add('rotate0', [0, 1, 2], 8, true);
         sprite.animations.add('rotate1', [1, 2, 0], 8, true);
@@ -958,76 +958,85 @@ function get_rail_object(kind)
 
     sprite.anchor.setTo(0.5, 0.5);
 
-    //set start x-value
+    // set start x-value
     sprite.x = point_start_x;
-    //flip_z is necessary due to different orientation of screen coordinates
-    sprite.y = flip_z(horizon + h_object / 2);
 
-    //get the original height of the object to scale it to the wanted heifht
-    original_object_height = sprite.height;
-    original_object_width = sprite.width;
+    // flip_z is necessary due to different orientation of screen coordinates
+    sprite.y = flip_z(horizon + object_height / 2);
 
-    //get and set new scale
-    let new_scale = h_object / original_object_height;
-    sprite.scale.setTo(new_scale, new_scale);
-    w_object = sprite.width;
+    // get the original height of the object to scale it to the wanted heifht
+    object_height_original = sprite.height;
+    object_width_original = sprite.width;
 
-    let railObject = {
+    // get and set new scale
+    let scale_next = object_height / object_height_original;
+    sprite.scale.setTo(scale_next, scale_next);
+    object_width = sprite.width;
+
+    let rail_object = {
         "kind": kind,
-        "rail": rail,
+        "rail": random_rail,
         "sprite": sprite,
-        "original_object_height": original_object_height,
-        "original_object_width": original_object_width,
+        "object_height_original": object_height_original,
+        "object_width_original": object_width_original,
         "time_start": game.time.now,
         "y": 0,
         "active": true,
-        "w_object": w_object,
-        "h_object": h_object,
+        "object_width": object_width,
+        "object_height": object_height,
         "point_start_x": point_start_x,
         "collision": false
     };
 
-    return railObject;
+    return rail_object;
 }
 
-function update_rail_object(object,schulzzug) {
+function update_rail_object(object, schulzzug) {
 
-    //get current time
-    let t = game.time.now;
-    let dt = t - object.time_start;
-    object.time_start = t;
-    //object.sprite.anchor.setTo(0.5,0.5);
+    // get current time
+    let time = game.time.now;
+    let time_delta = time - object.time_start;
+    object.time_start = time;
 
-    //get position between horizon and camera
-    let y = object.y + v * dt;
+    // get position between horizon and camera
+    let y = object.y + v * time_delta;
     object.y = y;
 
-    //get center position of test object
-    let x_o = camera_x - horizon_distance / (horizon_distance - y) * (camera_x - object.point_start_x);
+    // get center position of test object
+    let sprite_center_x = camera_x
+                        - horizon_distance / (horizon_distance - y)
+                        * (camera_x - object.point_start_x);
 
-    //set center position of object
-    object.sprite.x = x_o;
+    // set center position of object
+    object.sprite.x = sprite_center_x;
 
-    //get new width
-    let w = -horizon_distance * ((camera_x - (object.point_start_x + object.w_object / 2)) / (horizon_distance - y) - (camera_x - (object.point_start_x - object.w_object / 2)) / (horizon_distance - y));
+    // get new width
+    let width = -horizon_distance * ((camera_x
+              - (object.point_start_x + object.object_width / 2))
+              / (horizon_distance - y) - (camera_x
+              - (object.point_start_x - object.object_width / 2))
+              / (horizon_distance - y));
 
-    //get and set new scale of object
-    let wScale = w / object.original_object_width;
+    // get and set new scale of object
+    let wScale = width / object.object_width_original;
     object.sprite.scale.setTo(wScale);
 
-    //get vertical coordinate
-    let h = camera_heigth - horizon_distance / (horizon_distance - y) * (camera_heigth - object.h_object / 2) + horizon;
-    object.sprite.y = flip_z(h);
+    // get vertical coordinate
+    let height = camera_heigth - horizon_distance
+               / (horizon_distance - y) * (camera_heigth
+               - object.object_height / 2) + horizon;
+    object.sprite.y = flip_z(height);
 
-    //get collision range
-    //destroy if out of scope
+    // get collision range, destroy if out of scope
     if (y > horizon_distance)
     {
         object.sprite.destroy();
         object.active = false;
     }
 
-    if (y>y_collision_range_start && y<y_collision_range_end && !schulzzug.indefeatable) {
+    if (y > y_collision_range_start &&
+        y < y_collision_range_end &&
+        !schulzzug.indefeatable) {
         if (object.rail == schulzzug.rail) {
             object.collision = true;
             object.active = false;
@@ -1035,7 +1044,7 @@ function update_rail_object(object,schulzzug) {
     }
 }
 
-function notifyObjectiveC(notifciation) {
+function notify_objective_c(notifciation) {
     if(IOS_MODE) {
         let iframe = document.createElement("IFRAME");
         iframe.setAttribute("src", "ios-js://"+notifciation);
@@ -1049,73 +1058,73 @@ function activateIosMode() {
     IOS_MODE = true;
 }
 
-function update_coin_counter(coins,pos) {
+function update_coin_counter(coins) {
     coin_counter += coins;
 }
 
 function eu_flag_complete_event() {
-    let new_eu_radius = canvas_width/1.5;
-    let new_height = canvas_width/3.;
-    let new_eu_position = {
-       x: canvas_width/2,
-       y: canvas_height+new_eu_radius+ new_height/2.
+    let eu_flag_radius = canvas_width / 1.5;
+    let eu_flag_height = canvas_width / 3.0;
+    let eu_flag_position = {
+       x: canvas_width / 2.0,
+       y: canvas_height + eu_flag_radius + eu_flag_height / 2.0
     };
 
-    for(let i=eu_stars_count-1; i>=0; i--) {
-        let s = eu_star_objects[i];
-        let angle = get_angle_from_index(s.angle_index);
-        let new_pos = {
-            x: new_eu_position.x + new_eu_radius * Math.cos(angle),
-            y: new_eu_position.y + new_eu_radius * Math.sin(angle)
+    for(let i = eu_stars_count - 1; i >= 0; i--) {
+        let star = eu_star_objects[i];
+        let star_angle = get_angle_from_index(star.angle_index);
+        let position_next = {
+            x: eu_flag_position.x + eu_flag_radius * Math.cos(star_angle),
+            y: eu_flag_position.y + eu_flag_radius * Math.sin(star_angle)
         };
-        let new_scale = new_height / s.original_object_height;
-        let new_alpha = 0;
-        let autoStart = false;
+        let scale_next = eu_flag_height / star.object_height_original;
+        let star_alpha = 0;
+        let auto_start = false;
         let delay = eu_star_phase_duration - eu_star_travel_time;
 
-        let N_pulse = 12;
-        let pulse_duration = delay / (2*N_pulse);
-        let pulse_scale = s.sprite.height / s.original_object_height * 1.3;
+        let pulse_count = 12;
+        let pulse_duration = delay / (2 * pulse_count);
+        let pulse_scale = star.sprite.height
+                        / star.object_height_original * 1.3;
         let pulse_delay = 0;
-        let yoyo = true;
+        let pulse_yoyo = true;
 
-        let s_pulse = game.add.tween(s.sprite.scale).to(
+        let star_pulse = game.add.tween(star.sprite.scale).to(
                         {
                             x: pulse_scale,
                             y: pulse_scale
                         },
                         pulse_duration,
                         Phaser.Easing.Bounce.InOut,
-                        autoStart,
+                        auto_start,
                         pulse_delay,
-                        N_pulse,
-                        yoyo
+                        pulse_count,
+                        pulse_yoyo
                      );
 
-
-        let s_travel = game.add.tween(s.sprite).to(
+        let star_travel = game.add.tween(star.sprite).to(
                         {
-                            alpha: new_alpha,
-                            x: new_pos.x,
-                            y: new_pos.y
+                            alpha: star_alpha,
+                            x: position_next.x,
+                            y: position_next.y
                         },
                         eu_star_travel_time,
                         Phaser.Easing.Cubic.In,
-                        autoStart
+                        auto_start
                         );
-        let s_scale = game.add.tween(s.sprite.scale).to(
+        let star_scale = game.add.tween(star.sprite.scale).to(
                         {
-                            x: new_scale,
-                            y: new_scale
+                            x: scale_next,
+                            y: scale_next
                         },
                         eu_star_travel_time,
                         Phaser.Easing.Cubic.In,
-                        autoStart
+                        auto_start
                         );
-        if (i==0) {
-            s_travel.onComplete.add( function (target,tween) {
+        if (i == 0) {
+            star_travel.onComplete.add(function(target, tween) {
                 target.destroy();
-                let v_scale = v_default / (v_default+eu_event_delta_v);
+                let v_scale = v_default / (v_default + eu_event_delta_v);
                 v_default += eu_event_delta_v;
                 v = v_default;
                 rail_object_rate_default *= v_scale;
@@ -1125,49 +1134,52 @@ function eu_flag_complete_event() {
                 eu_star_can_spawn = true;
             });
         } else {
-            s_travel.onComplete.add( function (target,tween) {
+            star_travel.onComplete.add(function(target, tween) {
                 target.destroy();
             });
         }
         eu_star_objects.pop();
 
-        s_pulse.onComplete.add( function (target,tween) {
-            s_travel.start();
-            s_scale.start();
+        star_pulse.onComplete.add(function(target, tween) {
+            star_travel.start();
+            star_scale.start();
         });
 
-        s_pulse.start();
+        star_pulse.start();
     }
 }
 
 function get_next_eu_star_position() {
-    let idx = Math.floor(Math.random()*eu_stars_indices.length);
-    let i_phi = eu_stars_indices[idx];
-    eu_stars_indices.splice(idx,1);
-    let angle = get_angle_from_index(i_phi);
-    let new_pos = {
+    let index = Math.floor(Math.random() * eu_stars_indices.length);
+    let index_phi = eu_stars_indices[index];
+    eu_stars_indices.splice(index, 1);
+    let angle = get_angle_from_index(index_phi);
+    let position_next = {
         x: eu_position.x + eu_radius * Math.cos(angle),
         y: eu_position.y + eu_radius * Math.sin(angle),
         star_is_last: false,
-        angle_index: i_phi
+        angle_index: index_phi
     };
 
     if (eu_stars_indices.length === 0) {
-        new_pos.star_is_last = true;
-        for(let i=0; i<eu_stars_count; i++)
+        position_next.star_is_last = true;
+        for(let i=0; i<eu_stars_count; i++) {
             eu_stars_indices.push(i);
+        }
     }
 
-    return new_pos;
+    return position_next;
 }
 
-function get_angle_from_index(i_phi) {
-    let angle = (delta_phi * i_phi - 90) / 180 * Math.PI;
+function get_angle_from_index(index_phi) {
+    let angle = (delta_phi * index_phi - 90) / 180 * Math.PI;
     return angle;
 }
 
 function is_retina() {
-    var query = "(-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2), (min-resolution: 192dpi)";
+    let query = "(-webkit-min-device-pixel-ratio: 2), "
+              + "(min-device-pixel-ratio: 2), "
+              + "(min-resolution: 192dpi)";
 
     if (matchMedia(query).matches) {
         return true;
