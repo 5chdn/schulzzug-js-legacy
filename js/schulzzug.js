@@ -136,6 +136,8 @@ let train_animations  = ["train_left", "train_center", "train_right"];
 
 let train_star_animations = ["star_left", "star_center", "star_right"];
 
+let train_collision_animations = ["collision_left", "collision_center", "collision_right"];
+
 // this is false if the train jumps
 let rail_can_change = true;
 
@@ -343,10 +345,15 @@ function create() {
     train.animations.add('train_right', [4, 5], 7, true);
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
-    train.animations.add('collision',[9,17],10,true);
-    train.animations.add('star_left', [11,12], 10, true);
-    train.animations.add('star_right', [15,16], 10, true);
-    train.animations.add('star_center', [13,14], 10, true);
+    
+    train.animations.add('collision_left',[8,9,20],10,true);
+    train.animations.add('collision_center',[10,11,20],10,true);
+    train.animations.add('collision_right',[12,13,20],10,true);
+    
+    train.animations.add('star_left', [14,15], 10, true);
+    train.animations.add('star_center', [16,17], 10, true);
+    train.animations.add('star_right', [18,19], 10, true);
+    
     
     
     
@@ -831,7 +838,7 @@ function collision_update(object, train) {
             } else if (time_delta === 0.0){
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
-                train.animations.play("collision");
+                train.animations.play(train_collision_animations[train.rail]);
                 train.indefeatable = true;
                 if (coin_counter >= 10) {
                     coin_counter -= 10;
