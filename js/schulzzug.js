@@ -256,8 +256,9 @@ function create() {
     train.animations.add('rechts', [4, 5], 7, true);
     train.animations.add('jump_left',[6],10,true);
     train.animations.add('jump_right',[7],10,true);
-    train.animations.add('collision',[9,14],10,true);
-    train.animations.add('stern', [12], 10, true);
+    train.animations.add('collision',[9,17],10,true);
+    train.animations.add('stern', [13,14], 10, true);
+    
     
     if(isRetina()) {
         train.scale.setTo(0.5, 0.5);
