@@ -172,8 +172,15 @@ function preload() {
     game.load.image('stern',      'assets/star.png');
     
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
-    game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
-    game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+    
+    if(isRetina()) {
+        game.load.spritesheet('rails','assets/rails_animation.png', 750, 919);
+        game.load.spritesheet('train','assets/Trains_animation.png', 240, 464);
+    } else {
+        game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
+        game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+    }
+    
     
     game.load.audio('jump',    ['sounds/jump.mp3','sounds/jump.ogg','sounds/jump.wav']);
     game.load.audio('bling',   ['sounds/coin.mp3','sounds/coin.ogg','sounds/coin.wav']);
@@ -228,6 +235,11 @@ function create() {
     
     // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
+    
+    if(isRetina()) {
+        rails.scale.setTo(0.5, 0.5);
+    }
+    
     rails.animations.add('move', [0, 1, 2], 8, true);
     rails.animations.play('move');
     
@@ -246,6 +258,10 @@ function create() {
     train.animations.add('jump_right',[7],10,true);
     train.animations.add('collision',[9,14],10,true);
     train.animations.add('stern', [12], 10, true);
+    
+    if(isRetina()) {
+        train.scale.setTo(0.5, 0.5);
+    }
     
     // train is in middle rail
     train.animations.play('mitte');
@@ -1055,4 +1071,15 @@ function get_next_eu_star_position() {
 function get_angle_from_index(i_phi) {
     let angle = (d_phi * i_phi - 90) / 180 * Math.PI;
     return angle;
+}
+
+function isRetina() {
+    var query = "(-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2), (min-resolution: 192dpi)";
+    
+    if (matchMedia(query).matches) {
+        return true;
+    } else {
+        // do non high-dpi stuff
+    }
+    return false;
 }
