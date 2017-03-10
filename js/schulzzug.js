@@ -19,11 +19,11 @@ const camera_heigth = 50;
 const camera_x = canvas_width / 2;
 
 // distances of rails at horizon
-const raildistance_inner = 10;
-const raildistance_outer = 6;
+const rail_distance_inner = 10;
+const rail_distance_outer = 6;
 
 // schulzzug velocity
-const v_default = 10;  // default velocity
+let v_default = 10;  // default velocity
 let v = v_default;   // current velocity
 
 //collision ranges
@@ -77,7 +77,7 @@ let key_change_time;
 // ====================== RAIL AND DAM OBJECT PROPERTIES =======================
 
 // rate of rail object appearance
-const rail_object_rate_default = 500;
+let rail_object_rate_default = 500;
 
 // this is needed for changes in velocity
 let rail_object_rate = rail_object_rate_default;
@@ -85,13 +85,13 @@ let rail_object_rate = rail_object_rate_default;
 //time of last appearance
 let rail_object_time;
 
-const dam_object_rate_default = 200;
+let dam_object_rate_default = 200;
 
 // the current rate (changes when there's changes in velocity)
-// let dam_object_rate = dam_object_rate_default;                               // never used
+// let dam_object_rate = dam_object_rate_default;                               // never used @TODO #37
 
 // time of last dam object appearance
-// let dam_object_time;                                                         // never used
+// let dam_object_time;                                                         // never used @TODO #37
 
 const dam_probabilities = {
     "tree0" : 0.0200,
@@ -163,7 +163,7 @@ const train_spacing_y = 360;
 let sound_bling;
 let sound_smash;
 let sound_jump;
-// let sound_win;                                                               // never used
+// let sound_win;                                                               // never used @TODO #36
 let sound_whistle;
 let sound_background;
 let sound_eu_star;
@@ -214,13 +214,29 @@ function preload() {
     game.load.image('star',       'assets/star.png');
 
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
-    
-    if(isRetina()) {
-        game.load.spritesheet('rails','assets/rails_animation.png', 750, 919);
-        game.load.spritesheet('train','assets/Trains_animation.png', 240, 464);
+
+    if(is_retina()) {
+        game.load.spritesheet(
+            'rails',
+            'assets/rails_animation.png',
+            750, 919
+        );
+        game.load.spritesheet(
+            'train',
+            'assets/Trains_animation.png',
+            240, 464
+        );
     } else {
-        game.load.spritesheet('rails','assets/rails_animation.50.png', 375, 460);
-        game.load.spritesheet('train','assets/Trains_animation.50.png', 120, 232);
+        game.load.spritesheet(
+            'rails',
+            'assets/rails_animation.50.png',
+            375, 460
+        );
+        game.load.spritesheet(
+            'train',
+            'assets/Trains_animation.50.png',
+            120, 232
+        );
     }
 
     game.load.audio('jump',   [
@@ -290,7 +306,7 @@ function create() {
     sound_smash = game.add.audio('smash');
     sound_jump = game.add.audio('jump');
     sound_eu_star = game.add.audio('star');
-    // sound_win = game.add.audio('tada');                                      // never used
+    // sound_win = game.add.audio('tada');                                      // never used @TODO #36
     sound_whistle = game.add.audio('whistle');
     sound_background = game.add.audio('ratter');
 
@@ -300,17 +316,17 @@ function create() {
 
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
-    // dam_object_time = game.time.now;                                         // never used
+    // dam_object_time = game.time.now;                                         // never used @TODO #37
     key_change_time = game.time.now;
     time_now = game.time.now;
 
     // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
-    
-    if(isRetina()) {
+
+    if(is_retina()) {
         rails.scale.setTo(0.5, 0.5);
     }
-    
+
     rails.animations.add('move', [0, 1, 2], 8, true);
     rails.animations.play('move');
 
@@ -329,7 +345,7 @@ function create() {
     train.animations.add('jump_right',[7],10,true);
     train.animations.add('collision',[9,14],10,true);
     train.animations.add('star',[12],10,true);
-    if(isRetina()) {
+    if(is_retina()) {
         train.scale.setTo(0.5, 0.5);
     }
 
@@ -370,7 +386,7 @@ function update() {
             direction = swipe_gesture_recognizer.DIRECTION_UP;
         }
 
-        //reset swipe
+        // reset swipe
         swipe_direction = 0;
     } else {
         let swipe = swipe_gesture_recognizer.check();
@@ -417,8 +433,7 @@ function update() {
             jump_direction = +1;
         }
 
-        if (rail_is_changing)
-        {
+        if (rail_is_changing) {
             train.v_x = jump_direction / rail_jump_duration;
             train_rail_next = train.rail + jump_direction;
             rail_jump_start = time;
@@ -537,8 +552,7 @@ function update() {
     }
 
     // update all dam objects in a similar manner
-    for (let i = 0; i < dam_objects.length; i++)
-    {
+    for (let i = 0; i < dam_objects.length; i++) {
         update_rail_object(dam_objects[i],train);
         if (!dam_objects[i].active) {
             dam_indices_to_remove.push(i);
@@ -560,9 +574,9 @@ function update() {
     }
 
     // delete all objects that are out of scope or have been collected
-    delete_indices_from_array(rail_indices_to_remove,rail_objects);
-    delete_indices_from_array(collision_indices,collision_objects);
-    delete_indices_from_array(dam_indices_to_remove,dam_objects);
+    delete_indices_from_array(rail_indices_to_remove, rail_objects);
+    delete_indices_from_array(collision_indices, collision_objects);
+    delete_indices_from_array(dam_indices_to_remove, dam_objects);
 
     // ========================= SPAWNING NEW OBJECTS ============================
     //
@@ -573,13 +587,12 @@ function update() {
 
         // there's different objects if the train is in star_phase
         if (!train.star_phase){
-            let dp = 0;
-            if (eu_star_can_spawn && random_float < eu_star_appearance_probability) {
+            if (eu_star_can_spawn
+                && random_float < eu_star_appearance_probability) {
                 kind = 'star';
                 eu_star_can_spawn = false;
-                dp = eu_star_appearance_probability;
             }
-            else if (random_float < dp+0.3) {
+            else if (random_float < eu_star_appearance_probability + 0.3) {
                 kind = 'wall';
             } else {
                 kind = 'coin';
@@ -596,7 +609,7 @@ function update() {
 
         }
 
-        rail_objects.push(getRailObject(kind));
+        rail_objects.push(get_rail_object(kind));
 
         // bring the older objects to the top again
         for (let i = rail_objects.length; i--; ) {
@@ -606,14 +619,15 @@ function update() {
         rail_object_time = time;
     }
 
-    //spawn new bahndamm objects
-
+    // spawn new dam objects
     for (let kind in dam_probabilities) {
+
         // skip loop if the property is from prototype
         if (!dam_probabilities.hasOwnProperty(kind)) continue;
-        let prob = dam_probabilities[kind];
-        if (Math.random() < prob) {
-            dam_objects.push(getBahndammObject(kind));
+
+        let probability = dam_probabilities[kind];                              // does not respect speed @TODO #37
+        if (Math.random() < probability) {
+            dam_objects.push(get_dam_object(kind));
 
             for (let i = dam_objects.length; i--; ) {
                 dam_objects[i].sprite.bringToTop();
@@ -621,61 +635,66 @@ function update() {
         }
     }
 
-    for (let i = 0; i<eu_star_objects.length; i++) {
+    for (let i = 0; i < eu_star_objects.length; i++) {
         eu_star_objects[i].sprite.bringToTop();
     }
 
-    //spawn new clouds
-    if (Math.random() < 0.01)
-        generateCloud();
+    // spawn new clouds
+    if (Math.random() < 0.01) {
+        generate_cloud();
+    }
 
     // update statistics
     meter_counter += time_delta * v / 1000.0;
 
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
     text_score.y = Math.floor(panel.y + panel.height / 2 + 4);
-    text_score.setText(nFormatter(Math.floor(coin_counter), 2));
+    text_score.setText(get_metric_prefix(Math.floor(coin_counter), 2));
     text_score.font = 'SilkScreen';
 
     text_distance.x = Math.floor(panel.x + panel.width / 4 * 3 + 1);
     text_distance.y = Math.floor(panel.y + panel.height / 2 + 4);
-    text_distance.setText(nFormatter(Math.floor(meter_counter), 2) + "m");
+    text_distance.setText(
+        get_metric_prefix(Math.floor(meter_counter), 2) + "m"
+    );
     text_distance.font = 'SilkScreen';
 }
 
-function nFormatter(num, digits) {
-    let si = [
-              { value: 1E18, symbol: "E" },
-              { value: 1E15, symbol: "P" },
-              { value: 1E12, symbol: "T" },
-              { value: 1E9,  symbol: "G" },
-              { value: 1E6,  symbol: "M" },
-              { value: 1E3,  symbol: "k" }
-              ], rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
-    for (i = 0; i < si.length; i++) {
-        if (num >= si[i].value) {
-            return (num / si[i].value).toFixed(digits).replace(rx, "$1")
-            + si[i].symbol;
+function get_metric_prefix(decimal, number_digits) {
+    let prefix = [
+        { value: 1E18, symbol: "E" },
+        { value: 1E15, symbol: "P" },
+        { value: 1E12, symbol: "T" },
+        { value: 1E09, symbol: "G" },
+        { value: 1E06, symbol: "M" },
+        { value: 1E03, symbol: "k" }
+    ];
+    let expression = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    for (let i = 0; i < prefix.length; i++) {
+        if (decimal >= prefix[i].value) {
+            return (decimal / prefix[i].value)
+              .toFixed(number_digits)
+              .replace(expression, "$1")
+              + prefix[i].symbol;
         }
     }
-    return num.toFixed(digits).replace(rx, "$1");
+    return decimal.toFixed(number_digits).replace(expression, "$1");
 }
 
-
-function generateCloud() {
+function generate_cloud() {
     let seed = Math.random();
-    let cloud_height = seed * 176;
+    let cloud_height = Math.random() * 176;
     let cloud_type = 'cloud0';
-    if (seed < 0.667) {
+    if (seed < 0.333) {
         cloud_type = 'cloud1';
-    } else if (seed < 0.333) {
+    } else if (seed < 0.667) {
         cloud_type = 'cloud2';
     } else {
         cloud_type = 'cloud0';
     }
     let cloud = cloud_object_group.create(-60, cloud_height, cloud_type);
     game.physics.arcade.enable(cloud);
-    cloud.body.gravity.x = 4;
+    cloud.body.gravity.x = 2 + Math.random() * 4;
 }
 
 function delete_indices_from_array(indices,array){
@@ -698,7 +717,7 @@ function collision_update(object,train) {
             // train.animations.play(train_animations[train.rail]);             // no animation in eu_star mode
             v = v_default;
             rail_object_rate = rail_object_rate_default;
-            // dam_object_rate = dam_object_rate_default;                       // never used
+            // dam_object_rate = dam_object_rate_default;                       // never used @TODO #37
             train.star_phase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
@@ -715,7 +734,7 @@ function collision_update(object,train) {
             object.angle_index = new_pos.angle_index;
             //object.sprite.x = new_pos.x;
             //object.sprite.y = new_pos.y;
-            let new_scale = raildistance_inner*1.5 / object.original_object_height;
+            let new_scale = rail_distance_inner*1.5 / object.original_object_height;
             //object.sprite.scale.setTo(new_scale,new_scale);
             eu_star_objects.push(object);
             let autoStart = false;
@@ -762,7 +781,7 @@ function collision_update(object,train) {
             //velocities
             v = v_default * eu_star_phase_factor;
             rail_object_rate = rail_object_rate_default / eu_star_phase_factor;
-            // dam_object_rate = dam_object_rate_default / eu_star_phase_factor;// never used
+            // dam_object_rate = dam_object_rate_default / eu_star_phase_factor;// never used @TODO #37
 
         }
     }
@@ -817,17 +836,17 @@ function flip_z(z) {
 }
 
 function flip_x(x) {
-    return canvas_width - x;                                                 
+    return canvas_width - x;
 }
 
-function getBahndammObject(kind)
+function get_dam_object(kind)
 {
     //get spawn rail
     let seite = Math.floor(Math.random() * 2);
     //get corresponding starting position
-    let damm_width = canvas_width / 2 - 1.5*raildistance_outer - raildistance_inner-35;
-    let damm_offset = seite * (canvas_width / 2 + 1.5*raildistance_outer + raildistance_inner + 35);
-    let point_start_x = damm_width * Math.random() + damm_offset;
+    let dam_width = canvas_width / 2 - 1.5*rail_distance_outer - rail_distance_inner-35;
+    let dam_offset = seite * (canvas_width / 2 + 1.5*rail_distance_outer + rail_distance_inner + 35);
+    let point_start_x = dam_width * Math.random() + dam_offset;
     let h_object;
     let w_object;
     let original_object_height;
@@ -892,12 +911,12 @@ function getBahndammObject(kind)
     return railObject;
 }
 
-function getRailObject(kind)
+function get_rail_object(kind)
 {
     //get spawn rail
     let rail = Math.floor(Math.random() * 3);
     //get corresponding starting position
-    let point_start_x = canvas_width / 2 - raildistance_outer - raildistance_inner + rail * (raildistance_outer + raildistance_inner);
+    let point_start_x = canvas_width / 2 - rail_distance_outer - rail_distance_inner + rail * (rail_distance_outer + rail_distance_inner);
     let h_object;
     let w_object;
     let original_object_height;
@@ -906,23 +925,23 @@ function getRailObject(kind)
     let sprite = rail_object_group.create(0, 0, kind);
 
     if (kind == 'wall') {
-        h_object = raildistance_inner*0.8;
+        h_object = rail_distance_inner*0.8;
     }
 
     if (kind == 'fraukewall') {
-        h_object = raildistance_inner * 1.5;
+        h_object = rail_distance_inner * 1.5;
     }
 
     if (kind == 'donaldwall') {
-        h_object = raildistance_inner* 1.55;
+        h_object = rail_distance_inner* 1.55;
     }
 
     if (kind == 'star') {
-        h_object = raildistance_inner;
+        h_object = rail_distance_inner;
     }
 
     if (kind == 'coin') {
-        h_object = raildistance_outer;
+        h_object = rail_distance_outer;
 
         sprite.animations.add('rotate0', [0, 1, 2], 8, true);
         sprite.animations.add('rotate1', [1, 2, 0], 8, true);
@@ -1102,7 +1121,7 @@ function eu_flag_complete_event() {
                 rail_object_rate_default *= v_scale;
                 dam_object_rate_default *= v_scale;
                 rail_object_rate = rail_object_rate_default;
-                // dam_object_rate = dam_object_rate_default;                   // never used
+                // dam_object_rate = dam_object_rate_default;                   // never used @TODO #37
                 eu_star_can_spawn = true;
             });
         } else {
@@ -1147,9 +1166,9 @@ function get_angle_from_index(i_phi) {
     return angle;
 }
 
-function isRetina() {
+function is_retina() {
     var query = "(-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2), (min-resolution: 192dpi)";
-    
+
     if (matchMedia(query).matches) {
         return true;
     } else {
