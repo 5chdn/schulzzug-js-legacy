@@ -278,6 +278,9 @@ function preload() {
             'sounds/whistle.ogg',
             'sounds/whistle.wav'
         ]);
+    game.load.audio('bg_music', [
+            'sounds/die_internationale_8bit_simple_loop.mp3'
+        ]);
 }
 
 // =============== PHASER CREATE GAME ENVIRONMENT ==============================
@@ -314,11 +317,15 @@ function create() {
     // sound_win = game.add.audio('tada');                                      // never used @TODO #36
     sound_whistle = game.add.audio('whistle');
     sound_background = game.add.audio('ratter');
+    sound_bg_music = game.add.audio('bg_music');
 
     // start background train sound as loop
     game.sound.mute = false;
     sound_background.loop = true;
     sound_background.play();
+
+    sound_bg_music.loop = true;
+    sound_bg_music.play();
 
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
