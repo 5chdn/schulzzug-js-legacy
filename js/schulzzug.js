@@ -1249,6 +1249,38 @@ function activateIosMode() {
 
 function update_coin_counter(coins) {
     //check if too negative
+
+    // statistics display
+    if (Math.abs(coins) > 1){
+        let style = "align:center;font-family:'SilkScreen',monospace;";
+        if (coins>0)
+            style += "fill:green;"
+        else if (coins<0)
+            style += "fill:red;"
+
+        console.log(style);
+        let text_coin;
+        text_coin = game.add.text(train.x+train.width/2, train.y, "0", style);
+        text_coin.anchor.set(0.5);
+        text_coin.setText(""+Math.round(coins));
+        text_coin.font = 'SilkScreen';
+
+        let up_duration = 1000;
+        let coin_up = game.add.tween(text_coin).to(
+                            {
+                                y: 0,
+                                alpha: 0
+                            },
+                            up_duration,
+                            Phaser.Easing.Linear.None
+        );
+
+        coin_up.onComplete.add( function () {
+            text_coin.destroy()
+        });
+        coin_up.start();
+    }
+
     if (coin_counter + coins < 0) {
         coin_counter = 0;
     } else {
