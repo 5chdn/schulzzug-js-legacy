@@ -26,8 +26,8 @@ let v = v_default;   // current velocity
 
 //collision ranges
 const y_collision_range_start
-    = canvas_height / 2 * horizon_distance
-    / (camera_heigth + canvas_height / 2);
+= canvas_height / 2 * horizon_distance
+/ (camera_heigth + canvas_height / 2);
 const y_collision_range_end = y_collision_range_start + 2000;
 
 // ====================== EU STAR STUFF ========================================
@@ -56,8 +56,8 @@ const eu_star_phase_factor = 2;
 
 // ===================== DEFINE CONTROL VARIABLES ==============================
 // swipe handling
-let IOS_MODE;
-let swipe_direction;
+var IOS_MODE;
+var swipe_direction;
 let swipe_gesture_recognizer;
 
 // input keys
@@ -69,6 +69,7 @@ let key_mute;
 
 // time after which a new control command can be given (ms)
 const key_change_time_block = 200;
+let key_mute_block = key_change_time_block;
 
 // last time a control command was given
 let key_change_time;
@@ -199,15 +200,15 @@ let time_last;
 
 // ======================================= CREATE GAME ENGINE ==================
 let game = new Phaser.Game(
-                            canvas_width,
-                            canvas_height,
-                            Phaser.AUTO,
-                            'schulzzug',
-                            {
-                                preload: preload,
-                                 create: create,
-                                 update: update
-                            });
+                           canvas_width,
+                           canvas_height,
+                           Phaser.AUTO,
+                           'schulzzug',
+                           {
+                           preload: preload,
+                           create: create,
+                           update: update
+                           });
 
 // =============== PHASER PRELOAD ASSETS AND SOUNDS ============================
 
@@ -215,7 +216,9 @@ function preload() {
     game.load.image('grass',      'assets/green.50.png');
     game.load.image('dirt',       'assets/dirt.50.png');
     game.load.image('sky',        'assets/sky.50.png');
-
+    
+    game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
+    
     game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
     game.load.image('tree1',      'assets/Tree02.50.png');
@@ -226,7 +229,7 @@ function preload() {
     game.load.image('office',     'assets/Kanzleramt.50.png');
     game.load.image('bush',       'assets/Bush01.50.png');
     game.load.image('sign',       'assets/Sign01.50.png');
-
+    
     game.load.image('panel',      'assets/Panel.50.png');
     game.load.image('wall_frauke','assets/afd-wall.50.png');
     game.load.image('wall_donald','assets/Trump-Wall.50.png');
@@ -234,110 +237,101 @@ function preload() {
     game.load.image('donald',     'assets/Trump.png');
     game.load.image('wall',       'assets/wall.png');
     game.load.image('star',       'assets/star.png');
-
+    
     game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
-
+    
     if(is_retina()) {
         game.load.spritesheet(
-            'rails',
-            'assets/rails_animation.png',
-            750, 919
-        );
+                              'rails',
+                              'assets/rails_animation.png',
+                              750, 919
+                              );
         game.load.spritesheet(
-            'train',
-            'assets/Trains_animation.png',
-            240, 464
-        );
-        game.load.spritesheet(
-            'eurostar',
-            'assets/star_animation.png',
-            60,64
-        );
+                              'eurostar',
+                              'assets/star_animation.png',
+                              60,64
+                              );
     } else {
         game.load.spritesheet(
-            'rails',
-            'assets/rails_animation.50.png',
-            375, 460
-        );
-        game.load.spritesheet(
-            'train',
-            'assets/Trains_animation.50.png',
-            120, 232
-        );
+                              'rails',
+                              'assets/rails_animation.50.png',
+                              375, 460
+                              );
+        
         //game.load.spritesheet(
         //    'eurostar',
         //    'assets/star_animation.50.png',
         //    30,32
         //);
         game.load.spritesheet(
-            'eurostar',
-            'assets/star_animation.png',
-            60,64
-        );
+                              'eurostar',
+                              'assets/star_animation.png',
+                              60,64
+                              );
     }
-
+    
     game.load.audio('jump',   [
-            'sounds/jump.mp3',
-            'sounds/jump.ogg',
-            'sounds/jump.wav'
-        ]);
+                               'sounds/jump.mp3',
+                               'sounds/jump.ogg',
+                               'sounds/jump.wav'
+                               ]);
     game.load.audio('bling',  [
-            'sounds/coin.mp3',
-            'sounds/coin.ogg',
-            'sounds/coin.wav'
-        ]);
+                               'sounds/coin.mp3',
+                               'sounds/coin.ogg',
+                               'sounds/coin.wav'
+                               ]);
     game.load.audio('smash',  [
-            'sounds/wall_smash.mp3',
-            'sounds/wall_smash.ogg',
-            'sounds/wall_smash.wav'
-        ]);
+                               'sounds/wall_smash.mp3',
+                               'sounds/wall_smash.ogg',
+                               'sounds/wall_smash.wav'
+                               ]);
     game.load.audio('star',  [
-            'sounds/bg_EU.mp3',
-            'sounds/bg_EU.ogg',
-            'sounds/bg_EU.wav'
-        ]);
+                              'sounds/bg_EU.mp3',
+                              'sounds/bg_EU.ogg',
+                              'sounds/bg_EU.wav'
+                              ]);
     game.load.audio('tada',   [
-            'sounds/tada.mp3',
-            'sounds/tada.ogg',
-            'sounds/tada.wav'
-        ]);
+                               'sounds/tada.mp3',
+                               'sounds/tada.ogg',
+                               'sounds/tada.wav'
+                               ]);
     game.load.audio('ratter', [
-            'sounds/ratter.mp3',
-            'sounds/ratter.ogg',
-            'sounds/ratter.wav'
-        ]);
+                               'sounds/ratter.mp3',
+                               'sounds/ratter.ogg',
+                               'sounds/ratter.wav'
+                               ]);
     game.load.audio('whistle', [
-            'sounds/whistle.mp3',
-            'sounds/whistle.ogg',
-            'sounds/whistle.wav'
-        ]);
+                                'sounds/whistle.mp3',
+                                'sounds/whistle.ogg',
+                                'sounds/whistle.wav'
+                                ]);
 }
 
 // =============== PHASER CREATE GAME ENVIRONMENT ==============================
 
 function create() {
-
+    
     // keys
     key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
-
+    
     // start physics and add basic sprites
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
-
+    
     // sprite group for clouds
     cloud_object_group = game.add.group();
-
+    
     //enable swipe and set time delta between swipe events
     swipe_gesture_recognizer = new Swipe(game);
     swipe_gesture_recognizer.next_event_rate = key_change_time_block;
     swipe_direction = 0;
-
+    
     // sounds
     sound_bling = game.add.audio('bling');
     sound_smash = game.add.audio('smash');
@@ -346,12 +340,12 @@ function create() {
     // sound_win = game.add.audio('tada');                                      // never used @TODO #36
     sound_whistle = game.add.audio('whistle');
     sound_background = game.add.audio('ratter');
-
+    
     // start background train sound as loop
     game.sound.mute = false;
     sound_background.loop = true;
     sound_background.play();
-
+    
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
     dam_object_time = game.time.now;
@@ -359,20 +353,20 @@ function create() {
     last_velocity_scale_time = game.time.now;
     time_now = game.time.now;
     time_last = time_now - 1;
-
+    
     // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
-
+    
     if(is_retina()) {
         rails.scale.setTo(0.5, 0.5);
     }
-
+    
     rails.animations.add('move', [0, 1, 2], 8, true);
     rails.animations.play('move');
-
+    
     // sprite group fot rail objects
     rail_object_group = game.add.group();
-
+    
     // statistics display
     let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, canvas_height - 72, 'panel');
@@ -380,13 +374,13 @@ function create() {
     text_score.anchor.set(0.5);
     text_distance = game.add.text(0, canvas_height - 72, "0m", style);
     text_distance.anchor.set(0.5);
-
+    
     flying_coin_group = game.add.group();
-
+    
     // add player (train)
     train = game.add.sprite(train_position[1], train_spacing_y, 'train');
     game.physics.arcade.enable(train);
-
+    
     //sprite name, array of positions within sprite, fps, should loop
     train.animations.add('train_left', [0, 1], 7, true);
     train.animations.add('train_center', [2, 3], 7, true);
@@ -402,22 +396,22 @@ function create() {
     train.animations.add('star_center', [16,17], 10, true);
     train.animations.add('star_right', [18,19], 10, true);
     
-    if(is_retina()) {
+    /*if(is_retina()) {
         train.scale.setTo(0.5, 0.5);
-    }
-
+    }*/
+    
     // train is at center rail
     train.animations.play('train_center');
     train.rail = 1;
     train.indefeatable = false;
     train.star_phase = false;
-
+    
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
 
 function update() {
-
+    
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
@@ -428,15 +422,15 @@ function update() {
     } else {
         key_mute_block = key_change_time_block;
     }
-
+    
     //time handling
     time_last = time_now;
     time_now = game.time.now;
     let time_delta = time_now - time_last;
-
+    
     // ========================= PLAYER CONTROL ===========================
     let direction = null;
-
+    
     if(IOS_MODE) {
         if(swipe_direction == 1) {
             direction = swipe_gesture_recognizer.DIRECTION_LEFT;
@@ -445,7 +439,7 @@ function update() {
         } else if(swipe_direction == 3) {
             direction = swipe_gesture_recognizer.DIRECTION_UP;
         }
-
+        
         // reset swipe
         swipe_direction = 0;
     } else {
@@ -454,45 +448,45 @@ function update() {
             direction = swipe.direction;
         }
     }
-
+    
     if (key_space.isDown) {
         sound_whistle.play();
     }
-
+    
     // check if player can change rail
     if (
         train.rail !== -1 &&
         time_now - key_change_time > key_change_time_block
-    ) {
+        ) {
         let jump_direction = null;
         if (((             // go left
-                    direction !== null
-                    && direction == swipe_gesture_recognizer.DIRECTION_LEFT
-                ) ||
-                key_left.isDown
-            ) &&
+              direction !== null
+              && direction == swipe_gesture_recognizer.DIRECTION_LEFT
+              ) ||
+             key_left.isDown
+             ) &&
             train.rail > 0
-        ) {
+            ) {
             rail_is_changing = true;
             if ( (!train.star_phase) && (!train.indefeatable) ){
                 train.animations.play("jump_left");
             }
             jump_direction = -1;
         } else if (((      // go right
-                    direction !== null
-                    &&  direction == swipe_gesture_recognizer.DIRECTION_RIGHT
-                ) ||
-                key_right.isDown
-            ) &&
-            train.rail < 2
-        ) {
+                     direction !== null
+                     &&  direction == swipe_gesture_recognizer.DIRECTION_RIGHT
+                     ) ||
+                    key_right.isDown
+                    ) &&
+                   train.rail < 2
+                   ) {
             rail_is_changing = true;
             if ( (!train.star_phase) && (!train.indefeatable) ){
                 train.animations.play("jump_right");
             }
             jump_direction = +1;
         }
-
+        
         if (rail_is_changing) {
             train.v_x = jump_direction / rail_jump_duration;
             train_rail_next = train.rail + jump_direction;
@@ -506,13 +500,13 @@ function update() {
             sound_jump.play();
         }
     }
-
+    
     // check if train should jump up
     if (train.rail !== -1 && time_now - key_change_time > key_change_time_block ) {
         if ((direction !== null &&
              direction == swipe_gesture_recognizer.DIRECTION_UP) ||
             key_up.isDown
-        ) {
+            ) {
             train_is_jumping_up = true;
             train_rail_next = train.rail;
             train_up_jump_start = time_now;
@@ -521,14 +515,14 @@ function update() {
             sound_jump.play();
         }
     }
-
+    
     if (train_is_jumping_up) {
         let time_delta = (time_now - train_up_jump_start);
         if (time_delta < train_up_jump_duration) {
             let a = 1 / 300.0;
             train.y = train_spacing_y - time_delta
-                    * train_up_jump_duration * a
-                    + Math.pow(time_delta, 2) * a;
+            * train_up_jump_duration * a
+            + Math.pow(time_delta, 2) * a;
         } else {
             train.y = train_spacing_y;
             train.rail = train_rail_next;
@@ -544,17 +538,17 @@ function update() {
             }
         }
     }
-
+    
     // rail change animation
     if (rail_is_changing) {
         let time_delta = (time_now - rail_jump_start);
         if (time_delta < rail_jump_duration) {
             train.x = train.x_previous + train_position_distance
-                    * train.v_x * time_delta;
+            * train.v_x * time_delta;
             const a = 0.002;
             train.y = train_spacing_y - time_delta
-                    * rail_jump_duration * a
-                    + Math.pow(time_delta, 2) * a;
+            * rail_jump_duration * a
+            + Math.pow(time_delta, 2) * a;
         } else {
             train.x = train_position[train_rail_next];
             train.y = train_spacing_y;
@@ -562,7 +556,7 @@ function update() {
             rail_can_change = true;
             train_can_jump_up = true;
             rail_is_changing = false;
-            if (train.star_phase) { 
+            if (train.star_phase) {
                 train.animations.play(train_star_animations[train.rail]);
             } else if (train.indefeatable) {
                 train.animations.play(train_collision_animations[train.rail]);
@@ -571,19 +565,19 @@ function update() {
             }
         }
     }
-
+    
     // ====================== UPDATING RAIL AND DAM OBJECTS ====================
-
+    
     // for saving the indices of objects being out of scope
     let rail_indices_to_remove = Array();
     let dam_indices_to_remove = Array();
-
+    
     // loop trough all rail objects
     for (let i = 0; i < rail_objects.length; i++) {
         // update according to new time
         // pass the train object to see if there's a collision
         update_rail_object(rail_objects[i],train);
-
+        
         // remove if the object is now out of scope
         if (!rail_objects[i].active) {
             rail_indices_to_remove.push(i);
@@ -591,16 +585,16 @@ function update() {
                 eu_star_can_spawn = true;
             }
         }
-
+        
         // if there's a collision with the train
         if (rail_objects[i].collision) {
-
+            
             // set a new starting point for this object
             // both in time and space
             rail_objects[i].time_start = time_now;
             rail_objects[i].point_start_x = rail_objects[i].sprite.x;
             rail_objects[i].point_start_y = rail_objects[i].sprite.y;
-
+            
             // save direction of the object in case
             // it's a wall and has to fly somewhere
             let left_right;
@@ -611,14 +605,14 @@ function update() {
             } else if(rail_objects[i].rail == 2) {
                 left_right = -1;
             }
-
+            
             rail_objects[i].direction = left_right;
-
+            
             // give this object to the collision updates
             collision_objects.push(rail_objects[i]);
         }
     }
-
+    
     // update all dam objects in a similar manner
     for (let i = 0; i < dam_objects.length; i++) {
         update_rail_object(dam_objects[i],train);
@@ -626,34 +620,34 @@ function update() {
             dam_indices_to_remove.push(i);
         }
     }
-
+    
     // loop through collision objects
     let collision_indices = Array();
-
+    
     for (let i=0; i < collision_objects.length; i++) {
-
+        
         // update according to their logic
         collision_update(collision_objects[i],train);
-
+        
         // remove if collision animation is over (set in collision_update())
         if (!collision_objects[i].collision) {
             collision_indices.push(i);
         }
     }
-
+    
     // delete all objects that are out of scope or have been collected
     delete_indices_from_array(rail_indices_to_remove, rail_objects);
     delete_indices_from_array(collision_indices, collision_objects);
     delete_indices_from_array(dam_indices_to_remove, dam_objects);
-
+    
     // ========================= SPAWNING NEW OBJECTS ============================
     //
     if (time_now - rail_object_time > rail_object_rate) {
-
+        
         let kind = 'coin';
         let random_float = Math.random();
         let spawn_at_rail = null;
-
+        
         // there's different objects if the train is in star_phase
         if (!train.star_phase){
             if (eu_star_can_spawn &&
@@ -678,88 +672,88 @@ function update() {
             } else {
                 kind = 'coin';
             }
-
+            
         }
-
+        
         rail_objects.push(get_rail_object(kind,spawn_at_rail));
-
+        
         // bring the older objects to the top again
         for (let i = rail_objects.length; i--; ) {
             rail_objects[i].sprite.bringToTop();
         }
-
+        
         rail_object_time = time_now;
     }
-
+    
     // spawn new dam objects
     if (time_now - dam_object_time > dam_object_rate) {
         let total_dam_probability = 0;
         var random_number = Math.random();
-
+        
         for (let kind in dam_probabilities) {
-
+            
             // skip loop if the property is from prototype
             if (!dam_probabilities.hasOwnProperty(kind)) continue;
-
+            
             total_dam_probability += dam_probabilities[kind];
-
+            
             if (random_number < total_dam_probability) {
                 dam_objects.push(get_dam_object(kind));
-
+                
                 for (let i = dam_objects.length; i--; ) {
                     dam_objects[i].sprite.bringToTop();
                 }
-
+                
                 // get out of for loop
                 break;
             }
         }
         dam_object_time = time_now;
     }
-
+    
     for (let i = 0; i < eu_star_objects.length; i++) {
         eu_star_objects[i].sprite.bringToTop();
     }
-
+    
     // =========== update velocity after collision ============
     update_velocity();
-
+    
     // spawn new clouds
     if (Math.random() < 0.01) {
         generate_cloud();
     }
-
+    
     // update statistics
     meter_counter += time_delta * v / 1000.0;
-
+    
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
     text_score.y = Math.floor(panel.y + panel.height / 2 + 4);
     text_score.setText(get_metric_prefix(Math.floor(coin_counter), 2));
     text_score.font = 'SilkScreen';
-
+    
     text_distance.x = Math.floor(panel.x + panel.width / 4 * 3 + 1);
     text_distance.y = Math.floor(panel.y + panel.height / 2 + 4);
     text_distance.setText(
-        get_metric_prefix(Math.floor(meter_counter), 2) + "m"
-    );
+                          get_metric_prefix(Math.floor(meter_counter), 2) + "m"
+                          );
     text_distance.font = 'SilkScreen';
 }
 
 function update_velocity(scale) {
-
+    
     function scale_velocity(new_scale) {
         v = new_scale * v_default;
         rail_object_rate = rail_object_rate_default / new_scale;
         dam_object_rate = dam_object_rate_default / new_scale;
     }
-
+    
     if (scale == null) {
         //do a simple update according to the acceleration rules
         //
         if (last_scale_event == "collision")
         {
             let time_delta = time_now - time_last;
-
+            
             if ( time_now - last_velocity_scale_time < time_until_full_velocity) {
                 let v_drop = v_default * last_velocity_scale;
                 v += time_delta * (v_default - v_drop) / time_until_full_velocity;
@@ -780,7 +774,7 @@ function update_velocity(scale) {
                 scale_velocity(1.0);
             }
         }
-           
+        
     }
     else if (scale == "default") {
         // scale back to standard values
@@ -814,20 +808,20 @@ function update_velocity(scale) {
 
 function get_metric_prefix(decimal, number_digits) {
     let prefix = [
-        { value: 1E18, symbol: "E" },
-        { value: 1E15, symbol: "P" },
-        { value: 1E12, symbol: "T" },
-        { value: 1E09, symbol: "G" },
-        { value: 1E06, symbol: "M" },
-        { value: 1E03, symbol: "k" }
-    ];
+                  { value: 1E18, symbol: "E" },
+                  { value: 1E15, symbol: "P" },
+                  { value: 1E12, symbol: "T" },
+                  { value: 1E09, symbol: "G" },
+                  { value: 1E06, symbol: "M" },
+                  { value: 1E03, symbol: "k" }
+                  ];
     let expression = /\.0+$|(\.[0-9]*[1-9])0+$/;
     for (let i = 0; i < prefix.length; i++) {
         if (decimal >= prefix[i].value) {
             return (decimal / prefix[i].value)
-              .toFixed(number_digits)
-              .replace(expression, "$1")
-              + prefix[i].symbol;
+            .toFixed(number_digits)
+            .replace(expression, "$1")
+            + prefix[i].symbol;
         }
     }
     return decimal.toFixed(number_digits).replace(expression, "$1");
@@ -847,15 +841,15 @@ function generate_cloud() {
     let cloud = cloud_object_group.create(-60, cloud_height, cloud_type);
     cloud.checkWorldBounds = true;
     cloud.events.onOutOfBounds.add( function () {
-        if (cloud.x > canvas_width)
-            cloud.destroy();
-    });
+                                   if (cloud.x > canvas_width)
+                                   cloud.destroy();
+                                   });
     game.physics.arcade.enable(cloud);
     cloud.body.gravity.x = 2 + Math.random() * 4;
 }
 
 function delete_indices_from_array(indices, array) {
-
+    
     // delete object from rail_objects updated
     for (let i = indices.length - 1; i >= 0; i--) {
         array.splice(indices[i], 1);
@@ -867,35 +861,35 @@ function collision_update(object, train) {
         sound_bling.play();
         object.collision = false;
         let sprite = flying_coin_group.create(
-                                                object.sprite.x-object.sprite.width/2,
-                                                object.sprite.y-object.sprite.height/2,
-                                                "coin"
-                                             );
+                                              object.sprite.x-object.sprite.width/2,
+                                              object.sprite.y-object.sprite.height/2,
+                                              "coin"
+                                              );
         sprite.width = object.sprite.width;
         sprite.height = object.sprite.height;
         set_coin_sprite(sprite);
         sprite.anchor.setTo(0.5,0.5);
-
+        
         const coin_duration = 800;
         let coin_collect = game.add.tween(sprite).to(
-                        {
-                            x: text_score.x,
-                            y: text_score.y,
-                            width: sprite.width/2,
-                            height: sprite.height/2,
-                            alpha: .6
-                        },
-                        coin_duration,
-                        Phaser.Easing.Cubic.Out
-                     );
+                                                     {
+                                                     x: text_score.x,
+                                                     y: text_score.y,
+                                                     width: sprite.width/2,
+                                                     height: sprite.height/2,
+                                                     alpha: .6
+                                                     },
+                                                     coin_duration,
+                                                     Phaser.Easing.Cubic.Out
+                                                     );
         coin_collect.onComplete.add(function () {
-            update_coin_counter(1);
-            sprite.destroy();
-        });
+                                    update_coin_counter(1);
+                                    sprite.destroy();
+                                    });
         object.sprite.destroy();
         coin_collect.start();
     }
-
+    
     if (object.kind == "eurostar") {
         let time_delta = time_now - object.time_start;
         if (time_delta > eu_star_phase_duration) {
@@ -904,65 +898,65 @@ function collision_update(object, train) {
             train.animations.play(train_animations[train.rail]);
             train.indefeatable = false;
         } else if (time_delta === 0.0){
-
+            
             //gameplay actions
             sound_eu_star.play();
             update_coin_counter(10);
             object.sprite.animations.play("static");
-
+            
             //set new object properties
             let position_next = get_next_eu_star_position();
             object.sprite.anchor.setTo(0.5, 0.5);
             object.angle_index = position_next.angle_index;
             let scale_next = rail_distance_inner * 1.5
-                           / object.object_height_original;
+            / object.object_height_original;
             eu_star_objects.push(object);
             let auto_start = false;
             let delay = 0;
-
+            
             let sky_travel = game.add.tween(object.sprite).to(
-                                            {
-                                               x: position_next.x,
-                                               y: position_next.y
-                                            },
-                                            eu_star_travel_time,
-                                            Phaser.Easing.Cubic.Out,
-                                            auto_start,
-                                            delay
-                                            );
+                                                              {
+                                                              x: position_next.x,
+                                                              y: position_next.y
+                                                              },
+                                                              eu_star_travel_time,
+                                                              Phaser.Easing.Cubic.Out,
+                                                              auto_start,
+                                                              delay
+                                                              );
             let sky_scale = game.add.tween(object.sprite.scale).to(
-                                            {
-                                               x: scale_next,
-                                               y: scale_next
-                                            },
-                                            eu_star_travel_time,
-                                            Phaser.Easing.Cubic.Out,
-                                            auto_start,
-                                            delay
-                                            );
-
+                                                                   {
+                                                                   x: scale_next,
+                                                                   y: scale_next
+                                                                   },
+                                                                   eu_star_travel_time,
+                                                                   Phaser.Easing.Cubic.Out,
+                                                                   auto_start,
+                                                                   delay
+                                                                   );
+            
             if (position_next.star_is_last) {
                 eu_star_can_spawn = false;
                 sky_travel.onComplete.add(eu_flag_complete_event);
             } else {
                 eu_star_can_spawn = true;
             }
-
-
+            
+            
             sky_travel.start();
             sky_scale.start();
-
+            
             // set train properties
             train.indefeatable = false;
             train.star_phase = true;
-
+            
             train.animations.play(train_star_animations[train.rail]);
-
+            
             // velocities
             update_velocity("star");
         }
     }
-
+    
     if (train.star_phase) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
@@ -978,11 +972,11 @@ function collision_update(object, train) {
                 update_coin_counter(10);
             } else{
                 object.sprite.x = object.point_start_x
-                                + object.direction
-                                * time_delta;
+                + object.direction
+                * time_delta;
                 object.sprite.y = object.point_start_y
-                                - time_delta / 100.0
-                                + Math.pow(time_delta, 2) / 1000.0;
+                - time_delta / 100.0
+                + Math.pow(time_delta, 2) / 1000.0;
                 object.sprite.angle = object.direction * time_delta / 5;
             }
         }
@@ -1005,10 +999,10 @@ function collision_update(object, train) {
                 update_velocity("collision");
             } else {
                 object.sprite.x = object.point_start_x
-                                + object.direction * time_delta;
+                + object.direction * time_delta;
                 object.sprite.y = object.point_start_y
-                                - time_delta / 100.0
-                                + Math.pow(time_delta, 2) / 1000.0;
+                - time_delta / 100.0
+                + Math.pow(time_delta, 2) / 1000.0;
                 object.sprite.angle = object.direction * time_delta / 5;
             }
         }
@@ -1024,25 +1018,25 @@ function flip_x(x) {
 }
 
 function get_dam_object(kind) {
-
+    
     // get spawn rail
     let random_rail = Math.floor(Math.random() * 2);
-
+    
     // get corresponding starting position
     let dam_width = canvas_width / 2
-                  - 1.5 * rail_distance_outer
-                  - rail_distance_inner - 35;
+    - 1.5 * rail_distance_outer
+    - rail_distance_inner - 35;
     let dam_offset = random_rail * (canvas_width / 2
-                   + 1.5 * rail_distance_outer
-                   + rail_distance_inner + 35);
+                                    + 1.5 * rail_distance_outer
+                                    + rail_distance_inner + 35);
     let point_start_x = dam_width * Math.random() + dam_offset;
     let object_height;
     let object_width;
     let object_height_original;
     let object_width_original;
-
+    
     let sprite = rail_object_group.create(0, 0, kind);
-
+    
     if (kind == "tree0") {
         object_height = 40;
     } else if (kind == "tree1") {
@@ -1058,23 +1052,23 @@ function get_dam_object(kind) {
     } else if (kind == "donald") {
         object_height = 25;
     }
-
+    
     sprite.anchor.setTo(0.5, 0.5);
-
+    
     // set start x-value
     sprite.x = point_start_x;
     // flip_z is necessary due to different orientation of screen coordinates
     sprite.y = flip_z(horizon + object_height / 2);
-
+    
     // get the original height of the object to scale it to the wanted heifht
     object_height_original = sprite.height;
     object_width_original = sprite.width;
-
+    
     //get and set new scale
     let scale_next = object_height / object_height_original;
     sprite.scale.setTo(scale_next, scale_next);
     object_width = sprite.width;
-
+    
     let rail_object = {
         "kind": kind,
         "rail": -1,
@@ -1089,7 +1083,7 @@ function get_dam_object(kind) {
         "y": 0,
         "collision": false
     };
-
+    
     return rail_object;
 }
 
@@ -1101,19 +1095,19 @@ function get_rail_object(kind,spawn_at_rail)
         random_rail = Math.floor(Math.random() * 3);
     else
         random_rail = spawn_at_rail;
-
+    
     //get corresponding starting position
     let point_start_x = canvas_width / 2
-                      - rail_distance_outer - rail_distance_inner
-                      + random_rail * (rail_distance_outer
-                      + rail_distance_inner);
+    - rail_distance_outer - rail_distance_inner
+    + random_rail * (rail_distance_outer
+                     + rail_distance_inner);
     let object_height;
     let object_width;
     let object_height_original;
     let object_width_original;
-
+    
     let sprite = rail_object_group.create(0, 0, kind);
-
+    
     if (kind == 'wall') {
         object_height = rail_distance_inner * 0.80;
     } else if (kind == 'wall_frauke') {
@@ -1129,24 +1123,24 @@ function get_rail_object(kind,spawn_at_rail)
         object_height = rail_distance_outer;
         set_coin_sprite(sprite);
     }
-
+    
     sprite.anchor.setTo(0.5, 0.5);
-
+    
     // set start x-value
     sprite.x = point_start_x;
-
+    
     // flip_z is necessary due to different orientation of screen coordinates
     sprite.y = flip_z(horizon + object_height / 2);
-
+    
     // get the original height of the object to scale it to the wanted heifht
     object_height_original = sprite.height;
     object_width_original = sprite.width;
-
+    
     // get and set new scale
     let scale_next = object_height / object_height_original;
     sprite.scale.setTo(scale_next, scale_next);
     object_width = sprite.width;
-
+    
     let rail_object = {
         "kind": kind,
         "rail": random_rail,
@@ -1161,7 +1155,7 @@ function get_rail_object(kind,spawn_at_rail)
         "point_start_x": point_start_x,
         "collision": false
     };
-
+    
     return rail_object;
 }
 
@@ -1180,48 +1174,48 @@ function set_coin_sprite(sprite){
 }
 
 function update_rail_object(object, schulzzug) {
-
+    
     // get current time
     let time = game.time.now;
     let time_delta = time - object.time_start;
     object.time_start = time;
-
+    
     // get position between horizon and camera
     let y = object.y + v * time_delta;
     object.y = y;
-
+    
     // get center position of test object
     let sprite_center_x = camera_x
-                        - horizon_distance / (horizon_distance - y)
-                        * (camera_x - object.point_start_x);
-
+    - horizon_distance / (horizon_distance - y)
+    * (camera_x - object.point_start_x);
+    
     // set center position of object
     object.sprite.x = sprite_center_x;
-
+    
     // get new width
     let width = -horizon_distance * ((camera_x
-              - (object.point_start_x + object.object_width / 2))
-              / (horizon_distance - y) - (camera_x
-              - (object.point_start_x - object.object_width / 2))
-              / (horizon_distance - y));
-
+                                      - (object.point_start_x + object.object_width / 2))
+                                     / (horizon_distance - y) - (camera_x
+                                                                 - (object.point_start_x - object.object_width / 2))
+                                     / (horizon_distance - y));
+    
     // get and set new scale of object
     let wScale = width / object.object_width_original;
     object.sprite.scale.setTo(wScale);
-
+    
     // get vertical coordinate
     let height = camera_heigth - horizon_distance
-               / (horizon_distance - y) * (camera_heigth
-               - object.object_height / 2) + horizon;
+    / (horizon_distance - y) * (camera_heigth
+                                - object.object_height / 2) + horizon;
     object.sprite.y = flip_z(height);
-
+    
     // get collision range, destroy if out of scope
     if (y > horizon_distance)
     {
         object.sprite.destroy();
         object.active = false;
     }
-
+    
     if (y > y_collision_range_start &&
         y < y_collision_range_end &&
         !schulzzug.indefeatable) {
@@ -1248,11 +1242,11 @@ function activateIosMode() {
 
 function update_coin_counter(coins) {
     //check if too negative
-
+    
     // statistics display
     if (Math.abs(coins) > 1){
         let style = {align:"center",
-                    font:'30px SilkScreen monospace'}
+            font:'30px SilkScreen monospace'}
         let base_text = "";
         if (coins>0) {
             base_text = "+";
@@ -1261,30 +1255,30 @@ function update_coin_counter(coins) {
             base_text = "";
             style.fill = "red";
         }
-
+        
         console.log(style);
         let text_coin;
         text_coin = game.add.text(train.x+train.width/2, train.y, "0", style);
         text_coin.anchor.set(0.5);
         text_coin.setText(base_text+Math.round(coins));
         text_coin.font = 'SilkScreen';
-
+        
         let up_duration = 1000;
         let coin_up = game.add.tween(text_coin).to(
-                            {
-                                y: 0,
-                                alpha: 0
-                            },
-                            up_duration,
-                            Phaser.Easing.Linear.None
-        );
-
+                                                   {
+                                                   y: 0,
+                                                   alpha: 0
+                                                   },
+                                                   up_duration,
+                                                   Phaser.Easing.Linear.None
+                                                   );
+        
         coin_up.onComplete.add( function () {
-            text_coin.destroy()
-        });
+                               text_coin.destroy()
+                               });
         coin_up.start();
     }
-
+    
     if (coin_counter + coins < 0) {
         coin_counter = 0;
     } else {
@@ -1296,79 +1290,79 @@ function eu_flag_complete_event() {
     let eu_flag_radius = canvas_width / 1.5;
     let eu_flag_height = canvas_width / 3.0;
     let eu_flag_position = {
-       x: canvas_width / 2.0,
-       y: canvas_height + eu_flag_radius + eu_flag_height / 2.0
+    x: canvas_width / 2.0,
+    y: canvas_height + eu_flag_radius + eu_flag_height / 2.0
     };
-
+    
     for(let i = eu_stars_count - 1; i >= 0; i--) {
         let star = eu_star_objects[i];
         let star_angle = get_angle_from_index(star.angle_index);
         let position_next = {
-            x: eu_flag_position.x + eu_flag_radius * Math.cos(star_angle),
-            y: eu_flag_position.y + eu_flag_radius * Math.sin(star_angle)
+        x: eu_flag_position.x + eu_flag_radius * Math.cos(star_angle),
+        y: eu_flag_position.y + eu_flag_radius * Math.sin(star_angle)
         };
         let scale_next = eu_flag_height / star.object_height_original;
         let star_alpha = 0;
         let auto_start = false;
         let delay = eu_star_phase_duration - eu_star_travel_time;
-
+        
         let pulse_count = 12;
         let pulse_duration = delay / (2 * pulse_count);
         let pulse_scale = star.sprite.height
-                        / star.object_height_original * 1.3;
+        / star.object_height_original * 1.3;
         let pulse_delay = 0;
         let pulse_yoyo = true;
-
+        
         let star_pulse = game.add.tween(star.sprite.scale).to(
-                        {
-                            x: pulse_scale,
-                            y: pulse_scale
-                        },
-                        pulse_duration,
-                        Phaser.Easing.Bounce.InOut,
-                        auto_start,
-                        pulse_delay,
-                        pulse_count,
-                        pulse_yoyo
-                     );
-
+                                                              {
+                                                              x: pulse_scale,
+                                                              y: pulse_scale
+                                                              },
+                                                              pulse_duration,
+                                                              Phaser.Easing.Bounce.InOut,
+                                                              auto_start,
+                                                              pulse_delay,
+                                                              pulse_count,
+                                                              pulse_yoyo
+                                                              );
+        
         let star_travel = game.add.tween(star.sprite).to(
-                        {
-                            alpha: star_alpha,
-                            x: position_next.x,
-                            y: position_next.y
-                        },
-                        eu_star_travel_time,
-                        Phaser.Easing.Cubic.In,
-                        auto_start
-                        );
+                                                         {
+                                                         alpha: star_alpha,
+                                                         x: position_next.x,
+                                                         y: position_next.y
+                                                         },
+                                                         eu_star_travel_time,
+                                                         Phaser.Easing.Cubic.In,
+                                                         auto_start
+                                                         );
         let star_scale = game.add.tween(star.sprite.scale).to(
-                        {
-                            x: scale_next,
-                            y: scale_next
-                        },
-                        eu_star_travel_time,
-                        Phaser.Easing.Cubic.In,
-                        auto_start
-                        );
+                                                              {
+                                                              x: scale_next,
+                                                              y: scale_next
+                                                              },
+                                                              eu_star_travel_time,
+                                                              Phaser.Easing.Cubic.In,
+                                                              auto_start
+                                                              );
         if (i == 0) {
             star_travel.onComplete.add(function(target, tween) {
-                target.destroy();
-                update_velocity("increase_default_velocity");
-                eu_star_can_spawn = true;
-            });
+                                       target.destroy();
+                                       update_velocity("increase_default_velocity");
+                                       eu_star_can_spawn = true;
+                                       });
         } else {
             star_travel.onComplete.add(function(target, tween) {
-                target.destroy();
-            });
+                                       target.destroy();
+                                       });
         }
         eu_star_objects.pop();
-
+        
         star_pulse.onComplete.add(function(target, tween) {
-            star_travel.start();
-            star_scale.start();
-        });
-
+                                  star_travel.start();
+                                  star_scale.start();
+                                  });
+        
         star.sprite.animations.play("blink");
         star_pulse.start();
     }
@@ -1380,19 +1374,19 @@ function get_next_eu_star_position() {
     eu_stars_indices.splice(index, 1);
     let angle = get_angle_from_index(index_phi);
     let position_next = {
-        x: eu_position.x + eu_radius * Math.cos(angle),
-        y: eu_position.y + eu_radius * Math.sin(angle),
-        star_is_last: false,
-        angle_index: index_phi
+    x: eu_position.x + eu_radius * Math.cos(angle),
+    y: eu_position.y + eu_radius * Math.sin(angle),
+    star_is_last: false,
+    angle_index: index_phi
     };
-
+    
     if (eu_stars_indices.length === 0) {
         position_next.star_is_last = true;
         for(let i=0; i<eu_stars_count; i++) {
             eu_stars_indices.push(i);
         }
     }
-
+    
     return position_next;
 }
 
@@ -1403,9 +1397,9 @@ function get_angle_from_index(index_phi) {
 
 function is_retina() {
     let query = "(-webkit-min-device-pixel-ratio: 2), "
-              + "(min-device-pixel-ratio: 2), "
-              + "(min-resolution: 192dpi)";
-
+    + "(min-device-pixel-ratio: 2), "
+    + "(min-resolution: 192dpi)";
+    
     if (matchMedia(query).matches) {
         return true;
     } else {
