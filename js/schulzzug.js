@@ -251,8 +251,8 @@ function preload() {
         );
         game.load.spritesheet(
             'eurostar',
-            'assets/eurostar_animation.png',
-            72,60
+            'assets/star_animation.png',
+            60,64
         );
     } else {
         game.load.spritesheet(
@@ -265,10 +265,15 @@ function preload() {
             'assets/Trains_animation.50.png',
             120, 232
         );
+        //game.load.spritesheet(
+        //    'eurostar',
+        //    'assets/star_animation.50.png',
+        //    30,32
+        //);
         game.load.spritesheet(
             'eurostar',
-            'assets/eurostar_animation.50.png',
-            36,30
+            'assets/star_animation.png',
+            60,64
         );
     }
 
@@ -369,6 +374,16 @@ function create() {
     // sprite group fot rail objects
     rail_object_group = game.add.group();
 
+    // statistics display
+    let style = "align:center;font-family:'SilkScreen',monospace";
+    panel = game.add.sprite(0, canvas_height - 72, 'panel');
+    text_score = game.add.text(0, canvas_height - 72, "0", style);
+    text_score.anchor.set(0.5);
+    text_distance = game.add.text(0, canvas_height - 72, "0m", style);
+    text_distance.anchor.set(0.5);
+
+    flying_coin_group = game.add.group();
+
     // add player (train)
     train = game.add.sprite(train_position[1], train_spacing_y, 'train');
     game.physics.arcade.enable(train);
@@ -398,13 +413,6 @@ function create() {
     train.indefeatable = false;
     train.star_phase = false;
 
-    // statistics display
-    let style = "align:center;font-family:'SilkScreen',monospace";
-    panel = game.add.sprite(0, canvas_height - 72, 'panel');
-    text_score = game.add.text(0, canvas_height - 72, "0", style);
-    text_score.anchor.set(0.5);
-    text_distance = game.add.text(0, canvas_height - 72, "0m", style);
-    text_distance.anchor.set(0.5);
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -580,7 +588,7 @@ function update() {
         // remove if the object is now out of scope
         if (!rail_objects[i].active) {
             rail_indices_to_remove.push(i);
-            if (rail_objects[i].kind == "star") {
+            if (rail_objects[i].kind == "eurostar") {
                 eu_star_can_spawn = true;
             }
         }
@@ -854,9 +862,35 @@ function delete_indices_from_array(indices, array) {
 function collision_update(object, train) {
     if (object.kind == "coin") {                                                // make them fly @TODO #35
         sound_bling.play();
-        object.sprite.destroy();
-        update_coin_counter(1);
         object.collision = false;
+        let sprite = flying_coin_group.create(
+                                                object.sprite.x-object.sprite.width/2,
+                                                object.sprite.y-object.sprite.height/2,
+                                                "coin"
+                                             );
+        sprite.width = object.sprite.width;
+        sprite.height = object.sprite.height;
+        set_coin_sprite(sprite);
+        sprite.anchor.setTo(0.5,0.5);
+
+        const coin_duration = 800;
+        let coin_collect = game.add.tween(sprite).to(
+                        {
+                            x: text_score.x,
+                            y: text_score.y,
+                            width: sprite.width/2,
+                            height: sprite.height/2,
+                            alpha: .6
+                        },
+                        coin_duration,
+                        Phaser.Easing.Cubic.Out
+                     );
+        coin_collect.onComplete.add(function () {
+            update_coin_counter(1);
+            sprite.destroy();
+        });
+        object.sprite.destroy();
+        coin_collect.start();
     }
 
     if (object.kind == "eurostar") {
@@ -1086,18 +1120,7 @@ function get_rail_object(kind)
         sprite.animations.play("blink");
     } else if (kind == 'coin') {
         object_height = rail_distance_outer;
-
-        sprite.animations.add('rotate0', [0, 1, 2], 8, true);
-        sprite.animations.add('rotate1', [1, 2, 0], 8, true);
-        sprite.animations.add('rotate2', [2, 0, 1], 8, true);
-        let flip = Math.random();
-        if (flip < 0.333) {
-            sprite.animations.play('rotate0');
-        } else if (flip < 0.667) {
-            sprite.animations.play('rotate1');
-        } else {
-            sprite.animations.play('rotate2');
-        }
+        set_coin_sprite(sprite);
     }
 
     sprite.anchor.setTo(0.5, 0.5);
@@ -1133,6 +1156,20 @@ function get_rail_object(kind)
     };
 
     return rail_object;
+}
+
+function set_coin_sprite(sprite){
+    sprite.animations.add('rotate0', [0, 1, 2], 8, true);
+    sprite.animations.add('rotate1', [1, 2, 0], 8, true);
+    sprite.animations.add('rotate2', [2, 0, 1], 8, true);
+    let flip = Math.random();
+    if (flip < 0.333) {
+        sprite.animations.play('rotate0');
+    } else if (flip < 0.667) {
+        sprite.animations.play('rotate1');
+    } else {
+        sprite.animations.play('rotate2');
+    }
 }
 
 function update_rail_object(object, schulzzug) {
