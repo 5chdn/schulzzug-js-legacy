@@ -459,7 +459,7 @@ function update() {
             train.rail > 0
         ) {
             rail_is_changing = true;
-            if (!train.star_phase) {
+            if ( (!train.star_phase) && (!train.indefeatable) ){
                 train.animations.play("jump_left");
             }
             jump_direction = -1;
@@ -472,7 +472,7 @@ function update() {
             train.rail < 2
         ) {
             rail_is_changing = true;
-            if (!train.star_phase) {
+            if ( (!train.star_phase) && (!train.indefeatable) ){
                 train.animations.play("jump_right");
             }
             jump_direction = +1;
@@ -520,10 +520,12 @@ function update() {
             rail_can_change = true;
             train_can_jump_up = true;
             train_is_jumping_up = false;
-            if (!train.star_phase) {
-                train.animations.play(train_animations[train.rail]);
-            } else {
+            if (train.star_phase) {
                 train.animations.play(train_star_animations[train.rail]);
+            } else if (train.indefeatable) {
+                train.animations.play(train_collision_animations[train.rail]);
+            } else {
+                train.animations.play(train_animations[train.rail]);
             }
         }
     }
@@ -545,10 +547,12 @@ function update() {
             rail_can_change = true;
             train_can_jump_up = true;
             rail_is_changing = false;
-            if (!train.star_phase) {
-                train.animations.play(train_animations[train.rail]);
-            } else {
+            if (train.star_phase) { 
                 train.animations.play(train_star_animations[train.rail]);
+            } else if (train.indefeatable) {
+                train.animations.play(train_collision_animations[train.rail]);
+            } else {
+                train.animations.play(train_animations[train.rail]);
             }
         }
     }
