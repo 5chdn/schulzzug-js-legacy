@@ -36,7 +36,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 12;
+const eu_stars_count = 2;
 const delta_phi = 360 / eu_stars_count;
 let eu_stars_indices = Array();
 for (let i = 0; i < eu_stars_count; i++) {
@@ -188,9 +188,15 @@ let sound_eu_star;
 // ============================ COLLISIONS =====================================
 const wall_coin_penalty = -100;
 const wall_animation_length = 1000;
+const time_until_full_velocity = 5000;
+let last_velocity_scale_time;
+let last_velocity_scale = 1;
+let last_scale_event = "default";
+const collision_velocity_drop_ratio = 0.1;
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let time_now;
+let time_last;
 
 // ======================================= CREATE GAME ENGINE ==================
 let game = new Phaser.Game(
@@ -338,7 +344,9 @@ function create() {
     rail_object_time = game.time.now;
     dam_object_time = game.time.now;
     key_change_time = game.time.now;
+    last_velocity_scale_time = game.time.now;
     time_now = game.time.now;
+    time_last = time_now - 1;
 
     // add the animated rails
     let rails = game.add.sprite(0, 208, 'rails');
@@ -407,7 +415,7 @@ function update() {
     }
 
     //time handling
-    let time_last = time_now;
+    time_last = time_now;
     time_now = game.time.now;
     let time_delta = time_now - time_last;
 
@@ -690,6 +698,9 @@ function update() {
         eu_star_objects[i].sprite.bringToTop();
     }
 
+    // =========== update velocity after collision ============
+    update_velocity();
+
     // spawn new clouds
     if (Math.random() < 0.01) {
         generate_cloud();
@@ -709,6 +720,73 @@ function update() {
         get_metric_prefix(Math.floor(meter_counter), 2) + "m"
     );
     text_distance.font = 'SilkScreen';
+}
+
+function update_velocity(scale) {
+
+    function scale_velocity(new_scale) {
+        v = new_scale * v_default;
+        rail_object_rate = rail_object_rate_default / new_scale;
+        dam_object_rate = dam_object_rate_default / new_scale;
+    }
+
+    if (scale == null) {
+        //do a simple update according to the acceleration rules
+        //
+        if (last_scale_event == "collision")
+        {
+            let time_delta = time_now - time_last;
+
+            if ( time_now - last_velocity_scale_time < time_until_full_velocity) {
+                let v_drop = v_default * last_velocity_scale;
+                v += time_delta * (v_default - v_drop) / time_until_full_velocity;
+                let rail_object_rate_drop = rail_object_rate_default / last_velocity_scale;
+                let dam_object_rate_drop = dam_object_rate_default / last_velocity_scale;
+                rail_object_rate += time_delta / time_until_full_velocity * (rail_object_rate_default - rail_object_rate_drop);
+                dam_object_rate += time_delta / time_until_full_velocity * (dam_object_rate_default - dam_object_rate_drop);
+            }
+            else {
+                last_scale_event = "default";
+                scale_velocity(1.0);
+            }
+        }
+        else if (last_scale_event == "stern")
+        {
+            if (time_now - last_velocity_scale_time > eu_star_phase_duration) {
+                last_scale_event = "default";
+                scale_velocity(1.0);
+            }
+        }
+           
+    }
+    else if (scale == "default") {
+        // scale back to standard values
+        last_scale_event = "default";
+        scale_velocity(1.0);
+    }
+    else if (scale == "collision") {
+        // scale to wanted scale
+        last_scale_event = "collision";
+        last_velocity_scale = collision_velocity_drop_ratio;
+        last_velocity_scale_time = time_now;
+        scale_velocity(last_velocity_scale);
+    }
+    else if (scale == "stern") {
+        last_scale_event = "stern";
+        last_velocity_scale = eu_star_phase_factor;
+        last_velocity_scale_time = time_now;
+        scale_velocity(last_velocity_scale);
+    }
+    else if (scale == "increase_default_velocity"){
+        let v_scale = v_default / (v_default + eu_event_delta_v);
+        v_default += eu_event_delta_v;
+        v = v_default;
+        rail_object_rate_default *= v_scale;
+        dam_object_rate_default *= v_scale;
+        rail_object_rate = rail_object_rate_default;
+        dam_object_rate = dam_object_rate_default;
+        last_scale_event = "default";
+    }
 }
 
 function get_metric_prefix(decimal, number_digits) {
@@ -767,9 +845,6 @@ function collision_update(object, train) {
     if (object.kind == "star") {
         let time_delta = time_now - object.time_start;
         if (time_delta > eu_star_phase_duration) {
-            v = v_default;
-            rail_object_rate = rail_object_rate_default;
-            dam_object_rate = dam_object_rate_default;  
             train.star_phase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
@@ -829,10 +904,7 @@ function collision_update(object, train) {
             train.animations.play(train_star_animations[train.rail]);
 
             // velocities
-            v = v_default * eu_star_phase_factor;
-            rail_object_rate = rail_object_rate_default / eu_star_phase_factor;
-            dam_object_rate = dam_object_rate_default / eu_star_phase_factor;
-
+            update_velocity("stern");
         }
     }
 
@@ -875,6 +947,7 @@ function collision_update(object, train) {
                 train.animations.play(train_collision_animations[train.rail]);
                 train.indefeatable = true;
                 update_coin_counter(wall_coin_penalty);
+                update_velocity("collision");
             } else {
                 object.sprite.x = object.point_start_x
                                 + object.direction * time_delta;
@@ -1179,13 +1252,7 @@ function eu_flag_complete_event() {
         if (i == 0) {
             star_travel.onComplete.add(function(target, tween) {
                 target.destroy();
-                let v_scale = v_default / (v_default + eu_event_delta_v);
-                v_default += eu_event_delta_v;
-                v = v_default;
-                rail_object_rate_default *= v_scale;
-                dam_object_rate_default *= v_scale;
-                rail_object_rate = rail_object_rate_default;
-                dam_object_rate = dam_object_rate_default;                   // never used @TODO #37
+                update_velocity("increase_default_velocity");
                 eu_star_can_spawn = true;
             });
         } else {
