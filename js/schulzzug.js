@@ -36,7 +36,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 2;
+const eu_stars_count = 12;
 const delta_phi = 360 / eu_stars_count;
 let eu_stars_indices = Array();
 for (let i = 0; i < eu_stars_count; i++) {
@@ -653,13 +653,17 @@ function update() {
 
         let kind = 'coin';
         let random_float = Math.random();
+        let spawn_at_rail = null;
 
         // there's different objects if the train is in star_phase
         if (!train.star_phase){
-            if (eu_star_can_spawn
-                && random_float < eu_star_appearance_probability) {
+            if (eu_star_can_spawn &&
+                rail_objects.length > 0 &&
+                rail_objects[rail_objects.length-1].kind == 'wall' &&
+                random_float < eu_star_appearance_probability) {
                 kind = 'eurostar';
                 eu_star_can_spawn = false;
+                spawn_at_rail = rail_objects[rail_objects.length-1].rail;
             }
             else if (random_float < eu_star_appearance_probability + 0.3) {
                 kind = 'wall';
@@ -678,7 +682,7 @@ function update() {
 
         }
 
-        rail_objects.push(get_rail_object(kind));
+        rail_objects.push(get_rail_object(kind,spawn_at_rail));
 
         // bring the older objects to the top again
         for (let i = rail_objects.length; i--; ) {
@@ -860,7 +864,7 @@ function delete_indices_from_array(indices, array) {
 }
 
 function collision_update(object, train) {
-    if (object.kind == "coin") {                                                // make them fly @TODO #35
+    if (object.kind == "coin") {
         sound_bling.play();
         object.collision = false;
         let sprite = flying_coin_group.create(
@@ -1090,10 +1094,14 @@ function get_dam_object(kind) {
     return rail_object;
 }
 
-function get_rail_object(kind)
+function get_rail_object(kind,spawn_at_rail)
 {
     // get spawn rail
-    let random_rail = Math.floor(Math.random() * 3);
+    let random_rail;
+    if (spawn_at_rail == null)
+        random_rail = Math.floor(Math.random() * 3);
+    else
+        random_rail = spawn_at_rail;
 
     //get corresponding starting position
     let point_start_x = canvas_width / 2
