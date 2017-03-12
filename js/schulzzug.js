@@ -48,7 +48,7 @@ let eu_star_can_spawn = true;
 const eu_event_delta_v = 10;
 
 // each time it's possible, a star will appear
-const eu_star_appearance_probability = 1.0;
+const eu_star_appearance_probability = 0.1;
 
 // ===================== STERNPHASE DEFINTIIONS ================================
 const eu_star_phase_duration = 8000;
@@ -68,7 +68,7 @@ let key_space;
 let key_mute;
 
 // time after which a new control command can be given (ms)
-const key_change_time_block = 160;
+const key_change_time_block = 200;
 let key_mute_block = key_change_time_block;
 
 // last time a control command was given
@@ -88,12 +88,12 @@ let rail_object_time;
 let dam_object_rate_default = 200;
 
 // the current rate (changes when there's changes in velocity)
-// let dam_object_rate = dam_object_rate_default;                               // never used @TODO #37
+let dam_object_rate = dam_object_rate_default;                               // never used @TODO #37
 
 // time of last dam object appearance
-// let dam_object_time;                                                         // never used @TODO #37
+let dam_object_time;                                                         // never used @TODO #37
 
-const dam_probabilities = {
+let dam_probabilities = {
     "tree0" : 0.0200,
     "tree1" : 0.0200,
     "tree2" : 0.0002, // owls :)
@@ -102,6 +102,19 @@ const dam_probabilities = {
     "donald": 0.0020,
     "frauke": 0.0020,
 };
+
+//norm the sum of those probabilities to one
+let dam_probability_norm = 0;
+for (kind in dam_probabilities)
+{
+    if (!dam_probabilities.hasOwnProperty(kind)) continue;
+    dam_probability_norm += dam_probabilities[kind];
+}
+for (kind in dam_probabilities)
+{
+    if (!dam_probabilities.hasOwnProperty(kind)) continue;
+    dam_probabilities[kind] /= dam_probability_norm;
+}
 
 // objects for storing arrays and sprite groups:
 // - for creating an object sprite in the right rail group
@@ -322,7 +335,7 @@ function create() {
 
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
-    // dam_object_time = game.time.now;                                         // never used @TODO #37
+    dam_object_time = game.time.now;                                         // never used @TODO #37
     key_change_time = game.time.now;
     time_now = game.time.now;
 
@@ -648,19 +661,29 @@ function update() {
     }
 
     // spawn new dam objects
-    for (let kind in dam_probabilities) {
+    if (time - dam_object_time > dam_object_rate) {
+        let total_dam_probability = 0;
+        var random_number = Math.random();
 
-        // skip loop if the property is from prototype
-        if (!dam_probabilities.hasOwnProperty(kind)) continue;
+        for (let kind in dam_probabilities) {
 
-        let probability = dam_probabilities[kind];                              // does not respect speed @TODO #37
-        if (Math.random() < probability) {
-            dam_objects.push(get_dam_object(kind));
+            // skip loop if the property is from prototype
+            if (!dam_probabilities.hasOwnProperty(kind)) continue;
 
-            for (let i = dam_objects.length; i--; ) {
-                dam_objects[i].sprite.bringToTop();
+            total_dam_probability += dam_probabilities[kind];
+
+            if (random_number < total_dam_probability) {
+                dam_objects.push(get_dam_object(kind));
+
+                for (let i = dam_objects.length; i--; ) {
+                    dam_objects[i].sprite.bringToTop();
+                }
+
+                // get out of for loop
+                break;
             }
         }
+        dam_object_time = time;
     }
 
     for (let i = 0; i < eu_star_objects.length; i++) {
@@ -746,7 +769,7 @@ function collision_update(object, train) {
         if (time_delta > eu_star_phase_duration) {
             v = v_default;
             rail_object_rate = rail_object_rate_default;
-            // dam_object_rate = dam_object_rate_default;                       // never used @TODO #37
+            dam_object_rate = dam_object_rate_default;  
             train.star_phase = false;
             object.collision = false;
             train.animations.play(train_animations[train.rail]);
@@ -808,7 +831,7 @@ function collision_update(object, train) {
             // velocities
             v = v_default * eu_star_phase_factor;
             rail_object_rate = rail_object_rate_default / eu_star_phase_factor;
-            // dam_object_rate = dam_object_rate_default / eu_star_phase_factor;// never used @TODO #37
+            dam_object_rate = dam_object_rate_default / eu_star_phase_factor;
 
         }
     }
@@ -1161,7 +1184,7 @@ function eu_flag_complete_event() {
                 rail_object_rate_default *= v_scale;
                 dam_object_rate_default *= v_scale;
                 rail_object_rate = rail_object_rate_default;
-                // dam_object_rate = dam_object_rate_default;                   // never used @TODO #37
+                dam_object_rate = dam_object_rate_default;                   // never used @TODO #37
                 eu_star_can_spawn = true;
             });
         } else {
