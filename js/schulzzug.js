@@ -184,6 +184,8 @@ let sound_jump;
 let sound_whistle;
 let sound_background;
 let sound_eu_star;
+let sound_bg_music;
+let bg_music_bpm = 120; //the bg_music has 120 BPM
 
 // ============================ COLLISIONS =====================================
 const wall_coin_penalty = -100;
@@ -305,6 +307,10 @@ function preload() {
                                 'sounds/whistle.ogg',
                                 'sounds/whistle.wav'
                                 ]);
+    game.load.audio('bg_music', [
+                                'sounds/die_internationale_8bit_simple_loop.mp3',
+                                'sounds/die_internationale_8bit_simple_loop.ogg'
+                                ]);
 }
 
 // =============== PHASER CREATE GAME ENVIRONMENT ==============================
@@ -336,22 +342,33 @@ function create() {
     sound_bling = game.add.audio('bling');
     sound_bling.volume = 0.2;
     sound_smash = game.add.audio('smash');
-    sound_smash.volume = 0.2;
+    sound_smash.volume = 0.15;
     sound_jump = game.add.audio('jump');
     sound_jump.volume = 0.25;
     sound_eu_star = game.add.audio('star');
     sound_eu_star.volume = 0.5;
+    sound_eu_star.onStop.add( function () {
+        switch_bg_music();
+    });
+    sound_eu_star.onPlay.add( function () {
+        switch_bg_music();
+    });
     // sound_win = game.add.audio('tada');                                      // never used @TODO #36
     sound_whistle = game.add.audio('whistle');
     sound_whistle.volume = 1;
     sound_background = game.add.audio('ratter');
     sound_background.volume = 0.21;
     
+    sound_bg_music = game.add.audio('bg_music');
+    sound_bg_music.volume = 0.5;
+    sound_bg_music.loop = true;
+    sound_bg_music.play();
+
     // start background train sound as loop
     game.sound.mute = false;
     sound_background.loop = true;
     sound_background.play();
-    
+
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
     dam_object_time = game.time.now;
@@ -1411,4 +1428,17 @@ function is_retina() {
         // do non high-dpi stuff
     }
     return false;
+}
+
+function switch_bg_music() {
+    // in order to ensure that music resumes playing
+    // in blocks of 4 bars
+    if (sound_bg_music.isPlaying) {
+        sound_bg_music.pause();
+        let blocklength_of_4_bars_in_ms = 1 / (bg_music_bpm / 4 / 60) * 4 * 1000;
+        let current_block = Math.floor(sound_bg_music.pausedPosition / blocklength_of_4_bars_in_ms);
+        sound_bg_music.pausedPosition = current_block * blocklength_of_4_bars_in_ms; 
+    } else {
+        sound_bg_music.resume();
+    }
 }
