@@ -334,12 +334,18 @@ function create() {
     
     // sounds
     sound_bling = game.add.audio('bling');
+    sound_bling.volume = 0.2;
     sound_smash = game.add.audio('smash');
+    sound_smash.volume = 0.2;
     sound_jump = game.add.audio('jump');
+    sound_jump.volume = 0.25;
     sound_eu_star = game.add.audio('star');
+    sound_eu_star.volume = 0.5;
     // sound_win = game.add.audio('tada');                                      // never used @TODO #36
     sound_whistle = game.add.audio('whistle');
+    sound_whistle.volume = 1;
     sound_background = game.add.audio('ratter');
+    sound_background.volume = 0.21;
     
     // start background train sound as loop
     game.sound.mute = false;
