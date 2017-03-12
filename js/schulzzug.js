@@ -1252,17 +1252,22 @@ function update_coin_counter(coins) {
 
     // statistics display
     if (Math.abs(coins) > 1){
-        let style = "align:center;font-family:'SilkScreen',monospace;";
-        if (coins>0)
-            style += "fill:green;"
-        else if (coins<0)
-            style += "fill:red;"
+        let style = {align:"center",
+                    font:'30px SilkScreen monospace'}
+        let base_text = "";
+        if (coins>0) {
+            base_text = "+";
+            style.fill = "green";
+        } else if (coins<0) {
+            base_text = "";
+            style.fill = "red";
+        }
 
         console.log(style);
         let text_coin;
         text_coin = game.add.text(train.x+train.width/2, train.y, "0", style);
         text_coin.anchor.set(0.5);
-        text_coin.setText(""+Math.round(coins));
+        text_coin.setText(base_text+Math.round(coins));
         text_coin.font = 'SilkScreen';
 
         let up_duration = 1000;
