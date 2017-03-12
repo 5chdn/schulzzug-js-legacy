@@ -85,7 +85,7 @@ let rail_object_rate = rail_object_rate_default;
 //time of last appearance
 let rail_object_time;
 
-let dam_object_rate_default = 200;
+let dam_object_rate_default = 150;
 
 // the current rate (changes when there's changes in velocity)
 let dam_object_rate = dam_object_rate_default;
@@ -635,6 +635,7 @@ function update() {
             collision_objects.push(rail_objects[i]);
         }
     }
+    delete_indices_from_array(rail_indices_to_remove, rail_objects);
     
     // update all dam objects in a similar manner
     for (let i = 0; i < dam_objects.length; i++) {
@@ -643,6 +644,7 @@ function update() {
             dam_indices_to_remove.push(i);
         }
     }
+    delete_indices_from_array(dam_indices_to_remove, dam_objects);
     
     // loop through collision objects
     let collision_indices = Array();
@@ -657,11 +659,7 @@ function update() {
             collision_indices.push(i);
         }
     }
-    
-    // delete all objects that are out of scope or have been collected
-    delete_indices_from_array(rail_indices_to_remove, rail_objects);
     delete_indices_from_array(collision_indices, collision_objects);
-    delete_indices_from_array(dam_indices_to_remove, dam_objects);
     
     // ========================= SPAWNING NEW OBJECTS ============================
     //
@@ -1044,21 +1042,32 @@ function get_dam_object(kind) {
     
     // get spawn rail
     let random_rail = Math.floor(Math.random() * 2);
+    let min_distance_to_rail = 15; // if this is smaller than 35, 
     
     // get corresponding starting position
     let dam_width = canvas_width / 2
     - 1.5 * rail_distance_outer
-    - rail_distance_inner - 35;
+    - rail_distance_inner - min_distance_to_rail;
+    let exp_random = - Math.log(1-Math.random()) * (dam_width) / 3.;
+    if (exp_random>dam_width) {
+        exp_random = dam_width * Math.random();
+    }
+
+    if (random_rail == 0){
+        exp_random = dam_width - exp_random;
+    }
+
     let dam_offset = random_rail * (canvas_width / 2
                                     + 1.5 * rail_distance_outer
-                                    + rail_distance_inner + 35);
-    let point_start_x = dam_width * Math.random() + dam_offset;
+                                    + rail_distance_inner + min_distance_to_rail);
+    let point_start_x = exp_random + dam_offset;
     let object_height;
     let object_width;
     let object_height_original;
     let object_width_original;
     
     let sprite = rail_object_group.create(0, 0, kind);
+    sprite.anchor.setTo(0.5,0);
     
     if (kind == "tree0") {
         object_height = 40;
@@ -1233,19 +1242,23 @@ function update_rail_object(object, schulzzug) {
     object.sprite.y = flip_z(height);
     
     // get collision range, destroy if out of scope
-    if (y > horizon_distance)
+    if (y > horizon_distance + 2000)
     {
+        object.sprite.alpha = 0;
         object.sprite.destroy();
         object.active = false;
     }
+
+
     
-    if (y > y_collision_range_start &&
+    if (object.rail >= 0 &&
+        object.rail <= 2 &&
+        y > y_collision_range_start &&
         y < y_collision_range_end &&
-        !schulzzug.indefeatable) {
-        if (object.rail == schulzzug.rail) {
+        !schulzzug.indefeatable &&
+        object.rail == schulzzug.rail ){
             object.collision = true;
             object.active = false;
-        }
     }
 }
 
@@ -1427,7 +1440,8 @@ function is_retina() {
     } else {
         // do non high-dpi stuff
     }
-    return false;
+    //return false;
+    return true;
 }
 
 function switch_bg_music() {
