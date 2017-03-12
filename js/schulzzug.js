@@ -88,10 +88,10 @@ let rail_object_time;
 let dam_object_rate_default = 200;
 
 // the current rate (changes when there's changes in velocity)
-let dam_object_rate = dam_object_rate_default;                               // never used @TODO #37
+let dam_object_rate = dam_object_rate_default;
 
 // time of last dam object appearance
-let dam_object_time;                                                         // never used @TODO #37
+let dam_object_time;
 
 let dam_probabilities = {
     "tree0" : 0.0200,
