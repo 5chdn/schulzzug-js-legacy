@@ -1256,7 +1256,6 @@ function update_coin_counter(coins) {
             style.fill = "red";
         }
         
-        console.log(style);
         let text_coin;
         text_coin = game.add.text(train.x+train.width/2, train.y, "0", style);
         text_coin.anchor.set(0.5);
