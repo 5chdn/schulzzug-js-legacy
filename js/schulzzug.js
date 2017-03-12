@@ -185,7 +185,8 @@ let sound_whistle;
 let sound_background;
 let sound_eu_star;
 
-// duration of collision animation for crashes
+// ============================ COLLISIONS =====================================
+const wall_coin_penalty = -100;
 const wall_animation_length = 1000;
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
@@ -873,11 +874,7 @@ function collision_update(object, train) {
                 notify_objective_c("smashed-wall");
                 train.animations.play(train_collision_animations[train.rail]);
                 train.indefeatable = true;
-                if (coin_counter >= 10) {
-                    coin_counter -= 10;
-                } else {
-                    coin_counter = 0;
-                }
+                update_coin_counter(wall_coin_penalty);
             } else {
                 object.sprite.x = object.point_start_x
                                 + object.direction * time_delta;
@@ -1112,7 +1109,12 @@ function activateIosMode() {
 }
 
 function update_coin_counter(coins) {
-    coin_counter += coins;
+    //check if too negative
+    if (coin_counter + coins < 0) {
+        coin_counter = 0;
+    } else {
+        coin_counter += coins;
+    }
 }
 
 function eu_flag_complete_event() {
