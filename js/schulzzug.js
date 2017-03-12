@@ -286,7 +286,7 @@ function preload() {
             'sounds/ratter.ogg',
             'sounds/ratter.wav'
         ]);
-    game.load.audio('whistle' [
+    game.load.audio('whistle', [
             'sounds/whistle.mp3',
             'sounds/whistle.ogg',
             'sounds/whistle.wav'
@@ -335,7 +335,7 @@ function create() {
 
     // set some time variables so thehy are not undefined
     rail_object_time = game.time.now;
-    dam_object_time = game.time.now;                                         // never used @TODO #37
+    dam_object_time = game.time.now;
     key_change_time = game.time.now;
     time_now = game.time.now;
 
