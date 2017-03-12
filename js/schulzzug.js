@@ -826,6 +826,11 @@ function generate_cloud() {
         cloud_type = 'cloud0';
     }
     let cloud = cloud_object_group.create(-60, cloud_height, cloud_type);
+    cloud.checkWorldBounds = true;
+    cloud.events.onOutOfBounds.add( function () {
+        if (cloud.x > canvas_width)
+            cloud.destroy();
+    });
     game.physics.arcade.enable(cloud);
     cloud.body.gravity.x = 2 + Math.random() * 4;
 }
