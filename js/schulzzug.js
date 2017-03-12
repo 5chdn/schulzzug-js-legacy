@@ -762,7 +762,7 @@ function update_velocity(scale) {
                 scale_velocity(1.0);
             }
         }
-        else if (last_scale_event == "stern")
+        else if (last_scale_event == "star")
         {
             if (time_now - last_velocity_scale_time > eu_star_phase_duration) {
                 last_scale_event = "default";
@@ -783,8 +783,8 @@ function update_velocity(scale) {
         last_velocity_scale_time = time_now;
         scale_velocity(last_velocity_scale);
     }
-    else if (scale == "stern") {
-        last_scale_event = "stern";
+    else if (scale == "star") {
+        last_scale_event = "star";
         last_velocity_scale = eu_star_phase_factor;
         last_velocity_scale_time = time_now;
         scale_velocity(last_velocity_scale);
@@ -922,7 +922,7 @@ function collision_update(object, train) {
             train.animations.play(train_star_animations[train.rail]);
 
             // velocities
-            update_velocity("stern");
+            update_velocity("star");
         }
     }
 
