@@ -408,8 +408,7 @@ function update() {
     //time handling
     let time_last = time_now;
     time_now = game.time.now;
-    let time = time_now;
-    let time_delta = time - time_last;
+    let time_delta = time_now - time_last;
 
     // ========================= PLAYER CONTROL ===========================
     let direction = null;
@@ -439,7 +438,7 @@ function update() {
     // check if player can change rail
     if (
         train.rail !== -1 &&
-        time - key_change_time > key_change_time_block
+        time_now - key_change_time > key_change_time_block
     ) {
         let jump_direction = null;
         if (((             // go left
@@ -473,8 +472,8 @@ function update() {
         if (rail_is_changing) {
             train.v_x = jump_direction / rail_jump_duration;
             train_rail_next = train.rail + jump_direction;
-            rail_jump_start = time;
-            key_change_time = time;
+            rail_jump_start = time_now;
+            key_change_time = time_now;
             rail_can_change = false;
             train_can_jump_up = false;
             train.rail = -1;
@@ -485,14 +484,14 @@ function update() {
     }
 
     // check if train should jump up
-    if (train.rail !== -1 && time - key_change_time > key_change_time_block ) {
+    if (train.rail !== -1 && time_now - key_change_time > key_change_time_block ) {
         if ((direction !== null &&
              direction == swipe_gesture_recognizer.DIRECTION_UP) ||
             key_up.isDown
         ) {
             train_is_jumping_up = true;
             train_rail_next = train.rail;
-            train_up_jump_start = time;
+            train_up_jump_start = time_now;
             train.rail = -1;
             train_can_jump_up = false;
             sound_jump.play();
@@ -500,7 +499,7 @@ function update() {
     }
 
     if (train_is_jumping_up) {
-        let time_delta = (time - train_up_jump_start);
+        let time_delta = (time_now - train_up_jump_start);
         if (time_delta < train_up_jump_duration) {
             let a = 1 / 300.0;
             train.y = train_spacing_y - time_delta
@@ -522,7 +521,7 @@ function update() {
 
     // rail change animation
     if (rail_is_changing) {
-        let time_delta = (time - rail_jump_start);
+        let time_delta = (time_now - rail_jump_start);
         if (time_delta < rail_jump_duration) {
             train.x = train.x_previous + train_position_distance
                     * train.v_x * time_delta;
@@ -570,7 +569,7 @@ function update() {
 
             // set a new starting point for this object
             // both in time and space
-            rail_objects[i].time_start = time;
+            rail_objects[i].time_start = time_now;
             rail_objects[i].point_start_x = rail_objects[i].sprite.x;
             rail_objects[i].point_start_y = rail_objects[i].sprite.y;
 
@@ -621,7 +620,7 @@ function update() {
 
     // ========================= SPAWNING NEW OBJECTS ============================
     //
-    if (time - rail_object_time > rail_object_rate) {
+    if (time_now - rail_object_time > rail_object_rate) {
 
         let kind = 'coin';
         let random_float = Math.random();
@@ -657,11 +656,11 @@ function update() {
             rail_objects[i].sprite.bringToTop();
         }
 
-        rail_object_time = time;
+        rail_object_time = time_now;
     }
 
     // spawn new dam objects
-    if (time - dam_object_time > dam_object_rate) {
+    if (time_now - dam_object_time > dam_object_rate) {
         let total_dam_probability = 0;
         var random_number = Math.random();
 
@@ -683,7 +682,7 @@ function update() {
                 break;
             }
         }
-        dam_object_time = time;
+        dam_object_time = time_now;
     }
 
     for (let i = 0; i < eu_star_objects.length; i++) {
