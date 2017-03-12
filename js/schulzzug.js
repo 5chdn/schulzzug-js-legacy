@@ -213,7 +213,6 @@ let game = new Phaser.Game(
 // =============== PHASER PRELOAD ASSETS AND SOUNDS ============================
 
 function preload() {
-    game.load.image('landscape',  'assets/untergrund.50.png');
     game.load.image('grass',      'assets/green.50.png');
     game.load.image('dirt',       'assets/dirt.50.png');
     game.load.image('sky',        'assets/sky.50.png');
@@ -313,7 +312,6 @@ function create() {
 
     // start physics and add basic sprites
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.add.sprite(0, 0, 'landscape');
     game.add.sprite(0, 0, 'grass');
     game.add.sprite(0, 0, 'dirt');
     game.add.sprite(0, 0, 'sky');
