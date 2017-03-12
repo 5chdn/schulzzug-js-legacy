@@ -67,7 +67,7 @@ let key_up;
 let key_space;
 
 // time after which a new control command can be given (ms)
-const key_change_time_block = 160;
+const key_change_time_block = 200;
 
 // last time a control command was given
 let key_change_time;
