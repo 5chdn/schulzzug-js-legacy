@@ -185,16 +185,16 @@ let sound_whistle;
 let sound_background;
 let sound_eu_star;
 let sound_bg_music;
-let bg_music_bpm = 120; //the bg_music has 120 BPM
+let bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
 
 // ============================ COLLISIONS =====================================
 const wall_coin_penalty = -100;
-const wall_animation_length = 1000;
-const time_until_full_velocity = 5000;
+const wall_animation_length = 2000;
+const time_until_full_velocity = 8000;
 let last_velocity_scale_time;
 let last_velocity_scale = 1;
 let last_scale_event = "default";
-const collision_velocity_drop_ratio = 0.1;
+const collision_velocity_drop_ratio = 0.3;
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let time_now;
