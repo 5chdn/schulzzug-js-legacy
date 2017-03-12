@@ -36,7 +36,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 12;
+const eu_stars_count = 2;
 const delta_phi = 360 / eu_stars_count;
 let eu_stars_indices = Array();
 for (let i = 0; i < eu_stars_count; i++) {
@@ -249,6 +249,11 @@ function preload() {
             'assets/Trains_animation.png',
             240, 464
         );
+        game.load.spritesheet(
+            'eurostar',
+            'assets/eurostar_animation.png',
+            72,60
+        );
     } else {
         game.load.spritesheet(
             'rails',
@@ -259,6 +264,11 @@ function preload() {
             'train',
             'assets/Trains_animation.50.png',
             120, 232
+        );
+        game.load.spritesheet(
+            'eurostar',
+            'assets/eurostar_animation.50.png',
+            36,30
         );
     }
 
@@ -640,7 +650,7 @@ function update() {
         if (!train.star_phase){
             if (eu_star_can_spawn
                 && random_float < eu_star_appearance_probability) {
-                kind = 'star';
+                kind = 'eurostar';
                 eu_star_can_spawn = false;
             }
             else if (random_float < eu_star_appearance_probability + 0.3) {
@@ -849,7 +859,7 @@ function collision_update(object, train) {
         object.collision = false;
     }
 
-    if (object.kind == "star") {
+    if (object.kind == "eurostar") {
         let time_delta = time_now - object.time_start;
         if (time_delta > eu_star_phase_duration) {
             train.star_phase = false;
@@ -861,6 +871,7 @@ function collision_update(object, train) {
             //gameplay actions
             sound_eu_star.play();
             update_coin_counter(10);
+            object.sprite.animations.play("static");
 
             //set new object properties
             let position_next = get_next_eu_star_position();
@@ -1068,8 +1079,11 @@ function get_rail_object(kind)
         object_height = rail_distance_inner * 1.50;
     } else if (kind == 'wall_donald') {
         object_height = rail_distance_inner * 1.55;
-    } else if (kind == 'star') {
+    } else if (kind == 'eurostar') {
         object_height = rail_distance_inner;
+        sprite.animations.add("blink",[0,1,2],8,true);
+        sprite.animations.add("static",[0],8,true);
+        sprite.animations.play("blink");
     } else if (kind == 'coin') {
         object_height = rail_distance_outer;
 
@@ -1274,6 +1288,7 @@ function eu_flag_complete_event() {
             star_scale.start();
         });
 
+        star.sprite.animations.play("blink");
         star_pulse.start();
     }
 }
