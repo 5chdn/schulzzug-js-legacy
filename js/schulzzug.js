@@ -1298,7 +1298,7 @@ function update_coin_counter(coins) {
         text_coin.setText(base_text+Math.round(coins));
         text_coin.font = 'SilkScreen';
         
-        let up_duration = 1000;
+        let up_duration = 1500;
         let coin_up = game.add.tween(text_coin).to(
                                                    {
                                                    y: 0,
