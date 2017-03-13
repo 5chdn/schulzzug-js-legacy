@@ -36,10 +36,8 @@ function updateGameResult(score, distance) {
 		timestamp: timestamp
 	}
 
-	var newGameResultKey = firebase.database().ref().child('game-results').push().key;
-
 	var updates = {}
-	updates['/game-results/user-' + userId + '/key' + newGameResultKey] = gameResult;
+	updates['/game-results/' + userId] = gameResult;
 
 	return firebase.database().ref().update(updates)
 }
