@@ -183,6 +183,7 @@ const collision_velocity_drop_ratio = 0.3;
 var time_now;
 var time_last;
 var firebase_submission_time;
+const firebase_submission_delay = 15000;
 
 // state transitions
 
