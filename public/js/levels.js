@@ -2,11 +2,12 @@
 // its last element has to be "ende" though (or some other state that will appear
 // after the laste level)
 let level_names = [
-    "deutschland",
+    "germany",
     //"frankreich",
     "usa",
-    "tuerkei",
-    //"niederlande",
+    "turkey",
+    "netherlands",
+    "russia",
     //"grossbritannien",
     "ende"
 ];
@@ -16,7 +17,7 @@ let current_level = 0;
 
 // each level has different object to appear on the dam
 let level_dam_probabilities = {
-    deutschland: {
+    germany: {
         "tree0" : 0.0200,
         "tree1" : 0.0200,
         "tree2" : 0.0002, // owls :)
@@ -32,7 +33,7 @@ let level_dam_probabilities = {
         "sign"  : 0.0020,
         "donald": 0.0020
     },
-    tuerkei: {
+    turkey: {
         "tree0"     : 0.0200,
         "olivetree" : 0.0200,
         "tree2"  : 0.0020, 
@@ -40,6 +41,25 @@ let level_dam_probabilities = {
         "sign"   : 0.0020,
         "goat"   : 0.0020,
         "erdogan": 0.0020
+    },
+    netherlands: {
+        "tree0"  : 0.0002,
+        "tree1"  : 0.0002,
+        "tree2"  : 0.0002, 
+        "bush"   : 0.0200,
+        "sign"   : 0.0020,
+        "tulips" : 0.0800,
+        "geert"  : 0.0020
+    },
+    russia: {
+        "tree0"  : 0.01,
+        "olivetree"  : 0.08,
+        "tree3"  : 0.08, 
+        "bush"   : 0.02,
+        "sign"   : 0.002,
+        "tulips" : 0.0002,
+        "putin"  : 0.002,
+        "tumbleweed" : 0.02
     }
     /*
     frankreich: {
@@ -54,7 +74,7 @@ let level_dam_probabilities = {
 
 // each level has different object assets
 let level_backgrounds = {
-    deutschland: {
+    germany: {
         sky: "sky_de",
         green: "grass_de",
         dirt: "dirt_de"
@@ -64,10 +84,20 @@ let level_backgrounds = {
         green: "grass_us",
         dirt: "dirt_us"
     },
-    tuerkei: {
+    turkey: {
         sky: "sky_tr",
         green: "grass_tr",
         dirt: "dirt_tr"
+    },
+    netherlands: {
+        sky: "sky_nl",
+        green: "grass_nl",
+        dirt: "dirt_tr"
+    },
+    russia: {
+        sky: "sky_ru",
+        green: "grass_ru",
+        dirt: "dirt_ru"
     }
 }
 

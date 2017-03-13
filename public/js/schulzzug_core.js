@@ -84,7 +84,7 @@ function core_create() {
     train.animations.add('star_right', [18,19], 10, true);
 
     if(is_retina()) {
-        train.scale.setTo(0.5, 0.5);
+        //train.scale.setTo(0.5, 0.5);
     }
 
     // train is at center rail
@@ -809,6 +809,8 @@ function get_dam_object(kind) {
         object_height = 35;
     } else if (kind == "tree2") {
         object_height = 35;
+    } else if (kind == "tree3") {
+        object_height = 35;
     } else if (kind == "bush") {
         object_height = 10;
     } else if (kind == "sign") {
@@ -819,13 +821,19 @@ function get_dam_object(kind) {
         object_height = 25;
     } else if (kind == "erdogan") {
         object_height = 25;
+    } else if (kind == "putin") {
+        object_height = 25;
+    } else if (kind == "geert") {
+        object_height = 25;
     } else if (kind == "cactus0") {
         object_height = 35;
     } else if (kind == "cactus1") {
         object_height = 15;
     } else if (kind == "tumbleweed") {
-        object_height = 15;
+        object_height = 10;
     } else if (kind == "goat") {
+        object_height = 15;
+    } else if (kind == "tulips") {
         object_height = 15;
     }
 
