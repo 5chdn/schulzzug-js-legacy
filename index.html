@@ -4,11 +4,6 @@
 	<meta charset="UTF-8" />
 	<meta name="google-site-verification" content="9vjy4bcMHmIAr-wnr6ZYnWoAc0fRv9BMcH-XWdB5270" />
 	<title>@Schulzzug</title>
-    <script type="text/javascript" src="js/swipe.js"></script>
-	<script type="text/javascript" src="js/phaser.min.js"></script>
-	<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="js/schulzzug.js"></script>
-    <script type="text/javascript" src="js/retina.min.js"></script>
     <style type="text/css">
         body {
             width: 100%;
@@ -33,11 +28,23 @@
         	     url('fonts/silkscreen_normal/slkscr-webfont.svg#webfont') format('svg');
         }
     </style>
+    <script type="text/javascript" src="js/swipe.js"></script>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+	<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/game_parameters.js"></script>
+    <script type="text/javascript" src="js/schulzzug_core.js"></script>
+    <script type="text/javascript" src="js/levels.js"></script>
+    <script type="text/javascript" src="js/boot.js"></script>
+    <script type="text/javascript" src="js/load.js"></script>
+    <script type="text/javascript" src="js/ende.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/retina.min.js"></script>
     <style type="text/css">
     .nocursor { cursor:none; }
     </style>
 </head>
 <body>
+<p style="font-family: SilkScreen;">&nbsp;</p> <!-- This is an ugly hack to force the font to load before anything in the game happens -->
 <div id="phaser-game" style="nocursor"></div>
 
 <script type="text/javascript">

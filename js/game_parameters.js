@@ -21,9 +21,9 @@ const rail_distance_inner = 10;
 const rail_distance_outer = 6;
 
 // schulzzug velocity
-let v_initial = 10          // default velocity for the whole game
-let v_default = v_initial;  // default velocity for the current level
-let v = v_default;   // current velocity
+var v_initial = 10          // default velocity for the whole game
+var v_default = v_initial;  // default velocity for the current level
+var v = v_default;   // current velocity
 
 //collision ranges
 const y_collision_range_start
@@ -39,13 +39,13 @@ const eu_position = {
 };
 const eu_stars_count = 1;
 const delta_phi = 360 / eu_stars_count;
-let eu_stars_indices = Array();
-for (let i = 0; i < eu_stars_count; i++) {
+var eu_stars_indices = Array();
+for (var i = 0; i < eu_stars_count; i++) {
     eu_stars_indices.push(i);
 }
-let eu_star_objects = Array();
+var eu_star_objects = Array();
 const eu_star_travel_time = 1000;
-let eu_star_can_spawn = true;
+var eu_star_can_spawn = true;
 const eu_event_delta_v = 10;
 
 // each time it's possible, a star will appear
@@ -59,131 +59,131 @@ const eu_star_phase_factor = 2;
 // swipe handling
 var IOS_MODE;
 var swipe_direction;
-let swipe_gesture_recognizer;
+var swipe_gesture_recognizer;
 
 // input keys
-let key_left;
-let key_right;
-let key_up;
-let key_space;
-let key_mute;
+var key_left;
+var key_right;
+var key_up;
+var key_space;
+var key_mute;
 
 // time after which a new control command can be given (ms)
 const key_change_time_block = 200;
-let key_mute_block = key_change_time_block;
+var key_mute_block = key_change_time_block;
 
 // last time a control command was given
-let key_change_time;
+var key_change_time;
 
 // ====================== RAIL AND DAM OBJECT PROPERTIES =======================
 
 // rate of rail object appearance
-let rail_object_rate_default = 500;
+var rail_object_rate_default = 500;
 
 // this is needed for changes in velocity
-let rail_object_rate = rail_object_rate_default;
+var rail_object_rate = rail_object_rate_default;
 
 //time of last appearance
-let rail_object_time;
+var rail_object_time;
 
-let dam_object_rate_default = 150;
+var dam_object_rate_default = 150;
 
 // the current rate (changes when there's changes in velocity)
-let dam_object_rate = dam_object_rate_default;
+var dam_object_rate = dam_object_rate_default;
 
 // time of last dam object appearance
-let dam_object_time;
-let dam_probabilities;
+var dam_object_time;
+var dam_probabilities;
 
-//let rail_standard_object_probabilities;
-//let rail_sternphase_object_probabilities;
+//var rail_standard_object_probabilities;
+//var rail_sternphase_object_probabilities;
 
 
 // objects for storing arrays and sprite groups:
 // - for creating an object sprite in the right rail group
-let rail_object_group;
+var rail_object_group;
 // - storing the rail objects,
 //   s.t. they can be updated while approaching the train
-let rail_objects = Array();
+var rail_objects = Array();
 // - storing the collision objects,
 //   s.t. they can be updated when a collision took place
-let collision_objects = Array();
+var collision_objects = Array();
 // - same for dam objects
-let dam_objects = Array();
+var dam_objects = Array();
 // - same for cloud objects
-let cloud_object_group;
+var cloud_object_group;
 
 
 // ====================== STATS COUNTERS =======================================
-let coin_counter = 0;
-let meter_counter = 0;
-let panel;          // sprite
-let text_score;     // label
-let text_distance;  // label
+var coin_counter = 0;
+var meter_counter = 0;
+var panel;          // sprite
+var text_score;     // label
+var text_distance;  // label
 
 
 // ==================== SCHULZZUG DEFINITIONS ==================================
-let train;          // sprite
+var train;          // sprite
 
 // positions of sprite for the three rails
-let train_position = [ -10, (canvas_width - 120) / 2, canvas_width - 120 + 10 ];
+var train_position = [ -10, (canvas_width - 120) / 2, canvas_width - 120 + 10 ];
 const train_position_distance = 130;
 
 // names of the animation for each rail
-let train_animations  = ["train_left", "train_center", "train_right"];
+var train_animations  = ["train_left", "train_center", "train_right"];
 
-let train_star_animations = ["star_left", "star_center", "star_right"];
+var train_star_animations = ["star_left", "star_center", "star_right"];
 
-let train_collision_animations = ["collision_left", "collision_center", "collision_right"];
+var train_collision_animations = ["collision_left", "collision_center", "collision_right"];
 
 // this is false if the train jumps
-let rail_can_change = true;
+var rail_can_change = true;
 
 // this is only true if the train is currently changing its rail
-let rail_is_changing = !rail_can_change;
+var rail_is_changing = !rail_can_change;
 
 // time the train needs to jump
-let rail_jump_duration = key_change_time_block;
+var rail_jump_duration = key_change_time_block;
 
 // when the last jump started
-let rail_jump_start;
+var rail_jump_start;
 
 // the next train rail after finishing the rail jump (0, 1 or 2)
-let train_rail_next;
+var train_rail_next;
 
-let train_can_jump_up = true;
-let train_is_jumping_up = !train_can_jump_up;
+var train_can_jump_up = true;
+var train_is_jumping_up = !train_can_jump_up;
 const train_up_jump_duration = 400;
-let train_up_jump_start;
+var train_up_jump_start;
 
 // the usual distance to the top of the screen.
 const train_spacing_y = 360;
 
 // ================= SOUNDS ====================================================
-let sound_bling;
-let sound_smash;
-let sound_jump;
-// let sound_win;                                                               // never used @TODO #36
-let sound_whistle;
-let sound_background;
-let sound_eu_star;
-let sound_bg_music;
-let bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
+var sound_bling;
+var sound_smash;
+var sound_jump;
+// var sound_win;                                                               // never used @TODO #36
+var sound_whistle;
+var sound_background;
+var sound_eu_star;
+var sound_bg_music;
+var bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
 
 // ============================ COLLISIONS =====================================
 const wall_coin_penalty = -100;
 const wall_animation_length = 2000;
 const time_until_full_velocity = 8000;
-let last_velocity_scale_time;
-let last_velocity_scale = 1;
-let last_scale_event = "default";
+var last_velocity_scale_time;
+var last_velocity_scale = 1;
+var last_scale_event = "default";
 const collision_velocity_drop_ratio = 0.3;
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
-let time_now;
-let time_last;
+var time_now;
+var time_last;
 
 
 // state transitions 
 
-let state_transition_duration = 1000;
+var state_transition_duration = 1000;
