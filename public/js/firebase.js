@@ -3,6 +3,8 @@ var config = {
     apiKey: "AIzaSyAo0p0M13L2_zPK-YJ5IITd-WczdJTUFPA",
     authDomain: "schulzzug-b84fc.firebaseapp.com",
     databaseURL: "https://schulzzug-b84fc.firebaseio.com",
+    storageBucket: "schulzzug-b84fc.appspot.com",
+    messagingSenderId: "188834675814"
 };
 firebase.initializeApp(config);
 
