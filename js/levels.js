@@ -12,7 +12,7 @@ let level_names = [
 ];
 
 // the level we want the game to start with
-let current_level = 2;
+let current_level = 0;
 
 // each level has different object to appear on the dam
 let level_dam_probabilities = {
