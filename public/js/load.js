@@ -3,12 +3,12 @@ var load_state = {
 
     // add loading label to the black screen
     preload: function () {
-        let style = {
+        var style = {
             align:"center",
             font:"30px SilkScreen monospace",
             fill: 'white'
         }
-        let loading_label = game.add.text(canvas_width/2, canvas_height/2,'lading...',style) ;
+        var loading_label = game.add.text(canvas_width/2, canvas_height/2,'lading...',style) ;
         loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
 
@@ -179,7 +179,7 @@ function preload_all_assets() {
 }
 function is_retina() {
     /*
-    let query = "(-webkit-min-device-pixel-ratio: 2), "
+    var query = "(-webkit-min-device-pixel-ratio: 2), "
     + "(min-device-pixel-ratio: 2), "
     + "(min-resolution: 192dpi)";
 
