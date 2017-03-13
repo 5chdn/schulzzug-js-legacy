@@ -37,7 +37,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 1;
+const eu_stars_count = 3;
 const delta_phi = 360 / eu_stars_count;
 var eu_stars_indices = Array();
 for (var i = 0; i < eu_stars_count; i++) {
@@ -49,10 +49,10 @@ var eu_star_can_spawn = true;
 const eu_event_delta_v = 10;
 
 // each time it's possible, a star will appear
-const eu_star_appearance_probability = 1.0; // std: 0.1, debug: 1.0
+const eu_star_appearance_probability = .1; // std: 0.1, debug: 1.0
 
 // ===================== STERNPHASE DEFINTIIONS ================================
-const eu_star_phase_duration = 4000; // std: 8000, debug: 4000
+const eu_star_phase_duration = 8000; // std: 8000, debug: 4000
 const eu_star_phase_factor = 2;
 
 // ===================== DEFINE CONTROL VARIABLES ==============================
