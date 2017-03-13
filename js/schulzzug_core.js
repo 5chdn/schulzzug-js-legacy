@@ -1201,6 +1201,8 @@ function next_level() {
     rect.height = canvas_height;
     rect.alpha = 0;
 
+    train.indefeatable = true;
+
     let fade_out = game.add.tween(rect).to(
                                             {
                                                 alpha: 1
@@ -1210,6 +1212,7 @@ function next_level() {
                                           );
     fade_out.onComplete.add( function (){
         game.state.start(level_names[current_level]);
+        train.indefeatable = false;
     });
 
     fade_out.start();
