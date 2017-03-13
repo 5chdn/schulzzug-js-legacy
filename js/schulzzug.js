@@ -1242,7 +1242,7 @@ function update_rail_object(object, schulzzug) {
     object.sprite.y = flip_z(height);
     
     // get collision range, destroy if out of scope
-    if (y > horizon_distance + 2000)
+    if (y > horizon_distance)
     {
         object.sprite.alpha = 0;
         object.sprite.destroy();
@@ -1431,6 +1431,7 @@ function get_angle_from_index(index_phi) {
 }
 
 function is_retina() {
+    /*
     let query = "(-webkit-min-device-pixel-ratio: 2), "
     + "(min-device-pixel-ratio: 2), "
     + "(min-resolution: 192dpi)";
@@ -1440,7 +1441,8 @@ function is_retina() {
     } else {
         // do non high-dpi stuff
     }
-    //return false;
+    return false;
+    */
     return true;
 }
 
