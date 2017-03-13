@@ -215,12 +215,7 @@ let game = new Phaser.Game(
 // =============== PHASER PRELOAD ASSETS AND SOUNDS ============================
 
 function preload() {
-    game.load.image('grass',      'assets/green.50.png');
-    game.load.image('dirt',       'assets/dirt.50.png');
-    game.load.image('sky',        'assets/sky.50.png');
     
-    
-    game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
     game.load.image('tree1',      'assets/Tree02.50.png');
     game.load.image('tree2',      'assets/specialtree.50.png');
@@ -241,6 +236,10 @@ function preload() {
     
     
     if(is_retina()) {
+        game.load.image('grass',      'assets/green.png');
+        game.load.image('dirt',       'assets/dirt.png');
+        game.load.image('sky',        'assets/sky.png');
+        
         game.load.spritesheet(
                               'rails',
                               'assets/rails_animation.png',
@@ -254,6 +253,10 @@ function preload() {
         game.load.spritesheet('train', 'assets/Trains_animation.png', 240, 464);
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
     } else {
+        game.load.image('grass',      'assets/green.50.png');
+        game.load.image('dirt',       'assets/dirt.50.png');
+        game.load.image('sky',        'assets/sky.50.png');
+        
         game.load.spritesheet(
                               'rails',
                               'assets/rails_animation.50.png',
@@ -323,9 +326,15 @@ function create() {
     
     // start physics and add basic sprites
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.add.sprite(0, 0, 'grass');
-    game.add.sprite(0, 0, 'dirt');
-    game.add.sprite(0, 0, 'sky');
+    let grass_sprite = game.add.sprite(0, 0, 'grass');
+    let dirt_sprite = game.add.sprite(0, 0, 'dirt');
+    let sky_sprite = game.add.sprite(0, 0, 'sky');
+
+    if(is_retina()){
+        grass_sprite.scale.setTo(0.5,0.5);
+        dirt_sprite.scale.setTo(0.5,0.5);
+        sky_sprite.scale.setTo(0.5,0.5);
+    }
     
     // sprite group for clouds
     cloud_object_group = game.add.group();
