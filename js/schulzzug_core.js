@@ -817,6 +817,8 @@ function get_dam_object(kind) {
         object_height = 40;
     } else if (kind == "tree1") {
         object_height = 35;
+    } else if (kind == "olivetree") {
+        object_height = 35;
     } else if (kind == "tree2") {
         object_height = 35;
     } else if (kind == "bush") {
@@ -827,11 +829,15 @@ function get_dam_object(kind) {
         object_height = 25;
     } else if (kind == "donald") {
         object_height = 25;
+    } else if (kind == "erdogan") {
+        object_height = 25;
     } else if (kind == "cactus0") {
         object_height = 35;
     } else if (kind == "cactus1") {
         object_height = 15;
     } else if (kind == "tumbleweed") {
+        object_height = 15;
+    } else if (kind == "goat") {
         object_height = 15;
     }
     

@@ -5,14 +5,14 @@ let level_names = [
     "deutschland",
     //"frankreich",
     "usa",
-    //"tuerkei",
+    "tuerkei",
     //"niederlande",
     //"grossbritannien",
     "ende"
 ];
 
 // the level we want the game to start with
-let current_level = 0;
+let current_level = 2;
 
 // each level has different object to appear on the dam
 let level_dam_probabilities = {
@@ -31,6 +31,15 @@ let level_dam_probabilities = {
         "bush"  : 0.0200,
         "sign"  : 0.0020,
         "donald": 0.0020
+    },
+    tuerkei: {
+        "tree0"     : 0.0200,
+        "olivetree" : 0.0200,
+        "tree2"  : 0.0020, 
+        "bush"   : 0.0200,
+        "sign"   : 0.0020,
+        "goat"   : 0.0020,
+        "erdogan": 0.0020
     }
     /*
     frankreich: {
@@ -54,6 +63,11 @@ let level_backgrounds = {
         sky: "sky_us",
         green: "grass_us",
         dirt: "dirt_us"
+    },
+    tuerkei: {
+        sky: "sky_tr",
+        green: "grass_tr",
+        dirt: "dirt_tr"
     }
 }
 

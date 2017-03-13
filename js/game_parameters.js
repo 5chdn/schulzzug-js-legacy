@@ -11,7 +11,7 @@ const horizon = canvas_height - horizon_height;
 const horizon_distance = 40000;
 
 // height of camera
-const camera_heigth = 50;
+const camera_height = 50;
 
 // x position of camera
 const camera_x = canvas_width / 2;
@@ -28,7 +28,7 @@ let v = v_default;   // current velocity
 //collision ranges
 const y_collision_range_start
 = canvas_height / 2 * horizon_distance
-/ (camera_heigth + canvas_height / 2);
+/ (camera_height + canvas_height / 2);
 const y_collision_range_end = y_collision_range_start + 2000;
 
 // ====================== EU STAR STUFF ========================================
