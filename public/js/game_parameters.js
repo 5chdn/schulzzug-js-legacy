@@ -182,8 +182,8 @@ const collision_velocity_drop_ratio = 0.3;
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 var time_now;
 var time_last;
+var firebase_submission_time;
 
-
-// state transitions 
+// state transitions
 
 var state_transition_duration = 1000;
