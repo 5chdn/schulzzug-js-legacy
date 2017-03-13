@@ -10,7 +10,7 @@
 
 
 function Swipe(game, model) {
-  var self = this;
+  let self = this;
 
   self.DIRECTION_UP = 1;
   self.DIRECTION_DOWN = 2;
@@ -51,8 +51,8 @@ function Swipe(game, model) {
 }
 
 Swipe.prototype.setupKeyboard = function() {
-  var self = this;
-  var up = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+  let self = this;
+  let up = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
   up.onDown.add(function () {
     if (self.tmpDirection !== null) {
       switch(self.tmpDirection) {
@@ -77,7 +77,7 @@ Swipe.prototype.setupKeyboard = function() {
   })
   up.onUp.add(this.keyUp, this);
 
-  var down = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+  let down = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
   down.onDown.add(function () {
     if (self.tmpDirection !== null) {
       switch(self.tmpDirection) {
@@ -102,7 +102,7 @@ Swipe.prototype.setupKeyboard = function() {
   })
   down.onUp.add(this.keyUp, this);
 
-  var left = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+  let left = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
   left.onDown.add(function () {
     if (self.tmpDirection !== null) {
       switch(self.tmpDirection) {
@@ -126,7 +126,7 @@ Swipe.prototype.setupKeyboard = function() {
     }
   })
   left.onUp.add(this.keyUp, this);
-  var right = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+  let right = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
   right.onDown.add(function () {
     if (self.tmpDirection !== null) {
       switch(self.tmpDirection) {
@@ -162,10 +162,10 @@ Swipe.prototype.keyUp = function() {
 }
 
 Swipe.prototype.check = function () {
-  var t = this.game.time.now;
+  let t = this.game.time.now;
 
   if (this.direction !== null) {
-    var result = {x: 0, y: 0, direction: this.direction};
+    let result = {x: 0, y: 0, direction: this.direction};
     this.direction = null;
     return result;
   }
@@ -187,17 +187,17 @@ Swipe.prototype.check = function () {
 
   if (Phaser.Point.distance(this.game.input.activePointer.position, this.last_active_position) < this.dragLength) return null;
 
-  var direction = null;
-  var deltaX = this.game.input.activePointer.position.x - this.last_active_position.x;
-  var deltaY = this.game.input.activePointer.position.y - this.last_active_position.y;
+  let direction = null;
+  let deltaX = this.game.input.activePointer.position.x - this.last_active_position.x;
+  let deltaY = this.game.input.activePointer.position.y - this.last_active_position.y;
 
-  var result = {
+  let result = {
     x: this.last_active_position.x,
     y: this.last_active_position.y
   };
 
-  var deltaXabs = Math.abs(deltaX);
-  var deltaYabs = Math.abs(deltaY);
+  let deltaXabs = Math.abs(deltaX);
+  let deltaYabs = Math.abs(deltaY);
 
   if (!this.diagonalDisabled && deltaXabs > (this.dragLength-this.diagonalDelta) && deltaYabs > (this.dragLength-this.diagonalDelta)) {
     if (deltaX > 0 && deltaY > 0) {

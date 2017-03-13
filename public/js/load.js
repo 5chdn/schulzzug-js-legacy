@@ -1,14 +1,14 @@
 // the load state
-var load_state = {
+let load_state = {
 
     // add loading label to the black screen
     preload: function () {
-        var style = {
+        let style = {
             align:"center",
             font:"30px SilkScreen monospace",
             fill: 'white'
         }
-        var loading_label = game.add.text(canvas_width/2, canvas_height/2,'lading...',style) ;
+        let loading_label = game.add.text(canvas_width/2, canvas_height/2,'lading...',style) ;
         loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
 
@@ -19,6 +19,37 @@ var load_state = {
 
     // when loading is done, start with the first level
     create: function () {
+        // sounds
+        sound_bling = game.add.audio('bling');
+        sound_bling.volume = 0.2;
+        sound_smash = game.add.audio('smash');
+        sound_smash.volume = 0.15;
+        sound_jump = game.add.audio('jump');
+        sound_jump.volume = 0.25;
+        sound_eu_star = game.add.audio('star');
+        sound_eu_star.volume = 0.5;
+        sound_eu_star.onStop.add( function () {
+            switch_bg_music();
+        });
+        sound_eu_star.onPlay.add( function () {
+            switch_bg_music();
+        });
+        // sound_win = game.add.audio('tada');                                      // never used @TODO #36
+        sound_whistle = game.add.audio('whistle');
+        sound_whistle.volume = 1;
+        sound_background = game.add.audio('ratter');
+        sound_background.volume = 0.21;
+        
+        sound_bg_music = game.add.audio('bg_music');
+        sound_bg_music.volume = 0.5;
+        sound_bg_music.loop = true;
+        sound_bg_music.play();
+
+        // start background train sound as loop
+        game.sound.mute = false;
+        sound_background.loop = true;
+        sound_background.play();
+
         game.state.start(level_names[current_level]);
     }
 
@@ -179,7 +210,7 @@ function preload_all_assets() {
 }
 function is_retina() {
     /*
-    var query = "(-webkit-min-device-pixel-ratio: 2), "
+    let query = "(-webkit-min-device-pixel-ratio: 2), "
     + "(min-device-pixel-ratio: 2), "
     + "(min-resolution: 192dpi)";
 

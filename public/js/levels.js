@@ -1,7 +1,7 @@
 // this array contains the level names in the order they will appear in
 // its last element has to be "ende" though (or some other state that will appear
 // after the laste level)
-var level_names = [
+let level_names = [
     "deutschland",
     //"frankreich",
     "usa",
@@ -12,10 +12,10 @@ var level_names = [
 ];
 
 // the level we want the game to start with
-var current_level = 0;
+let current_level = 0;
 
 // each level has different object to appear on the dam
-var level_dam_probabilities = {
+let level_dam_probabilities = {
     deutschland: {
         "tree0" : 0.0200,
         "tree1" : 0.0200,
@@ -53,7 +53,7 @@ var level_dam_probabilities = {
 }
 
 // each level has different object assets
-var level_backgrounds = {
+let level_backgrounds = {
     deutschland: {
         sky: "sky_de",
         green: "grass_de",
@@ -72,9 +72,9 @@ var level_backgrounds = {
 }
 
 // push all the states in to this array
-var level_states = Array();
+let level_states = Array();
 
-for(var i=0; i<level_names.length-1; i++)
+for(let i=0; i<level_names.length-1; i++)
 {
 
     level_states.push({
@@ -94,13 +94,13 @@ for(var i=0; i<level_names.length-1; i++)
             update_velocity("level_change");
 
             // delete old dam objects
-            for (var i = dam_objects.length; i--; ) {
+            for (let i = dam_objects.length; i--; ) {
                 dam_objects[i].sprite.destroy();
             }
             dam_objects.length = 0;
 
             // delete old rail objects
-            for (var i = rail_objects.length; i--; ) {
+            for (let i = rail_objects.length; i--; ) {
                 rail_objects[i].sprite.destroy();
             }
             rail_objects.length = 0;
@@ -120,7 +120,7 @@ for(var i=0; i<level_names.length-1; i++)
 
 function norm_probabilities(probabilities) {
     //norm the sum of those probabilities to one
-    var probability_norm = 0;
+    let probability_norm = 0;
     for (kind in probabilities)
     {
         if (!probabilities.hasOwnProperty(kind)) continue;
