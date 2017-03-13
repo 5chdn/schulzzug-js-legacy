@@ -51,7 +51,7 @@ function fetchActiveUserCount(callback) {
 }
 
 function fetchGameStats(callback) {
-	var gameResultsRef = firebase.database().ref('stats');
+	var gameResultsRef = firebase.database().ref('statistics');
 	gameResultsRef.once('value', function(snapshot) {
         var newTotalScore = snapshot.val().totalScore;
 		var newTotalDistance = snapshot.val().totalDistance;
