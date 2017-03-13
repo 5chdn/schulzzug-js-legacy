@@ -1,5 +1,5 @@
 // CONFIGURATION
-var config = {
+let config = {
     apiKey: "AIzaSyAo0p0M13L2_zPK-YJ5IITd-WczdJTUFPA",
     authDomain: "schulzzug-b84fc.firebaseapp.com",
     databaseURL: "https://schulzzug-b84fc.firebaseio.com",
@@ -15,11 +15,11 @@ firebase.auth().signInAnonymously().then(function() {
 });
 
 function configurePresence() {
-	var connections = firebase.database().ref('connections');
-	var connectedRef = firebase.database().ref('.info/connected');
+	let connections = firebase.database().ref('connections');
+	let connectedRef = firebase.database().ref('.info/connected');
 	connectedRef.on('value', function(snap) {
   		if (snap.val() === true) {
-	  		var con = connections.push(true);
+	  		let con = connections.push(true);
     		con.onDisconnect().remove();
   		}
 	});
@@ -27,10 +27,10 @@ function configurePresence() {
 
 // EXPORTED FUNCTIONS
 function updateGameResult(score, distance) {
-	var userId = firebase.auth().currentUser.uid;
-	var timestamp = firebase.database.ServerValue.TIMESTAMP;
+	let userId = firebase.auth().currentUser.uid;
+	let timestamp = firebase.database.ServerValue.TIMESTAMP;
 
-	var gameResult = {
+	let gameResult = {
 		score: score,
 		distance: distance,
 		timestamp: timestamp
@@ -43,9 +43,9 @@ function updateGameResult(score, distance) {
 }
 
 function fetchActiveUserCount(callback) {
-	var connections = firebase.database().ref('connections');
+	let connections = firebase.database().ref('connections');
 	connections.on('value', function(snapshot) {
-		var count = snapshot.numChildren();
+		let count = snapshot.numChildren();
 		callback(count);
 	});
 }
@@ -53,8 +53,8 @@ function fetchActiveUserCount(callback) {
 function fetchGameStats(callback) {
 	var gameResultsRef = firebase.database().ref('statistics');
 	gameResultsRef.once('value', function(snapshot) {
-        var newTotalScore = snapshot.val().totalScore;
-		var newTotalDistance = snapshot.val().totalDistance;
+        let newTotalScore = snapshot.val().totalScore;
+		let newTotalDistance = snapshot.val().totalDistance;
 		callback(newTotalScore, newTotalDistance);
 	});
 }
