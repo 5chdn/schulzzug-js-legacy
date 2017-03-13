@@ -216,29 +216,31 @@ let game = new Phaser.Game(
 
 function preload() {
     
-    game.load.image('tree0',      'assets/Tree01.50.png');
-    game.load.image('tree1',      'assets/Tree02.50.png');
-    game.load.image('tree2',      'assets/specialtree.50.png');
-    game.load.image('cloud0',     'assets/cloud01.50.png');
-    game.load.image('cloud1',     'assets/cloud02.50.png');
-    game.load.image('cloud2',     'assets/cloud03.50.png');
-    game.load.image('office',     'assets/Kanzleramt.50.png');
-    game.load.image('bush',       'assets/Bush01.50.png');
-    game.load.image('sign',       'assets/Sign01.50.png');
-    
-    game.load.image('panel',      'assets/Panel.50.png');
-    game.load.image('wall_frauke','assets/afd-wall.50.png');
-    game.load.image('wall_donald','assets/Trump-Wall.50.png');
-    game.load.image('frauke',     'assets/Petry.png');
-    game.load.image('donald',     'assets/Trump.png');
-    game.load.image('wall',       'assets/wall.png');
-    game.load.image('star',       'assets/star.png');
     
     
     if(is_retina()) {
         game.load.image('grass',      'assets/green.png');
         game.load.image('dirt',       'assets/dirt.png');
         game.load.image('sky',        'assets/sky.png');
+
+        game.load.image('panel',      'assets/Panel.png');
+
+        game.load.image('cloud0',     'assets/cloud01.png');
+        game.load.image('cloud1',     'assets/cloud02.png');
+        game.load.image('cloud2',     'assets/cloud03.png');
+
+        game.load.image('wall_frauke','assets/afd-wall.png');
+        game.load.image('wall_donald','assets/Trump-Wall.png');
+        game.load.image('frauke',     'assets/Petry.png');
+        game.load.image('donald',     'assets/Trump.png');
+        game.load.image('wall',       'assets/wall.png');
+        
+        game.load.image('tree0',      'assets/Tree01.png');
+        game.load.image('tree1',      'assets/Tree02.png');
+        game.load.image('tree2',      'assets/specialtree.png');
+        game.load.image('office',     'assets/Kanzleramt.png');
+        game.load.image('bush',       'assets/Bush01.png');
+        game.load.image('sign',       'assets/Sign01.png');
         
         game.load.spritesheet(
                               'rails',
@@ -250,12 +252,33 @@ function preload() {
                               'assets/star_animation.png',
                               60,64
                               );
+
         game.load.spritesheet('train', 'assets/Trains_animation.png', 240, 464);
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
+
     } else {
         game.load.image('grass',      'assets/green.50.png');
         game.load.image('dirt',       'assets/dirt.50.png');
         game.load.image('sky',        'assets/sky.50.png');
+
+        game.load.image('panel',      'assets/Panel.50.png');
+
+        game.load.image('cloud0',     'assets/cloud01.50.png');
+        game.load.image('cloud1',     'assets/cloud02.50.png');
+        game.load.image('cloud2',     'assets/cloud03.50.png');
+
+        game.load.image('wall_frauke','assets/afd-wall.50.png');
+        game.load.image('wall_donald','assets/Trump-Wall.50.png');
+        game.load.image('frauke',     'assets/Petry.png');
+        game.load.image('donald',     'assets/Trump.png');
+        game.load.image('wall',       'assets/wall.png');
+
+        game.load.image('tree0',      'assets/Tree01.50.png');
+        game.load.image('tree1',      'assets/Tree02.50.png');
+        game.load.image('tree2',      'assets/specialtree.50.png');
+        game.load.image('office',     'assets/Kanzleramt.50.png');
+        game.load.image('bush',       'assets/Bush01.50.png');
+        game.load.image('sign',       'assets/Sign01.50.png');
         
         game.load.spritesheet(
                               'rails',
@@ -270,6 +293,7 @@ function preload() {
 
         game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
+
     }
     
     game.load.audio('jump',   [
@@ -399,6 +423,8 @@ function create() {
     // statistics display
     let style = "align:center;font-family:'SilkScreen',monospace";
     panel = game.add.sprite(0, canvas_height - 72, 'panel');
+    if(is_retina())
+        panel.scale.setTo(0.5,0.5);
     text_score = game.add.text(0, canvas_height - 72, "0", style);
     text_score.anchor.set(0.5);
     text_distance = game.add.text(0, canvas_height - 72, "0m", style);
@@ -866,6 +892,9 @@ function generate_cloud() {
         cloud_type = 'cloud0';
     }
     let cloud = cloud_object_group.create(-60, cloud_height, cloud_type);
+    if(is_retina()) {
+        cloud.scale.setTo(0.5,0.5);
+    }
     cloud.checkWorldBounds = true;
     cloud.events.onOutOfBounds.add( function () {
                                    if (cloud.x > canvas_width)
