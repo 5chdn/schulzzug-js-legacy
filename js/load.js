@@ -1,18 +1,23 @@
+// the load state
 var load_state = {
 
+    // add loading label to the black screen
     preload: function () {
         let style = {
             align:"center",
-            font:'30px SilkScreen monospace',
+            font:"30px SilkScreen monospace",
             fill: 'white'
         }
         let loading_label = game.add.text(canvas_width/2, canvas_height/2,'lading...',style) ;
+        loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
 
+        // load all assets
         preload_all_assets();
 
     },
 
+    // when loading is done, start with the first level
     create: function () {
         game.state.start(level_names[current_level]);
     }

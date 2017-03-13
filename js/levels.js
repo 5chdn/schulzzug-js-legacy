@@ -1,3 +1,6 @@
+// this array contains the level names in the order they will appear in
+// its last element has to be "ende" though (or some other state that will appear
+// after the laste level)
 let level_names = [
     "deutschland",
     //"frankreich",
@@ -8,8 +11,10 @@ let level_names = [
     "ende"
 ];
 
+// the level we want the game to start with
 let current_level = 0;
 
+// each level has different object to appear on the dam
 let level_dam_probabilities = {
     deutschland: {
         "tree0" : 0.0200,
@@ -38,6 +43,7 @@ let level_dam_probabilities = {
     }*/
 }
 
+// each level has different object assets
 let level_backgrounds = {
     deutschland: {
         sky: "sky_de",
@@ -51,7 +57,7 @@ let level_backgrounds = {
     }
 }
 
-
+// push all the states in to this array
 let level_states = Array();
 
 for(let i=0; i<level_names.length-1; i++)
@@ -59,10 +65,12 @@ for(let i=0; i<level_names.length-1; i++)
 
     level_states.push({
 
+        // before a level is created
         init: function () {
+
             //update dam objects
             dam_probabilities = level_dam_probabilities[level_names[current_level]];
-            update_probabilities(dam_probabilities);
+            norm_probabilities(dam_probabilities);
 
             //update rail objects
             //rail_probabilities = level_rail_probabilities[i];
@@ -71,29 +79,32 @@ for(let i=0; i<level_names.length-1; i++)
             //update level default velocity
             update_velocity("level_change");
 
-            
             // delete old dam objects
             for (let i = dam_objects.length; i--; ) {
                 dam_objects[i].sprite.destroy();
             }
             dam_objects.length = 0;
 
+            // delete old rail objects
             for (let i = rail_objects.length; i--; ) {
                 rail_objects[i].sprite.destroy();
             }
             rail_objects.length = 0;
 
+            // allow star to spawn
             eu_star_can_spawn = true;
         },
 
+        // those are standard functions from schulzzug_core.js
         create: core_create,
 
+        // those are standard functions from schulzzug_core.js
         update: core_update
         
     });
 }
 
-function update_probabilities (probabilities) {
+function norm_probabilities(probabilities) {
     //norm the sum of those probabilities to one
     let probability_norm = 0;
     for (kind in probabilities)
