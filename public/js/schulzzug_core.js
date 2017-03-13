@@ -84,7 +84,7 @@ function core_create() {
     train.animations.add('star_right', [18,19], 10, true);
 
     if(is_retina()) {
-        train.scale.setTo(0.5, 0.5);
+        //train.scale.setTo(0.5, 0.5);
     }
 
     // train is at center rail

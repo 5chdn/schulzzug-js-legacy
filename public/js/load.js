@@ -123,7 +123,7 @@ function preload_all_assets() {
                               60,64
                               );
 
-        game.load.spritesheet('train', 'assets/Trains_animation.png', 240, 464);
+        game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
 
     } else {
