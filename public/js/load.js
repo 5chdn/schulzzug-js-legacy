@@ -27,22 +27,22 @@ var load_state = {
 
 
 function preload_all_assets() {
-    
-    
+
+
     game.load.image("black", "assets/black.png");
-    
+
     if(is_retina()) {
         game.load.image('grass_de',      'assets/green.png');
         game.load.image('dirt_de',       'assets/dirt.png');
         game.load.image('sky_de',        'assets/sky.png');
 
-        game.load.image('grass_us',      'assets/usa_assets/green_USA.png');
-        game.load.image('dirt_us',       'assets/usa_assets/dirt_USA.png');
-        game.load.image('sky_us',        'assets/usa_assets/sky_USA.png');
+        game.load.image('grass_us',      'assets/usa/green_USA.png');
+        game.load.image('dirt_us',       'assets/usa/dirt_USA.png');
+        game.load.image('sky_us',        'assets/usa/sky_USA.png');
 
-        game.load.image('grass_tr',      'assets/tuerkei_assets/green_TUR.png');
-        game.load.image('dirt_tr',       'assets/tuerkei_assets/dirt_TUR.png');
-        game.load.image('sky_tr',        'assets/tuerkei_assets/sky_TUR.png');
+        game.load.image('grass_tr',      'assets/turkey/green_TUR.png');
+        game.load.image('dirt_tr',       'assets/turkey/dirt_TUR.png');
+        game.load.image('sky_tr',        'assets/turkey/sky_TUR.png');
 
         game.load.image('panel',      'assets/Panel.png');
 
@@ -55,20 +55,20 @@ function preload_all_assets() {
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('wall',       'assets/wall.png');
-        game.load.image('erdogan',    'assets/tuerkei_assets/Erdogan.png');
-        
+        game.load.image('erdogan',    'assets/turkey/Erdogan.png');
+
         game.load.image('tree0',      'assets/Tree01.png');
         game.load.image('tree1',      'assets/Tree02.png');
         game.load.image('tree2',      'assets/specialtree.png');
         game.load.image('office',     'assets/Kanzleramt.png');
         game.load.image('bush',       'assets/Bush01.png');
         game.load.image('sign',       'assets/Sign01.png');
-        game.load.image('tumbleweed', 'assets/usa_assets/Tumbleweed.png');
-        game.load.image('cactus0',    'assets/usa_assets/cactus01.png');
-        game.load.image('cactus1',    'assets/usa_assets/cactus02.png');
-        game.load.image('olivetree',  'assets/tuerkei_assets/Olive.png');
-        game.load.image('goat',       'assets/tuerkei_assets/Goat.png');
-        
+        game.load.image('tumbleweed', 'assets/usa/Tumbleweed.png');
+        game.load.image('cactus0',    'assets/usa/cactus01.png');
+        game.load.image('cactus1',    'assets/usa/cactus02.png');
+        game.load.image('olivetree',  'assets/turkey/Olive.png');
+        game.load.image('goat',       'assets/turkey/Goat.png');
+
         game.load.spritesheet(
                               'rails',
                               'assets/rails_animation.png',
@@ -88,13 +88,13 @@ function preload_all_assets() {
         game.load.image('dirt',       'assets/dirt.50.png');
         game.load.image('sky',        'assets/sky.50.png');
 
-        game.load.image('grass_us',   'assets/usa_assets/green_USA.50.png');
-        game.load.image('dirt_us',    'assets/usa_assets/dirt_USA.50.png');
-        game.load.image('sky_us',     'assets/usa_assets/sky_USA.50.png');
+        game.load.image('grass_us',   'assets/usa/green_USA.50.png');
+        game.load.image('dirt_us',    'assets/usa/dirt_USA.50.png');
+        game.load.image('sky_us',     'assets/usa/sky_USA.50.png');
 
-        game.load.image('grass_tr',      'assets/tuerkei_assets/green_TUR.50.png');
-        game.load.image('dirt_tr',       'assets/tuerkei_assets/dirt_TUR.50.png');
-        game.load.image('sky_tr',        'assets/tuerkei_assets/sky_TUR.50.png');
+        game.load.image('grass_tr',      'assets/turkey/green_TUR.50.png');
+        game.load.image('dirt_tr',       'assets/turkey/dirt_TUR.50.png');
+        game.load.image('sky_tr',        'assets/turkey/sky_TUR.50.png');
 
         game.load.image('panel',      'assets/Panel.50.png');
 
@@ -103,10 +103,10 @@ function preload_all_assets() {
         game.load.image('cloud2',     'assets/cloud03.50.png');
 
         game.load.image('wall_frauke','assets/afd-wall.50.png');
-        game.load.image('wall_donald','assets/usa_assets/Trump-Wall.50.png');
+        game.load.image('wall_donald','assets/usa/Trump-Wall.50.png');
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
-        game.load.image('erdogan',    'assets/tuerkei_assets/Erdogan.50.png');
+        game.load.image('erdogan',    'assets/turkey/Erdogan.50.png');
         game.load.image('wall',       'assets/wall.png');
 
         game.load.image('tree0',      'assets/Tree01.50.png');
@@ -115,12 +115,12 @@ function preload_all_assets() {
         game.load.image('office',     'assets/Kanzleramt.50.png');
         game.load.image('bush',       'assets/Bush01.50.png');
         game.load.image('sign',       'assets/Sign01.50.png');
-        game.load.image('tumbleweed', 'assets/usa_assets/Tumbleweed.50.png');
-        game.load.image('cactus0',    'assets/usa_assets/cactus01.50.png');
-        game.load.image('cactus1',    'assets/usa_assets/cactus02.50.png');
-        game.load.image('olivetree',  'assets/tuerkei_assets/Olive.50.png');
-        game.load.image('goat',       'assets/tuerkei_assets/Goat.50.png');
-        
+        game.load.image('tumbleweed', 'assets/usa/Tumbleweed.50.png');
+        game.load.image('cactus0',    'assets/usa/cactus01.50.png');
+        game.load.image('cactus1',    'assets/usa/cactus02.50.png');
+        game.load.image('olivetree',  'assets/turkey/Olive.50.png');
+        game.load.image('goat',       'assets/turkey/Goat.50.png');
+
         game.load.spritesheet(
                               'rails',
                               'assets/rails_animation.50.png',
@@ -136,7 +136,7 @@ function preload_all_assets() {
         game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
 
     }
-    
+
     game.load.audio('jump',   [
                                'sounds/jump.mp3',
                                'sounds/jump.ogg',
@@ -182,7 +182,7 @@ function is_retina() {
     let query = "(-webkit-min-device-pixel-ratio: 2), "
     + "(min-device-pixel-ratio: 2), "
     + "(min-resolution: 192dpi)";
-    
+
     if (matchMedia(query).matches) {
         return true;
     } else {
