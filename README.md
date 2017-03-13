@@ -1,5 +1,7 @@
 # Schulzzug-JS – Bremsenloser Spielspaß
 
+Direkt zum Spiel? Hier: http://schulzzug.eu/public
+
 Glück auf, Glück auf!
 Der Schulzzug rollt!
 Und er hat keine Bremsen fährt mit voller Kraft!
@@ -22,6 +24,7 @@ Mit hoher Energie!
 Mit hoher Energie!
 
 ###Berichte über das Schulzzug-Game:
+
 - https://www.wired.de/collection/life/digital-ist-besser-beschert-uns-die-spd-doch-noch-einen-spannenden-wahlkampf
 - http://www.heute.de/40-programmierer-entwickeln-wahlkampfideen-in-der-spd-zentrale-46693686.html
 - https://www.youtube.com/watch?v=ajsbssaRMRI
