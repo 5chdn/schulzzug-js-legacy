@@ -115,9 +115,9 @@ function preload_all_assets() {
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
 
     } else {
-        game.load.image('grass',      'assets/green.50.png');
-        game.load.image('dirt',       'assets/dirt.50.png');
-        game.load.image('sky',        'assets/sky.50.png');
+        game.load.image('grass_de',      'assets/green.50.png');
+        game.load.image('dirt_de',       'assets/dirt.50.png');
+        game.load.image('sky_de',        'assets/sky.50.png');
 
         game.load.image('grass_us',   'assets/usa/green_USA.50.png');
         game.load.image('dirt_us',    'assets/usa/dirt_USA.50.png');
@@ -209,7 +209,6 @@ function preload_all_assets() {
                                 ]);
 }
 function is_retina() {
-    /*
     let query = "(-webkit-min-device-pixel-ratio: 2), "
     + "(min-device-pixel-ratio: 2), "
     + "(min-resolution: 192dpi)";
@@ -220,7 +219,6 @@ function is_retina() {
         // do non high-dpi stuff
     }
     return false;
-    */
-    return true;
+    //return false;
 }
 
