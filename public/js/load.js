@@ -75,6 +75,14 @@ function preload_all_assets() {
         game.load.image('dirt_tr',       'assets/turkey/dirt_TUR.png');
         game.load.image('sky_tr',        'assets/turkey/sky_TUR.png');
 
+        game.load.image('grass_nl',      'assets/netherlands/green_NED.png');
+        game.load.image('dirt_nl',       'assets/netherlands/dirt_NED.png');
+        game.load.image('sky_nl',        'assets/netherlands/sky_NED.png');
+
+        game.load.image('grass_ru',      'assets/russia/green_RUS.png');
+        game.load.image('dirt_ru',       'assets/russia/dirt_RUS.png');
+        game.load.image('sky_ru',        'assets/russia/sky_RUS.png');
+
         game.load.image('panel',      'assets/Panel.png');
 
         game.load.image('cloud0',     'assets/cloud01.png');
@@ -87,10 +95,13 @@ function preload_all_assets() {
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('wall',       'assets/wall.png');
         game.load.image('erdogan',    'assets/turkey/Erdogan.png');
+        game.load.image('putin',      'assets/russia/Putin_bear.png');
+        game.load.image('geert',      'assets/netherlands/Wilders.png');
 
         game.load.image('tree0',      'assets/Tree01.png');
         game.load.image('tree1',      'assets/Tree02.png');
         game.load.image('tree2',      'assets/specialtree.png');
+        game.load.image('tree3',      'assets/russia/Tree03.png');
         game.load.image('office',     'assets/Kanzleramt.png');
         game.load.image('bush',       'assets/Bush01.png');
         game.load.image('sign',       'assets/Sign01.png');
@@ -99,6 +110,7 @@ function preload_all_assets() {
         game.load.image('cactus1',    'assets/usa/cactus02.png');
         game.load.image('olivetree',  'assets/turkey/Olive.png');
         game.load.image('goat',       'assets/turkey/Goat.png');
+        game.load.image('tulips',     'assets/netherlands/Tulips.png');
 
         game.load.spritesheet(
                               'rails',
@@ -127,6 +139,14 @@ function preload_all_assets() {
         game.load.image('dirt_tr',       'assets/turkey/dirt_TUR.50.png');
         game.load.image('sky_tr',        'assets/turkey/sky_TUR.50.png');
 
+        game.load.image('grass_nl',      'assets/netherlands/green_NED.50.png');
+        game.load.image('dirt_nl',       'assets/netherlands/dirt_NED.50.png');
+        game.load.image('sky_nl',        'assets/netherlands/sky_NED.50.png');
+
+        game.load.image('grass_ru',      'assets/russia/green_RUS.50.png');
+        game.load.image('dirt_ru',       'assets/russia/dirt_RUS.50.png');
+        game.load.image('sky_ru',        'assets/russia/sky_RUS.50.png');
+
         game.load.image('panel',      'assets/Panel.50.png');
 
         game.load.image('cloud0',     'assets/cloud01.50.png');
@@ -138,11 +158,14 @@ function preload_all_assets() {
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('erdogan',    'assets/turkey/Erdogan.50.png');
+        game.load.image('geert',      'assets/netherlands/Wilders.50.png');
+        game.load.image('putin',      'assets/russia/Putin_bear.50.png');
         game.load.image('wall',       'assets/wall.png');
 
         game.load.image('tree0',      'assets/Tree01.50.png');
         game.load.image('tree1',      'assets/Tree02.50.png');
         game.load.image('tree2',      'assets/specialtree.50.png');
+        game.load.image('tree3',      'assets/russia/Tree03.50.png');
         game.load.image('office',     'assets/Kanzleramt.50.png');
         game.load.image('bush',       'assets/Bush01.50.png');
         game.load.image('sign',       'assets/Sign01.50.png');
@@ -151,6 +174,7 @@ function preload_all_assets() {
         game.load.image('cactus1',    'assets/usa/cactus02.50.png');
         game.load.image('olivetree',  'assets/turkey/Olive.50.png');
         game.load.image('goat',       'assets/turkey/Goat.50.png');
+        game.load.image('tulips',     'assets/netherlands/Tulips.50.png');
 
         game.load.spritesheet(
                               'rails',
