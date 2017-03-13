@@ -39,7 +39,6 @@ function updateGameResult(score, distance) {
 	let newGameResultKey = firebase.database().ref().child('game-results').push().key;
 
 	let updates = {}
-  updates['/game_results/' + newGameResultKey] = gameResult; //Merging: ist diese Zeile hier noch richtig oder habe ich die falsch reingemacht?
 	updates['/game-results/user-' + userId + '/key' + newGameResultKey] = gameResult;
 
 	return firebase.database().ref().update(updates)
