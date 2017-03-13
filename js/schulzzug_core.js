@@ -986,8 +986,8 @@ function update_rail_object(object, schulzzug) {
     object.sprite.scale.setTo(wScale);
     
     // get vertical coordinate
-    let height = camera_heigth - horizon_distance
-    / (horizon_distance - y) * (camera_heigth
+    let height = camera_height - horizon_distance
+    / (horizon_distance - y) * (camera_height
                                 - object.object_height / 2) + horizon;
     object.sprite.y = flip_z(height);
     
