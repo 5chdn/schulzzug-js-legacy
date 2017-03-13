@@ -219,7 +219,6 @@ function preload() {
     game.load.image('dirt',       'assets/dirt.50.png');
     game.load.image('sky',        'assets/sky.50.png');
     
-    game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
     
     game.load.image('dummy',      'assets/1pixel.png');
     game.load.image('tree0',      'assets/Tree01.50.png');
@@ -240,7 +239,6 @@ function preload() {
     game.load.image('wall',       'assets/wall.png');
     game.load.image('star',       'assets/star.png');
     
-    game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
     
     if(is_retina()) {
         game.load.spritesheet(
@@ -253,23 +251,22 @@ function preload() {
                               'assets/star_animation.png',
                               60,64
                               );
+        game.load.spritesheet('train', 'assets/Trains_animation.png', 240, 464);
+        game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
     } else {
         game.load.spritesheet(
                               'rails',
                               'assets/rails_animation.50.png',
                               375, 460
                               );
-        
-        //game.load.spritesheet(
-        //    'eurostar',
-        //    'assets/star_animation.50.png',
-        //    30,32
-        //);
         game.load.spritesheet(
                               'eurostar',
                               'assets/star_animation.png',
                               60,64
                               );
+
+        game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
+        game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
     }
     
     game.load.audio('jump',   [
@@ -419,9 +416,9 @@ function create() {
     train.animations.add('star_center', [16,17], 10, true);
     train.animations.add('star_right', [18,19], 10, true);
     
-    /*if(is_retina()) {
+    if(is_retina()) {
         train.scale.setTo(0.5, 0.5);
-    }*/
+    }
     
     // train is at center rail
     train.animations.play('train_center');
