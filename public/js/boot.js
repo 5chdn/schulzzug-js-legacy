@@ -1,6 +1,6 @@
 
 // first state to be called
-var boot_state = {
+let boot_state = {
 
 
     create: function () {
