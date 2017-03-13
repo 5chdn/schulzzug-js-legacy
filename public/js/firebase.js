@@ -36,7 +36,7 @@ function updateGameResult(score, distance) {
 		timestamp: timestamp
 	}
 
-	var updates = {}
+	let updates = {}
 	updates['/game-results/' + userId] = gameResult;
 
 	return firebase.database().ref().update(updates)
@@ -51,7 +51,7 @@ function fetchActiveUserCount(callback) {
 }
 
 function fetchGameStats(callback) {
-	var gameResultsRef = firebase.database().ref('statistics');
+	let gameResultsRef = firebase.database().ref('statistics');
 	gameResultsRef.once('value', function(snapshot) {
         let newTotalScore = snapshot.val().totalScore;
 		let newTotalDistance = snapshot.val().totalDistance;
