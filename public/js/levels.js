@@ -39,7 +39,7 @@ let level_dam_probabilities = {
     turkey: {
         "tree0"     : 0.0200,
         "olivetree" : 0.0200,
-        "tree2"  : 0.0020, 
+        "tree2"  : 0.0020,
         "bush"   : 0.0200,
         "sign"   : 0.0020,
         "goat"   : 0.0020,
@@ -48,7 +48,7 @@ let level_dam_probabilities = {
     netherlands: {
         "tree0"  : 0.0002,
         "tree1"  : 0.0002,
-        "tree2"  : 0.0002, 
+        "tree2"  : 0.0002,
         "bush"   : 0.0200,
         "sign"   : 0.0020,
         "tulips" : 0.0800,
@@ -57,7 +57,7 @@ let level_dam_probabilities = {
     russia: {
         "tree0"  : 0.01,
         "olivetree"  : 0.08,
-        "tree3"  : 0.08, 
+        "tree3"  : 0.08,
         "bush"   : 0.02,
         "sign"   : 0.002,
         "tulips" : 0.0002,
@@ -140,6 +140,8 @@ for(let i=0; i<number_of_levels; i++)
 
             // allow star to spawn
             eu_star_can_spawn = true;
+
+            destroy_pause_menu();
         },
 
         // those are standard functions from schulzzug_core.js
@@ -147,7 +149,7 @@ for(let i=0; i<number_of_levels; i++)
 
         // those are standard functions from schulzzug_core.js
         update: core_update
-        
+
     });
 }
 

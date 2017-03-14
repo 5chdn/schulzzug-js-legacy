@@ -24,6 +24,9 @@ let load_state = {
 
         started_loading_time = game.time.now;
 
+        //for the pause menu, load the data from the server and create the buttons
+        create_spend_buttons();
+
         // load all assets
         preload_all_assets();
 
@@ -32,8 +35,9 @@ let load_state = {
 
     update: function () {
         let current_time_at_loading = game.time.now;
-        if (current_time_at_loading - min_load_time > started_loading_time)
-            game.state.start("menu");
+        if (current_time_at_loading - min_load_time > started_loading_time){
+            fade("out",null,state_transition_duration/2,"menu");
+        }
     }
 
 }

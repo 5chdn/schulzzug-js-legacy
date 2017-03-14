@@ -23,12 +23,19 @@ let end_state = {
         ende_label.anchor.setTo(0.5,0.5);
 
         function go_back() {
-            game.state.start("menu");
-            game.input.onDown.add( function (){}, this);
-        game.input.keyboard.onDownCallback = function(){};
+            fade("out", 
+                 function () {
+                    game.input.onDown.add( function (){}, this);
+                    game.input.keyboard.onDownCallback = function(){};
+                 },
+                 null,
+                 "menu")
         }
-        game.input.onDown.add( go_back, this);
-        game.input.keyboard.onDownCallback = go_back;
+
+        fade("in", function () {
+            game.input.onDown.add( go_back, this);
+            game.input.keyboard.onDownCallback = go_back;
+        });
 
     }
 }

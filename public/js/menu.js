@@ -75,11 +75,26 @@ let menu_state = {
         key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
         key_esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 
+
+        // fade in
+        fade("in",null,state_transition_duration/2);
+
     }
 }
 
 function start_core_game () {
-    sound_bg_music.play();
-    sound_background.play();
-    game.state.start(level_names[default_start_level]);
+
+    current_level = default_start_level;
+    coin_counter = 0;
+    meter_counter = 0;
+
+    fade("out",
+         function() {
+            sound_bg_music.play();
+            sound_background.play();
+         },
+         state_transition_duration/2,
+         level_names[current_level]
+        );
+
 }

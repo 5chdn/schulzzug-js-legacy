@@ -194,3 +194,5 @@ const firebase_submission_delay = 15000;
 
 let state_transition_duration = 1000;
 let is_fading_to_next_level = false;
+
+let last_esc_use_time;
