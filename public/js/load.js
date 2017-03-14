@@ -30,45 +30,10 @@ let load_state = {
 
     },
 
-    // when loading is done, start with the first level
-    create: function () {
-        // sounds
-        sound_bling = game.add.audio('bling');
-        sound_bling.volume = 0.2;
-        sound_smash = game.add.audio('smash');
-        sound_smash.volume = 0.15;
-        sound_jump = game.add.audio('jump');
-        sound_jump.volume = 0.25;
-        sound_eu_star = game.add.audio('star');
-        sound_eu_star.volume = 0.5;
-        sound_eu_star.onStop.add( function () {
-            switch_bg_music();
-        });
-        sound_eu_star.onPlay.add( function () {
-            switch_bg_music();
-        });
-        // sound_win = game.add.audio('tada');                                      // never used @TODO #36
-        sound_whistle = game.add.audio('whistle');
-        sound_whistle.volume = 1;
-        sound_background = game.add.audio('ratter');
-        sound_background.volume = 0.21;
-
-        sound_bg_music = game.add.audio('bg_music');
-        sound_bg_music.volume = 0.5;
-        sound_bg_music.loop = true;
-        sound_bg_music.play();
-
-        // start background train sound as loop
-        game.sound.mute = false;
-        sound_background.loop = true;
-        sound_background.play();
-
-    },
-
     update: function () {
         let current_time_at_loading = game.time.now;
         if (current_time_at_loading - min_load_time > started_loading_time)
-            game.state.start(level_names[current_level]);
+            game.state.start("menu");
     }
 
 }
@@ -103,6 +68,7 @@ function preload_all_assets() {
 
         game.load.image('panel',      'assets/Panel.png');
         game.load.image('menubg',     'assets/untergrund.png');
+        game.load.image("byebye","assets/Twitter.png");
 
         game.load.image('cloud0',     'assets/cloud01.png');
         game.load.image('cloud1',     'assets/cloud02.png');
@@ -144,6 +110,7 @@ function preload_all_assets() {
 
         game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
+        game.load.spritesheet('button', 'assets/button.50.png', 575*2, 144*2);
 
     } else {
         game.load.image('grass_de',      'assets/green.50.png');
@@ -168,6 +135,7 @@ function preload_all_assets() {
 
         game.load.image('panel',      'assets/Panel.50.png');
         game.load.image('menubg',     'assets/untergrund.50.png');
+        game.load.image("byebye","assets/Twitter.50.png");
 
         game.load.image('cloud0',     'assets/cloud01.50.png');
         game.load.image('cloud1',     'assets/cloud02.50.png');
@@ -209,6 +177,7 @@ function preload_all_assets() {
 
         game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
+        game.load.spritesheet('button', 'assets/button.50.png', 288*2, 72*2);
 
     }
 

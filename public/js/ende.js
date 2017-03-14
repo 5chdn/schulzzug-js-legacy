@@ -1,18 +1,15 @@
 let ende_state = {
 
-    preload: function () {
-        if (is_retina())
-            game.load.image("byebye","assets/Twitter.png");
-        else
-            game.load.image("byebye","assets/Twitter.50.png");
-    },
-
     create: function () {
         let style = {
             align:"center",
             font:'30px SilkScreen monospace',
             fill: 'white'
         }
+
+        sound_background.stop();
+        sound_bg_music.stop();
+
         let byebye = game.add.sprite(0,0,"byebye");
         let byebye_scale = canvas_width / byebye.width;
         byebye.scale.setTo(byebye_scale,byebye_scale);
@@ -25,9 +22,9 @@ let ende_state = {
         ende_label.anchor.setTo(0.5,0.5);
 
         function go_back() {
-            game.state.start("germany");
+            game.state.start("menu");
         }
-        game.input.onDown.add( go_back() );
+        game.input.onDown.add( go_back, this);
         game.input.keyboard.onDownCallback = go_back;
 
     }
