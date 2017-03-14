@@ -685,7 +685,7 @@ function collision_update(object, train) {
 
             //gameplay actions
             sound_eu_star.play();
-            update_coin_counter(10);
+            update_coin_counter(10,train);
             object.sprite.animations.play("static");
 
             //set new object properties
@@ -755,7 +755,7 @@ function collision_update(object, train) {
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
                 if (!is_fading_to_next_level)
-                    update_coin_counter(eu_wall_collision_reward);
+                    update_coin_counter(eu_wall_collision_reward,train);
             } else{
                 object.sprite.x = object.point_start_x
                 + object.direction
@@ -778,7 +778,7 @@ function collision_update(object, train) {
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
                 if (!is_fading_to_next_level)
-                    update_coin_counter(wall_coin_penalty);
+                    update_coin_counter(wall_coin_penalty,train);
                 update_velocity("collision");
 
                 //for handling of train animations
@@ -1063,10 +1063,13 @@ function activateIosMode() {
     IOS_MODE = true;
 }
 
-function update_coin_counter(coins) {
-    //check if too negative
+function update_coin_counter(coins,from_object) {
 
-    // statistics display
+    if (from_object == null){
+        from_object = text_score; 
+    }
+
+    // only update if not a single coin
     if (Math.abs(coins) > 1){
         let style = {align:"center",
             font:'30px SilkScreen monospace'}
@@ -1081,7 +1084,7 @@ function update_coin_counter(coins) {
 
         let text_coin;
 
-        text_coin = game.add.text(train.x+train.width/2, train.y, "0", style);
+        text_coin = game.add.text(from_object.x+from_object.width/2, from_object.y, "0", style);
         text_coin.anchor.set(0.5);
         text_coin.setText(base_text+Math.round(coins));
         text_coin.font = 'SilkScreen';
@@ -1102,6 +1105,7 @@ function update_coin_counter(coins) {
         coin_up.start();
     }
 
+    //check if too negative
     if (coin_counter + coins < 0) {
         coin_counter = 0;
     } else {
