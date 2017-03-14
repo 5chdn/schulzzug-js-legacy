@@ -639,38 +639,40 @@ function collision_update(object, train) {
     if (object.kind == "coin") {
         sound_bling.play();
         object.collision = false;
-        let sprite = flying_coin_group.create(
-                                              object.sprite.x-object.sprite.width/2,
-                                              object.sprite.y-object.sprite.height/2,
-                                              "coin"
-                                              );
-        sprite.width = object.sprite.width;
-        sprite.height = object.sprite.height;
-        set_coin_sprite(sprite);
-        sprite.anchor.setTo(0.5,0.5);
-
-        const coin_duration = 800;
-        let coin_collect = game.add.tween(sprite).to(
-                                                     {
-                                                     x: text_score.x,
-                                                     y: text_score.y,
-                                                     width: sprite.width/2,
-                                                     height: sprite.height/2,
-                                                     alpha: .6
-                                                     },
-                                                     coin_duration,
-                                                     Phaser.Easing.Cubic.Out
-                                                     );
-        coin_collect.onComplete.add(function () {
-                                    update_coin_counter(1);
-                                    sprite.destroy();
-                                    });
-
         // delete old coin from rail                            
         object.sprite.destroy();
 
-        // start transition to coin label
-        coin_collect.start();
+        if (!is_fading_to_next_level) {
+            let sprite = flying_coin_group.create(
+                                                  object.sprite.x-object.sprite.width/2,
+                                                  object.sprite.y-object.sprite.height/2,
+                                                  "coin"
+                                                  );
+            sprite.width = object.sprite.width;
+            sprite.height = object.sprite.height;
+            set_coin_sprite(sprite);
+            sprite.anchor.setTo(0.5,0.5);
+
+            const coin_duration = 800;
+            let coin_collect = game.add.tween(sprite).to(
+                                                         {
+                                                         x: text_score.x,
+                                                         y: text_score.y,
+                                                         width: sprite.width/2,
+                                                         height: sprite.height/2,
+                                                         alpha: .6
+                                                         },
+                                                         coin_duration,
+                                                         Phaser.Easing.Cubic.Out
+                                                         );
+            coin_collect.onComplete.add(function () {
+                                        update_coin_counter(1);
+                                        sprite.destroy();
+                                        });
+
+            // start transition to coin label
+            coin_collect.start();
+        }
     }
 
     // ============================== STAR COLLISION =================================
@@ -753,7 +755,8 @@ function collision_update(object, train) {
             } else if (time_delta === 0.0) {
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
-                update_coin_counter(10);
+                if (!is_fading_to_next_level)
+                    update_coin_counter(eu_wall_collision_reward);
             } else{
                 object.sprite.x = object.point_start_x
                 + object.direction
@@ -775,7 +778,8 @@ function collision_update(object, train) {
             } else if (time_delta === 0.0){
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
-                update_coin_counter(wall_coin_penalty);
+                if (!is_fading_to_next_level)
+                    update_coin_counter(wall_coin_penalty);
                 update_velocity("collision");
 
                 //for handling of train animations
