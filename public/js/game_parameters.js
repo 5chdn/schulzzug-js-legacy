@@ -37,7 +37,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 12;
+const eu_stars_count = 1;
 const delta_phi = 360 / eu_stars_count;
 let eu_stars_indices = Array();
 for (let i = 0; i < eu_stars_count; i++) {
@@ -54,6 +54,7 @@ const eu_star_appearance_probability = .1; // std: 0.1, debug: 1.0
 // ===================== STERNPHASE DEFINTIIONS ================================
 const eu_star_phase_duration = 8000; // std: 8000, debug: 4000
 const eu_star_phase_factor = 2;
+let last_eu_star_collision_time = 0;
 
 // ===================== DEFINE CONTROL VARIABLES ==============================
 // swipe handling
@@ -178,6 +179,8 @@ let last_velocity_scale_time;
 let last_velocity_scale = 1;
 let last_scale_event = "default";
 const collision_velocity_drop_ratio = 0.3;
+let last_bad_wall_collision_time = 0;
+
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let time_now;
@@ -188,3 +191,4 @@ const firebase_submission_delay = 15000;
 // state transitions
 
 let state_transition_duration = 1000;
+let is_fading_to_next_level = false;
