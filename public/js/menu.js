@@ -36,40 +36,50 @@ let menu_state = {
         let loading_label = game.add.text(canvas_width/2, canvas_height*(1-1/4),'start',style) ;
         loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
+
+        game.sound.mute = false;
+
+        // sounds
+        sound_bling = game.add.audio('bling');
+        sound_bling.volume = 0.2;
+        sound_smash = game.add.audio('smash');
+        sound_smash.volume = 0.15;
+        sound_jump = game.add.audio('jump');
+        sound_jump.volume = 0.25;
+        sound_eu_star = game.add.audio('star');
+        sound_eu_star.volume = 0.5;
+        sound_eu_star.onStop.add( function () {
+            switch_bg_music();
+        });
+        sound_eu_star.onPlay.add( function () {
+            switch_bg_music();
+        });
+        // sound_win = game.add.audio('tada');                                      // never used @TODO #36
+        sound_whistle = game.add.audio('whistle');
+        sound_whistle.volume = 1;
+        sound_background = game.add.audio('ratter');
+        sound_background.volume = 0.21;
+
+        sound_bg_music = game.add.audio('bg_music');
+        sound_bg_music.volume = 0.5;
+        sound_bg_music.loop = true;
+
+        // start background train sound as loop
+        sound_background.loop = true;
+
+        // keys
+        key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
+        key_esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+
     }
 }
 
 function start_core_game () {
-    // sounds
-    sound_bling = game.add.audio('bling');
-    sound_bling.volume = 0.2;
-    sound_smash = game.add.audio('smash');
-    sound_smash.volume = 0.15;
-    sound_jump = game.add.audio('jump');
-    sound_jump.volume = 0.25;
-    sound_eu_star = game.add.audio('star');
-    sound_eu_star.volume = 0.5;
-    sound_eu_star.onStop.add( function () {
-        switch_bg_music();
-    });
-    sound_eu_star.onPlay.add( function () {
-        switch_bg_music();
-    });
-    // sound_win = game.add.audio('tada');                                      // never used @TODO #36
-    sound_whistle = game.add.audio('whistle');
-    sound_whistle.volume = 1;
-    sound_background = game.add.audio('ratter');
-    sound_background.volume = 0.21;
-
-    sound_bg_music = game.add.audio('bg_music');
-    sound_bg_music.volume = 0.5;
-    sound_bg_music.loop = true;
     sound_bg_music.play();
-
-    // start background train sound as loop
-    game.sound.mute = false;
-    sound_background.loop = true;
     sound_background.play();
-
     game.state.start(level_names[default_start_level]);
 }
