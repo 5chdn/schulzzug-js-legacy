@@ -16,7 +16,7 @@ for(let i=0; i<number_of_levels; i++)
     game.state.add(level_names[i],level_states[i]);
 
 // this is the final state
-game.state.add("ende",ende_state);
+game.state.add("end",end_state);
 
 // starting the game
 game.state.start("boot");

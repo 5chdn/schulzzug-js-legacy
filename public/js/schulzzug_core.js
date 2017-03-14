@@ -9,6 +9,7 @@ function core_create() {
     key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    key_esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 
     // start physics and add basic sprites
     let grass_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].green);
@@ -161,6 +162,12 @@ function core_update() {
         key_mute_block -= 10;
     } else {
         key_mute_block = key_change_time_block;
+    }
+
+    // pause the game (so far, go to end state)
+    if (key_esc.isDown) {
+        key_change_time = time_now;
+        game.state.start("end");
     }
 
     // ========================= PLAYER CONTROL ===========================

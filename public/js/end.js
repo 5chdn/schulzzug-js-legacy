@@ -1,4 +1,4 @@
-let ende_state = {
+let end_state = {
 
     create: function () {
         let style = {

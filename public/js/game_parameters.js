@@ -64,6 +64,7 @@ let swipe_gesture_recognizer;
 
 // input keys
 let key_left;
+let key_esc;
 let key_right;
 let key_up;
 let key_space;
