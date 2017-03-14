@@ -3,14 +3,6 @@
 function core_create() {
 
 
-    // keys
-    key_left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-    key_right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-    key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
-    key_esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
-
     // start physics and add basic sprites
     let grass_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].green);
     let dirt_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].dirt);

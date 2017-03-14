@@ -8,6 +8,7 @@ let end_state = {
         }
 
         sound_background.stop();
+        sound_eu_star.stop();
         sound_bg_music.stop();
 
         let byebye = game.add.sprite(0,0,"byebye");
@@ -23,6 +24,8 @@ let end_state = {
 
         function go_back() {
             game.state.start("menu");
+            game.input.onDown.add( function (){}, this);
+        game.input.keyboard.onDownCallback = function(){};
         }
         game.input.onDown.add( go_back, this);
         game.input.keyboard.onDownCallback = go_back;
