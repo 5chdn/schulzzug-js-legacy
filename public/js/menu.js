@@ -83,11 +83,16 @@ let menu_state = {
 }
 
 function start_core_game () {
-    sound_bg_music.play();
-    sound_background.play();
+
     current_level = default_start_level;
+    coin_counter = 0;
+    meter_counter = 0;
+
     fade("out",
-         null,
+         function() {
+            sound_bg_music.play();
+            sound_background.play();
+         },
          state_transition_duration/2,
          level_names[current_level]
         );
