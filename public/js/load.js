@@ -32,8 +32,9 @@ let load_state = {
 
     update: function () {
         let current_time_at_loading = game.time.now;
-        if (current_time_at_loading - min_load_time > started_loading_time)
-            game.state.start("menu");
+        if (current_time_at_loading - min_load_time > started_loading_time){
+            fade("out",null,state_transition_duration/2,"menu");
+        }
     }
 
 }

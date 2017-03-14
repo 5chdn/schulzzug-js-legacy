@@ -1261,6 +1261,7 @@ function next_level(next_level_key) {
         } else {
             game.state.start(next_level_key);
         }
+        rect.destroy();
     });
 
     fade_out.start();

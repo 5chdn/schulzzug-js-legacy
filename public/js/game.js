@@ -57,7 +57,7 @@ function fade(in_or_out,callback,transition_duration,state_key) {
         if (in_or_out == "out")
             game.state.start(state_key);
 
-        rect.destroy();
+        //rect.destroy();
         if (callback !== null)
             callback();
     });

@@ -75,6 +75,10 @@ let menu_state = {
         key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
         key_esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 
+
+        // fade in
+        fade("in",null,state_transition_duration/2);
+
     }
 }
 
@@ -82,5 +86,10 @@ function start_core_game () {
     sound_bg_music.play();
     sound_background.play();
     current_level = default_start_level;
-    game.state.start(level_names[default_start_level]);
+    fade("out",
+         null,
+         state_transition_duration/2,
+         level_names[current_level]
+        );
+
 }
