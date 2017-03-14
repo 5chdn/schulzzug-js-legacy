@@ -24,6 +24,9 @@ let load_state = {
 
         started_loading_time = game.time.now;
 
+        //for the pause menu, load the data from the server and create the buttons
+        create_spend_buttons();
+
         // load all assets
         preload_all_assets();
 

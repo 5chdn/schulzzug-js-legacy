@@ -31,6 +31,7 @@ function core_create() {
     time_last = time_now - 1;
     last_bad_wall_collision_time = 0;
     last_eu_star_collision_time = 0;
+    last_esc_use_time = 0;
     firebase_submission_time = time_now + firebase_submission_delay;
 
     // add the animated rails
@@ -129,6 +130,9 @@ function core_create() {
     fade_out.start();
 
     updateStatistics();
+
+    create_pause_menu();
+
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -141,8 +145,22 @@ function core_update() {
 
     let time_delta = time_now - time_last;
 
+    // pause the game (so far, go to end state)
+    if (key_esc.isDown &&
+        time_now - last_esc_use_time > key_change_time_block) {
+        last_esc_use_time = time_now;
+        //key_change_time = time_now;
+        //next_level("end");
+        //game.paused = true;
+        if (!pause_menu.is_active)
+            show_pause_menu();
+        else
+            hide_pause_menu();
+    }
+
+    let direction = null;
     // don't update large time deltas (e.g. when paused)
-    if (time_delta > 500)
+    if (time_delta > 500 || pause_menu.is_active)
         return;
 
     // mute and unmute sound
@@ -156,15 +174,8 @@ function core_update() {
         key_mute_block = key_change_time_block;
     }
 
-    // pause the game (so far, go to end state)
-    if (key_esc.isDown) {
-        key_change_time = time_now;
-        next_level("end");
-    }
 
     // ========================= PLAYER CONTROL ===========================
-    let direction = null;
-
     if(IOS_MODE) {
         if(swipe_direction == 1) {
             direction = swipe_gesture_recognizer.DIRECTION_LEFT;
@@ -638,7 +649,7 @@ function collision_update(object, train) {
     if (object.kind == "coin") {
         sound_bling.play();
         object.collision = false;
-        // delete old coin from rail                            
+        // delete old coin from rail
         object.sprite.destroy();
 
         if (!is_fading_to_next_level) {
@@ -1066,7 +1077,7 @@ function activateIosMode() {
 function update_coin_counter(coins,from_object) {
 
     if (from_object == null){
-        from_object = text_score; 
+        from_object = text_score;
     }
 
     // only update if not a single coin
@@ -1111,6 +1122,8 @@ function update_coin_counter(coins,from_object) {
     } else {
         coin_counter += coins;
     }
+
+    text_score.setText(get_metric_prefix(Math.floor(coin_counter), 2));
 }
 
 function eu_flag_complete_event() {
@@ -1265,7 +1278,7 @@ function next_level(next_level_key) {
         } else {
             game.state.start(next_level_key);
         }
-        rect.destroy();
+        //rect.destroy();
     });
 
     fade_out.start();
@@ -1277,7 +1290,7 @@ function eu_star_phase_factor() {
     // for the second, its
     // x 1+a^2
     // ...
-    // for very large level numbers, 
+    // for very large level numbers,
     // the velocity is not upscaled anymore
     return 1 + Math.pow(0.9, current_level);
 }
