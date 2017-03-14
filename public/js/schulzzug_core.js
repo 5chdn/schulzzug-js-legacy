@@ -138,6 +138,16 @@ function core_create() {
 
 function core_update() {
 
+    //time handling
+    time_last = time_now;
+    time_now = game.time.now;
+
+    let time_delta = time_now - time_last;
+
+    // don't update large time deltas (e.g. when paused)
+    if (time_delta > 500)
+        return;
+    
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
@@ -149,12 +159,6 @@ function core_update() {
         key_mute_block = key_change_time_block;
     }
 
-    //time handling
-    time_last = time_now;
-    time_now = game.time.now;
-
-    let time_delta = time_now - time_last;
-    
     // ========================= PLAYER CONTROL ===========================
     let direction = null;
 
@@ -304,7 +308,7 @@ function core_update() {
     for (let i = 0; i < rail_objects.length; i++) {
         // update according to new time
         // pass the train object to see if there's a collision
-        update_rail_object(rail_objects[i],train);
+        update_rail_object(rail_objects[i],train,time_delta);
 
         // remove if the object is now out of scope
         if (!rail_objects[i].active) {
@@ -344,7 +348,7 @@ function core_update() {
 
     // update all dam objects in a similar manner
     for (let i = 0; i < dam_objects.length; i++) {
-        update_rail_object(dam_objects[i],train);
+        update_rail_object(dam_objects[i],train,time_delta);
         if (!dam_objects[i].active) {
             dam_indices_to_remove.push(i);
         }
@@ -960,12 +964,7 @@ function set_coin_sprite(sprite){
     }
 }
 
-function update_rail_object(object, schulzzug) {
-
-    // get current time
-    let time = game.time.now;
-    let time_delta = time - object.time_start;
-    object.time_start = time;
+function update_rail_object(object, schulzzug, time_delta) {
 
     // get position between horizon and camera
     let y = object.y + v * time_delta;
