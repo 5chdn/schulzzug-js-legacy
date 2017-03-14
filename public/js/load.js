@@ -1,4 +1,8 @@
 // the load state
+//
+let started_loading_time;
+const min_load_time = 1000;
+
 let load_state = {
 
     // add loading label to the black screen
@@ -8,12 +12,21 @@ let load_state = {
             font:"30px SilkScreen monospace",
             fill: 'white'
         }
-        let loading_label = game.add.text(canvas_width/2, canvas_height/2,'lading...',style) ;
+        let loading_label = game.add.text(canvas_width/2, canvas_height*(1-1/5),'lading...',style) ;
         loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
 
+        let logo = game.add.sprite(canvas_width/2, canvas_height/3,"logo");
+        let logo_scale =  canvas_width / logo.width;
+        logo.anchor.setTo(0.5,0.5);
+        logo.scale.setTo(logo_scale,logo_scale);
+        logo.angle = 30;
+
+        started_loading_time = game.time.now;
+
         // load all assets
         preload_all_assets();
+
 
     },
 
@@ -50,7 +63,12 @@ let load_state = {
         sound_background.loop = true;
         sound_background.play();
 
-        game.state.start(level_names[current_level]);
+    },
+
+    update: function () {
+        let current_time_at_loading = game.time.now;
+        if (current_time_at_loading - min_load_time > started_loading_time)
+            game.state.start(level_names[current_level]);
     }
 
 }
