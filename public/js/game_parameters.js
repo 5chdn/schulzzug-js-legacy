@@ -46,14 +46,15 @@ for (let i = 0; i < eu_stars_count; i++) {
 let eu_star_objects = Array();
 const eu_star_travel_time = 1000;
 let eu_star_can_spawn = true;
-const eu_event_delta_v = 10;
+const eu_event_delta_v = 5;
 
 // each time it's possible, a star will appear
 const eu_star_appearance_probability = .1; // std: 0.1, debug: 1.0
 
 // ===================== STERNPHASE DEFINTIIONS ================================
 const eu_star_phase_duration = 8000; // std: 8000, debug: 4000
-const eu_star_phase_factor = 2;
+//const eu_star_phase_factor = 2; --> this is now a function in core (dynamically from level)
+let last_eu_star_collision_time = 0;
 
 // ===================== DEFINE CONTROL VARIABLES ==============================
 // swipe handling
@@ -63,6 +64,7 @@ let swipe_gesture_recognizer;
 
 // input keys
 let key_left;
+let key_esc;
 let key_right;
 let key_up;
 let key_space;
@@ -172,12 +174,15 @@ let bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
 
 // ============================ COLLISIONS =====================================
 const wall_coin_penalty = -100;
+const eu_wall_collision_reward = 10;
 const wall_animation_length = 2000;
 const time_until_full_velocity = 8000;
 let last_velocity_scale_time;
 let last_velocity_scale = 1;
 let last_scale_event = "default";
 const collision_velocity_drop_ratio = 0.3;
+let last_bad_wall_collision_time = 0;
+
 
 // ===================== SAVING CURRENT TIME FOR ANIMATIONS ====================
 let time_now;
@@ -188,3 +193,4 @@ const firebase_submission_delay = 15000;
 // state transitions
 
 let state_transition_duration = 1000;
+let is_fading_to_next_level = false;

@@ -7,13 +7,16 @@ let level_names = [
     "usa",
     "turkey",
     "netherlands",
-    "russia",
+    "russia"
     //"grossbritannien",
-    "ende"
+    //"ende"
 ];
 
 // the level we want the game to start with
-let current_level = 0;
+const number_of_levels = level_names.length;
+//let current_level = number_of_levels - 1; // debugging
+const default_start_level = 0;
+let current_level = default_start_level;
 
 // each level has different object to appear on the dam
 let level_dam_probabilities = {
@@ -104,7 +107,7 @@ let level_backgrounds = {
 // push all the states in to this array
 let level_states = Array();
 
-for(let i=0; i<level_names.length-1; i++)
+for(let i=0; i<number_of_levels; i++)
 {
 
     level_states.push({
@@ -113,7 +116,7 @@ for(let i=0; i<level_names.length-1; i++)
         init: function () {
 
             //update dam objects
-            dam_probabilities = level_dam_probabilities[level_names[current_level]];
+            dam_probabilities = level_dam_probabilities[level_names[current_level%number_of_levels]];
             norm_probabilities(dam_probabilities);
 
             //update rail objects

@@ -9,11 +9,12 @@ function core_create() {
     key_up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     key_space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    key_esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 
     // start physics and add basic sprites
-    let grass_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level]].green);
-    let dirt_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level]].dirt);
-    let sky_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level]].sky);
+    let grass_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].green);
+    let dirt_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].dirt);
+    let sky_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].sky);
 
     if(is_retina()){
         grass_sprite.scale.setTo(0.5,0.5);
@@ -36,10 +37,11 @@ function core_create() {
     last_velocity_scale_time = game.time.now;
     time_now = game.time.now;
     time_last = time_now - 1;
+    last_bad_wall_collision_time = 0;
+    last_eu_star_collision_time = 0;
     firebase_submission_time = time_now + firebase_submission_delay;
 
     // add the animated rails
-
     let rails = game.add.sprite(0, 208, 'rails');
 
     if(is_retina()) {
@@ -106,18 +108,19 @@ function core_create() {
                                             2*state_transition_duration,
                                             Phaser.Easing.Linear.None
                                           );
+    is_fading_to_next_level = false;
 
     let level_style = { align:"center",
                        fill:'red',
                        font:"50px 'SilkScreen' monospace"
                       }
 
-    let text_level = game.add.text(canvas_width/2, 
-                               canvas_height/6, 
-                               "LEVEL " + (current_level+1), 
+    let text_level = game.add.text(canvas_width/2,
+                               canvas_height/6,
+                               "LEVEL " + (current_level+1),
                                level_style);
     text_level.anchor.set(0.5);
-    text_level.font = 'SilkScreen';    
+    text_level.font = 'SilkScreen';
     let text_level_fade_out = game.add.tween(text_level).to(
 
                                                       {
@@ -149,7 +152,7 @@ function core_update() {
     // don't update large time deltas (e.g. when paused)
     if (time_delta > 500)
         return;
-    
+
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
@@ -159,6 +162,12 @@ function core_update() {
         key_mute_block -= 10;
     } else {
         key_mute_block = key_change_time_block;
+    }
+
+    // pause the game (so far, go to end state)
+    if (key_esc.isDown) {
+        key_change_time = time_now;
+        game.state.start("end");
     }
 
     // ========================= PLAYER CONTROL ===========================
@@ -270,10 +279,8 @@ function core_update() {
                 train.animations.play(train_animations[train.rail]);
             }
         }
-    }
-
-    // rail change animation
-    if (rail_is_changing) {
+    } else if (rail_is_changing) {
+        // rail change animation
         let time_delta = (time_now - rail_jump_start);
         if (time_delta < rail_jump_duration) {
             train.x = train.x_previous + train_position_distance
@@ -296,6 +303,22 @@ function core_update() {
             } else {
                 train.animations.play(train_animations[train.rail]);
             }
+        }
+    } else if (train.star_phase) {
+        if (time_now - last_eu_star_collision_time > eu_star_phase_duration) {
+            train.star_phase = false;
+            train.animations.play(train_animations[train.rail]);
+        } else {
+            train.star_phase = true;
+            train.animations.play(train_star_animations[train.rail]);
+        }
+    } else if (train.indefeatable) {
+        if (time_now - last_bad_wall_collision_time > wall_animation_length) {
+            train.indefeatable = false;
+            train.animations.play(train_animations[train.rail]);
+        } else if (time_now - wall_animation_length > 0) {
+            train.indefeatable = true;
+            train.animations.play(train_collision_animations[train.rail]);
         }
     }
 
@@ -360,9 +383,9 @@ function core_update() {
     // loop through collision objects
 
     let collision_indices = Array();
-    
+
     for (let i=0; i < collision_objects.length; i++) {
-        
+
         // update according to their logic
         collision_update(collision_objects[i],train);
 
@@ -420,12 +443,12 @@ function core_update() {
 
     // spawn new dam objects
     if (time_now - dam_object_time > dam_object_rate) {
-      
+
         let total_dam_probability = 0;
         let random_number = Math.random();
-        
+
         for (let kind in dam_probabilities) {
-            
+
             // skip loop if the property is from prototype
             if (!dam_probabilities.hasOwnProperty(kind)) continue;
 
@@ -536,7 +559,7 @@ function update_velocity(scale_event,scale) {
     }
     else if (scale_event == "star") {
         last_scale_event = "star";
-        last_velocity_scale = eu_star_phase_factor;
+        last_velocity_scale = eu_star_phase_factor();
         last_velocity_scale_time = time_now;
         scale_velocity(last_velocity_scale);
     }
@@ -617,47 +640,56 @@ function delete_indices_from_array(indices, array) {
 }
 
 function collision_update(object, train) {
+
+    //====================== COIN COLLISION ============================
+    //
     if (object.kind == "coin") {
         sound_bling.play();
         object.collision = false;
-        let sprite = flying_coin_group.create(
-                                              object.sprite.x-object.sprite.width/2,
-                                              object.sprite.y-object.sprite.height/2,
-                                              "coin"
-                                              );
-        sprite.width = object.sprite.width;
-        sprite.height = object.sprite.height;
-        set_coin_sprite(sprite);
-        sprite.anchor.setTo(0.5,0.5);
-
-        const coin_duration = 800;
-        let coin_collect = game.add.tween(sprite).to(
-                                                     {
-                                                     x: text_score.x,
-                                                     y: text_score.y,
-                                                     width: sprite.width/2,
-                                                     height: sprite.height/2,
-                                                     alpha: .6
-                                                     },
-                                                     coin_duration,
-                                                     Phaser.Easing.Cubic.Out
-                                                     );
-        coin_collect.onComplete.add(function () {
-                                    update_coin_counter(1);
-                                    sprite.destroy();
-                                    });
+        // delete old coin from rail                            
         object.sprite.destroy();
-        coin_collect.start();
+
+        if (!is_fading_to_next_level) {
+            let sprite = flying_coin_group.create(
+                                                  object.sprite.x-object.sprite.width/2,
+                                                  object.sprite.y-object.sprite.height/2,
+                                                  "coin"
+                                                  );
+            sprite.width = object.sprite.width;
+            sprite.height = object.sprite.height;
+            set_coin_sprite(sprite);
+            sprite.anchor.setTo(0.5,0.5);
+
+            const coin_duration = 800;
+            let coin_collect = game.add.tween(sprite).to(
+                                                         {
+                                                         x: text_score.x,
+                                                         y: text_score.y,
+                                                         width: sprite.width/2,
+                                                         height: sprite.height/2,
+                                                         alpha: .6
+                                                         },
+                                                         coin_duration,
+                                                         Phaser.Easing.Cubic.Out
+                                                         );
+            coin_collect.onComplete.add(function () {
+                                        update_coin_counter(1);
+                                        sprite.destroy();
+                                        });
+
+            // start transition to coin label
+            coin_collect.start();
+        }
     }
 
+    // ============================== STAR COLLISION =================================
+    //
     if (object.kind == "eurostar") {
         let time_delta = time_now - object.time_start;
         if (time_delta > eu_star_phase_duration) {
-            train.star_phase = false;
             object.collision = false;
-            train.animations.play(train_animations[train.rail]);
-            train.indefeatable = false;
         } else if (time_delta === 0.0){
+
 
             //gameplay actions
             sound_eu_star.play();
@@ -674,7 +706,7 @@ function collision_update(object, train) {
 
             let auto_start = false;
             let delay = 0;
-            
+
             let sky_travel = game.add.tween(object.sprite).to(
                                                               {
                                                               x: position_next.x,
@@ -708,16 +740,17 @@ function collision_update(object, train) {
             sky_scale.start();
 
             // set train properties
-            train.indefeatable = false;
             train.star_phase = true;
+            last_eu_star_collision_time = time_now;
 
-            train.animations.play(train_star_animations[train.rail]);
 
             // velocities
             update_velocity("star");
         }
     }
 
+    // ========================= WALL / POPULIST COLLISION ====================
+    //
     if (train.star_phase) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
@@ -726,11 +759,11 @@ function collision_update(object, train) {
             if (time_delta > wall_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
-                train.indefeatable = false;
             } else if (time_delta === 0.0) {
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
-                update_coin_counter(10);
+                if (!is_fading_to_next_level)
+                    update_coin_counter(eu_wall_collision_reward);
             } else{
                 object.sprite.x = object.point_start_x
                 + object.direction
@@ -749,15 +782,16 @@ function collision_update(object, train) {
             if (time_delta > wall_animation_length) {
                 object.sprite.destroy();
                 object.collision = false;
-                train.animations.play(train_animations[train.rail]);
-                train.indefeatable = false;
             } else if (time_delta === 0.0){
                 sound_smash.play();
                 notify_objective_c("smashed-wall");
-                train.animations.play(train_collision_animations[train.rail]);
-                train.indefeatable = true;
-                update_coin_counter(wall_coin_penalty);
+                if (!is_fading_to_next_level)
+                    update_coin_counter(wall_coin_penalty);
                 update_velocity("collision");
+
+                //for handling of train animations
+                train.indefeatable = true;
+                last_bad_wall_collision_time = time_now;
             } else {
                 object.sprite.x = object.point_start_x
                 + object.direction * time_delta;
@@ -783,7 +817,7 @@ function get_dam_object(kind) {
     // get spawn rail
 
     let random_rail = Math.floor(Math.random() * 2);
-    let min_distance_to_rail = 15; // if this is smaller than 35, 
+    let min_distance_to_rail = 15; // if this is smaller than 35,
 
     // get corresponding starting position
     let dam_width = canvas_width / 2
@@ -807,7 +841,7 @@ function get_dam_object(kind) {
     let object_width;
     let object_height_original;
     let object_width_original;
-    
+
     let sprite = rail_object_group.create(0, 0, kind);
 
     sprite.anchor.setTo(0.5,0);
@@ -902,7 +936,7 @@ function get_rail_object(kind,spawn_at_rail)
     let object_width;
     let object_height_original;
     let object_width_original;
-    
+
     let sprite = rail_object_group.create(0, 0, kind);
 
     if (kind == 'wall') {
@@ -1102,14 +1136,14 @@ function eu_flag_complete_event() {
         let star_alpha = 0;
         let auto_start = false;
         let delay = eu_star_phase_duration - eu_star_travel_time;
-        
+
         let pulse_count = 12;
         let pulse_duration = delay / (2 * pulse_count);
         let pulse_scale = star.sprite.height
         / star.object_height_original * 1.3;
         let pulse_delay = 0;
         let pulse_yoyo = true;
-        
+
         let star_pulse = game.add.tween(star.sprite.scale).to(
                                                               {
                                                               x: pulse_scale,
@@ -1122,7 +1156,7 @@ function eu_flag_complete_event() {
                                                               pulse_count,
                                                               pulse_yoyo
                                                               );
- 
+
         let star_travel = game.add.tween(star.sprite).to(
                                                          {
                                                          alpha: star_alpha,
@@ -1201,7 +1235,7 @@ function switch_bg_music() {
         sound_bg_music.pause();
         let blocklength_of_4_bars_in_ms = 1 / (bg_music_bpm / 4 / 60) * 4 * 1000;
         let current_block = Math.floor(sound_bg_music.pausedPosition / blocklength_of_4_bars_in_ms);
-        sound_bg_music.pausedPosition = current_block * blocklength_of_4_bars_in_ms; 
+        sound_bg_music.pausedPosition = current_block * blocklength_of_4_bars_in_ms;
 
     } else {
         sound_bg_music.resume();
@@ -1215,7 +1249,10 @@ function next_level() {
     rect.height = canvas_height;
     rect.alpha = 0;
 
-    train.indefeatable = true;
+    //train.indefeatable = true;
+    train.star_phase = true;
+    is_fading_to_next_level = true;
+    last_eu_star_collision_time = time_now;
 
     let fade_out = game.add.tween(rect).to(
                                             {
@@ -1225,9 +1262,21 @@ function next_level() {
                                             Phaser.Easing.Linear.None
                                           );
     fade_out.onComplete.add( function (){
-        game.state.start(level_names[current_level]);
+        game.state.start(level_names[current_level % number_of_levels]);
         train.indefeatable = false;
+        is_fading_to_next_level = false;
     });
 
     fade_out.start();
+}
+
+function eu_star_phase_factor() {
+    // for the first level, the velocity up scale is
+    // x 1+a
+    // for the second, its
+    // x 1+a^2
+    // ...
+    // for very large level numbers, 
+    // the velocity is not upscaled anymore
+    return 1 + Math.pow(0.9, current_level);
 }
