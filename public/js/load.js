@@ -114,7 +114,7 @@ function preload_all_assets() {
 
         game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
-        game.load.spritesheet('button', 'assets/button.50.png', 575*2, 144*2);
+        game.load.spritesheet('button', 'assets/button.png', 575*2, 144*2);
 
     } else {
         game.load.image('grass_de',      'assets/green.50.png');
