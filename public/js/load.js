@@ -52,7 +52,7 @@ let load_state = {
         sound_whistle.volume = 1;
         sound_background = game.add.audio('ratter');
         sound_background.volume = 0.21;
-        
+
         sound_bg_music = game.add.audio('bg_music');
         sound_bg_music.volume = 0.5;
         sound_bg_music.loop = true;
@@ -102,6 +102,7 @@ function preload_all_assets() {
         game.load.image('sky_ru',        'assets/russia/sky_RUS.png');
 
         game.load.image('panel',      'assets/Panel.png');
+        game.load.image('menubg',     'assets/untergrund.png');
 
         game.load.image('cloud0',     'assets/cloud01.png');
         game.load.image('cloud1',     'assets/cloud02.png');
@@ -166,6 +167,7 @@ function preload_all_assets() {
         game.load.image('sky_ru',        'assets/russia/sky_RUS.50.png');
 
         game.load.image('panel',      'assets/Panel.50.png');
+        game.load.image('menubg',     'assets/untergrund.50.png');
 
         game.load.image('cloud0',     'assets/cloud01.50.png');
         game.load.image('cloud1',     'assets/cloud02.50.png');
