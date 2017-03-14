@@ -36,7 +36,7 @@ function core_create() {
     last_velocity_scale_time = game.time.now;
     time_now = game.time.now;
     time_last = time_now - 1;
-    firebase_submission_time = time_now + 15000;
+    firebase_submission_time = time_now + firebase_submission_delay;
 
     // add the animated rails
 
@@ -132,6 +132,8 @@ function core_create() {
     });
 
     fade_out.start();
+
+    updateStatistics();
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -460,9 +462,14 @@ function core_update() {
 
     // Firebase: Save game result every 15 seconds.
     var firebase_time_now = game.time.now;
-    if (firebase_submission_time + 15000 < firebase_time_now) {
+    if (firebase_submission_time + firebase_submission_delay < firebase_time_now) {
         updateGameResult(coin_counter, meter_counter);
         firebase_submission_time = firebase_time_now;
+        updateStatistics();
+        window.console.log("user online: " + get_metric_prefix(firebaseActiveUsers, 3) +
+        ", user total: " + get_metric_prefix(firebaseTotalUsers, 3) +
+        ", distance total: " + get_metric_prefix(firebaseTotalDistance, 3) +
+        "m, score total: " + get_metric_prefix(firebaseTotalScore, 3));
     }
 
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);

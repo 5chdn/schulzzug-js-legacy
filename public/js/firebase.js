@@ -1,5 +1,5 @@
 // CONFIGURATION
-let config = {
+var config = {
     apiKey: "AIzaSyAo0p0M13L2_zPK-YJ5IITd-WczdJTUFPA",
     authDomain: "schulzzug-b84fc.firebaseapp.com",
     databaseURL: "https://schulzzug-b84fc.firebaseio.com",
@@ -8,53 +8,59 @@ let config = {
 };
 firebase.initializeApp(config);
 
+var firebaseTotalDistance = 0;
+var firebaseTotalScore = 0;
+var firebaseTotalUsers = 0;
+var firebaseActiveUsers = 0;
+
 firebase.auth().signInAnonymously().then(function() {
-  	configurePresence();
+    configurePresence();
 }).catch(function(error) {
-  	console.log(error.message);
+    console.log(error.message);
 });
 
 function configurePresence() {
-	let connections = firebase.database().ref('connections');
-	let connectedRef = firebase.database().ref('.info/connected');
-	connectedRef.on('value', function(snap) {
-  		if (snap.val() === true) {
-	  		let con = connections.push(true);
-    		con.onDisconnect().remove();
-  		}
-	});
+  var connections = firebase.database().ref('connections');
+  var connectedRef = firebase.database().ref('.info/connected');
+  connectedRef.on('value', function(snap) {
+      if (snap.val() === true) {
+        var con = connections.push(true);
+        con.onDisconnect().remove();
+      }
+  });
 }
 
 // EXPORTED FUNCTIONS
 function updateGameResult(score, distance) {
-	let userId = firebase.auth().currentUser.uid;
-	let timestamp = firebase.database.ServerValue.TIMESTAMP;
-
-	let gameResult = {
-		score: score,
-		distance: distance,
-		timestamp: timestamp
-	}
-
-	let updates = {}
-	updates['/game-results/' + userId] = gameResult;
-
-	return firebase.database().ref().update(updates)
+  var userId = firebase.auth().currentUser.uid;
+  var timestamp = firebase.database.ServerValue.TIMESTAMP;
+  var gameResult = {
+    score: score,
+    distance: distance,
+    timestamp: timestamp
+  }
+  var updates = {}
+  updates['/game-results/' + userId] = gameResult;
+  return firebase.database().ref().update(updates)
 }
 
-function fetchActiveUserCount(callback) {
-	let connections = firebase.database().ref('connections');
-	connections.on('value', function(snapshot) {
-		let count = snapshot.numChildren();
-		callback(count);
-	});
-}
-
-function fetchGameStats(callback) {
-	let gameResultsRef = firebase.database().ref('statistics');
-	gameResultsRef.once('value', function(snapshot) {
-        let newTotalScore = snapshot.val().totalScore;
-		let newTotalDistance = snapshot.val().totalDistance;
-		callback(newTotalScore, newTotalDistance);
-	});
+// EXPORTED FUNCTIONS
+function updateStatistics() {
+  var gamesRef = firebase.database().ref('game-results');
+  gamesRef.on('value', function(snapshot) {
+    var games = snapshot.val();
+    firebaseTotalDistance = 0;
+    firebaseTotalScore = 0;
+    firebaseTotalUsers = snapshot.numChildren();
+    for (var v in games) {
+      if (games.hasOwnProperty(v)) {
+        firebaseTotalDistance += games[v].distance;
+        firebaseTotalScore += games[v].score;
+      }
+    }
+  });
+  var connections = firebase.database().ref('connections');
+  connections.on('value', function(snapshot) {
+    firebaseActiveUsers = snapshot.numChildren();
+  });
 }
