@@ -11,9 +11,9 @@ function core_create() {
     key_mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
     // start physics and add basic sprites
-    let grass_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level]].green);
-    let dirt_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level]].dirt);
-    let sky_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level]].sky);
+    let grass_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].green);
+    let dirt_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].dirt);
+    let sky_sprite = game.add.sprite(0, 0, level_backgrounds[level_names[current_level%number_of_levels]].sky);
 
     if(is_retina()){
         grass_sprite.scale.setTo(0.5,0.5);
@@ -1255,7 +1255,7 @@ function next_level() {
                                             Phaser.Easing.Linear.None
                                           );
     fade_out.onComplete.add( function (){
-        game.state.start(level_names[current_level]);
+        game.state.start(level_names[current_level % number_of_levels]);
         train.indefeatable = false;
         is_fading_to_next_level = false;
     });
@@ -1264,12 +1264,12 @@ function next_level() {
 }
 
 function eu_star_phase_factor() {
-    // for the first level, the velocity increase is
-    // x 2
+    // for the first level, the velocity up scale is
+    // x 1+a
     // for the second, its
-    // x 1.75
+    // x 1+a^2
     // ...
     // for very large level numbers, 
-    // the velocity is not increased anymore
-    return 1 + Math.pow(0.75, current_level);
+    // the velocity is not upscaled anymore
+    return 1 + Math.pow(0.9, current_level);
 }
