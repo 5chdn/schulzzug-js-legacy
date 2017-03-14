@@ -81,5 +81,6 @@ let menu_state = {
 function start_core_game () {
     sound_bg_music.play();
     sound_background.play();
+    current_level = default_start_level;
     game.state.start(level_names[default_start_level]);
 }

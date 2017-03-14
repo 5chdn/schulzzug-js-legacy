@@ -159,7 +159,7 @@ function core_update() {
     // pause the game (so far, go to end state)
     if (key_esc.isDown) {
         key_change_time = time_now;
-        game.state.start("end");
+        next_level("end");
     }
 
     // ========================= PLAYER CONTROL ===========================
@@ -1234,8 +1234,7 @@ function switch_bg_music() {
     }
 }
 
-function next_level() {
-    current_level++;
+function next_level(next_level_key) {
     let rect = game.add.sprite(0,0,"black");
     rect.width = canvas_width;
     rect.height = canvas_height;
@@ -1254,9 +1253,14 @@ function next_level() {
                                             Phaser.Easing.Linear.None
                                           );
     fade_out.onComplete.add( function (){
-        game.state.start(level_names[current_level % number_of_levels]);
-        train.indefeatable = false;
-        is_fading_to_next_level = false;
+        if (next_level_key == null) {
+            current_level++;
+            game.state.start(level_names[current_level % number_of_levels]);
+            train.indefeatable = false;
+            is_fading_to_next_level = false;
+        } else {
+            game.state.start(next_level_key);
+        }
     });
 
     fade_out.start();
