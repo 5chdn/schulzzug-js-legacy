@@ -552,7 +552,7 @@ function update_velocity(scale_event,scale) {
     }
     else if (scale_event == "star") {
         last_scale_event = "star";
-        last_velocity_scale = eu_star_phase_factor;
+        last_velocity_scale = eu_star_phase_factor();
         last_velocity_scale_time = time_now;
         scale_velocity(last_velocity_scale);
     }
@@ -1261,4 +1261,15 @@ function next_level() {
     });
 
     fade_out.start();
+}
+
+function eu_star_phase_factor() {
+    // for the first level, the velocity increase is
+    // x 2
+    // for the second, its
+    // x 1.75
+    // ...
+    // for very large level numbers, 
+    // the velocity is not increased anymore
+    return 1 + Math.pow(0.75, current_level);
 }

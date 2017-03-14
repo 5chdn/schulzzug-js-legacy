@@ -37,7 +37,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 1;
+const eu_stars_count = 12;
 const delta_phi = 360 / eu_stars_count;
 let eu_stars_indices = Array();
 for (let i = 0; i < eu_stars_count; i++) {
@@ -46,14 +46,14 @@ for (let i = 0; i < eu_stars_count; i++) {
 let eu_star_objects = Array();
 const eu_star_travel_time = 1000;
 let eu_star_can_spawn = true;
-const eu_event_delta_v = 10;
+const eu_event_delta_v = 5;
 
 // each time it's possible, a star will appear
 const eu_star_appearance_probability = .1; // std: 0.1, debug: 1.0
 
 // ===================== STERNPHASE DEFINTIIONS ================================
 const eu_star_phase_duration = 8000; // std: 8000, debug: 4000
-const eu_star_phase_factor = 2;
+//const eu_star_phase_factor = 2; --> this is now a function in core (dynamically from level)
 let last_eu_star_collision_time = 0;
 
 // ===================== DEFINE CONTROL VARIABLES ==============================
