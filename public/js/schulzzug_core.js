@@ -147,7 +147,9 @@ function core_create() {
 
 
     //
-    coin_notifier = game.add.sprite(0,canvas_height-72,"coin_notifier");
+    coin_notifier = game.add.sprite(0,canvas_height-100,"coin_notifier");
+    coin_notifier.width = 180;
+    coin_notifier.height = 100;
     coin_notifier.animations.add("disappear",[1],1,false);
     coin_notifier.animations.add("blink",[0,1],8,true);
     coin_notifier.animations.play("disappear");

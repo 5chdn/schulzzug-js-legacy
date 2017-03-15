@@ -116,7 +116,7 @@ function preload_all_assets() {
         game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.png', 64, 64);
         game.load.spritesheet('button', 'assets/button.png', 575*2, 144*2);
-        game.load.spritesheet('coin_notifier', 'assets/coin_notifier.png', 157*2, 72*2);
+        game.load.spritesheet('coin_notifier', 'assets/coin_notifier.png', 180*2, 100*2);
 
     } else {
         game.load.image('grass_de',      'assets/green.50.png');
@@ -185,7 +185,7 @@ function preload_all_assets() {
         game.load.spritesheet('train', 'assets/Trains_animation.50.png', 120, 232);
         game.load.spritesheet('coin', 'assets/Coin.50.png', 32, 32);
         game.load.spritesheet('button', 'assets/button.50.png', 288*2, 72*2);
-        game.load.spritesheet('coin_notifier', 'assets/coin_notifier.50.png', 157, 72);
+        game.load.spritesheet('coin_notifier', 'assets/coin_notifier.50.png', 180, 100);
 
     }
 
