@@ -104,6 +104,34 @@ let level_backgrounds = {
     }
 }
 
+let level_populist_probabilities = {
+    germany: {
+        'wall_frauke': 0.2,
+        'wall': 0.2,
+        'coin': 0.6
+    },
+    usa: {
+        'wall_donald': 0.2,
+        'wall': 0.2,
+        'coin': 0.6
+    },
+    turkey: {
+        'erdogan': 0.2,
+        'wall': 0.2,
+        'coin': 0.6
+    },
+    netherlands: {
+        'geert': 0.2,
+        'wall': 0.2,
+        'coin': 0.6
+    },
+    russia: {
+        'putin': 0.2,
+        'wall': 0.2,
+        'coin': 0.6
+    }
+}
+
 // push all the states in to this array
 let level_states = Array();
 
@@ -120,8 +148,8 @@ for(let i=0; i<number_of_levels; i++)
             norm_probabilities(dam_probabilities);
 
             //update rail objects
-            //rail_probabilities = level_rail_probabilities[i];
-            //update_probabilities(rail_probabilities);
+            populist_probabilities = level_populist_probabilities[level_names[current_level%number_of_levels]];
+            norm_probabilities(populist_probabilities);
 
             //update level default velocity
             update_velocity("level_change");

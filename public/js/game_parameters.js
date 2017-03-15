@@ -99,6 +99,7 @@ let dam_probabilities;
 
 //let rail_standard_object_probabilities;
 //let rail_sternphase_object_probabilities;
+let populist_probabilities;
 
 
 // objects for storing arrays and sprite groups:
