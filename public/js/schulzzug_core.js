@@ -125,6 +125,7 @@ function core_create() {
 
     fade_out.onComplete.add( function (){
         text_level_fade_out.start();
+        activate_pause_button();
     });
 
     fade_out.start();
@@ -132,6 +133,7 @@ function core_create() {
     updateStatistics();
 
     create_pause_menu();
+
 
 }
 

@@ -73,6 +73,7 @@ function preload_all_assets() {
         game.load.image('panel',      'assets/Panel.png');
         game.load.image('menubg',     'assets/untergrund.png');
         game.load.image("byebye","assets/Twitter.png");
+        game.load.image('pause_button',  'assets/pause_button.png');
 
         game.load.image('cloud0',     'assets/cloud01.png');
         game.load.image('cloud1',     'assets/cloud02.png');
@@ -140,6 +141,7 @@ function preload_all_assets() {
         game.load.image('panel',      'assets/Panel.50.png');
         game.load.image('menubg',     'assets/untergrund.50.png');
         game.load.image("byebye","assets/Twitter.50.png");
+        game.load.image('pause_button',  'assets/pause_button.50.png');
 
         game.load.image('cloud0',     'assets/cloud01.50.png');
         game.load.image('cloud1',     'assets/cloud02.50.png');
