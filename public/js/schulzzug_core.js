@@ -134,6 +134,16 @@ function core_create() {
 
     create_pause_menu();
 
+    game.input.onDown.add(function(event) {
+        if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
+            if (pause_menu.is_active && pause_menu.is_coin_menu) {
+                hide_pause_menu();
+            } else {
+                show_coin_menu();
+            }
+        }
+    },this);
+
 
 }
 

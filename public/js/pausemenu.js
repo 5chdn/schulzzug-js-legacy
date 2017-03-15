@@ -32,8 +32,12 @@ let pause_buttons = [
         label: "Ja",
         layer: 2,
         on_click: function () {
-            hide_pause_menu();
-            next_level("end");
+            if (coin_counter>0) {
+                pause_menu_goto_layer(3);
+            } else {
+                hide_pause_menu();
+                next_level("end");
+            }
         }
     },
 
@@ -50,7 +54,17 @@ let pause_buttons = [
         on_click: function () {
             pause_menu_goto_layer(0);
         }
+    },
+    { 
+        label: "Ich bin geizig",
+        layer: 3,
+        on_click: function () {
+            hide_pause_menu();
+            if (!pause_menu.is_coin_menu)
+                next_level("end");
+        }
     }
+
 ];
 
 
@@ -65,7 +79,11 @@ let pause_layers = [
     },
     {
         layer_position: -1,
-        title: "Sicher?"
+        title: "Sicher?\n Das beendet das Spiel!"
+    },
+    {
+        layer_position: -2,
+        title: "Wofuer moechtest du\ndeine gesammelten\nSchulzcoins ausgeben?"
     }
 ];
 
@@ -90,6 +108,7 @@ function create_pause_menu () {
     pause_menu.pause_button.inputEnabled = false;
 
     pause_menu.is_active = false;
+    pause_menu.is_coin_menu = false;
 
     pause_menu.rect = game.add.sprite(0,0,"black");
     pause_menu.rect.width = canvas_width;
@@ -152,7 +171,11 @@ function destroy_pause_menu () {
     }
 }
 
-function pause_menu_goto_layer(layer) {
+function pause_menu_goto_layer(layer,layer_change_duration) {
+
+    if (layer_change_duration == null)
+        layer_change_duration = 1000;
+
 
     let dlayer =   pause_layers[pause_menu.current_layer].layer_position
                  - pause_layers[layer].layer_position;
@@ -166,7 +189,7 @@ function pause_menu_goto_layer(layer) {
      arrs.forEach( function (arr) {
          arr.forEach( function (obj) {
              let tween = game.add.tween(obj).to({ x: obj.x + dlayer * canvas_width},
-                                                1000,
+                                                layer_change_duration,
                                                 Phaser.Easing.Cubic.InOut
                                                );
              tween.start();
@@ -178,6 +201,7 @@ function pause_menu_goto_layer(layer) {
 }
 
 function show_pause_menu() {
+    pause_menu_goto_layer(0,1);
     pause_menu.rect.alpha = pause_bg_alpha;
     pause_menu.layer_titles.forEach(function(d) { d.alpha = 1; });
     pause_menu.button_labels.forEach(function(d) { d.alpha = 1; });
@@ -186,6 +210,7 @@ function show_pause_menu() {
     game.tweens.pauseAll();
     pause_menu.pause_button.alpha = 0;
     pause_menu.pause_button.inputEnabled = false;
+    pause_menu.is_coin_menu = false;
 }
 
 function hide_pause_menu() {
@@ -197,6 +222,20 @@ function hide_pause_menu() {
     game.tweens.resumeAll();
     pause_menu.pause_button.alpha = pause_pause_button_alpha;
     pause_menu.pause_button.inputEnabled = true;
+    //pause_menu.is_coin_menu = false;
+}
+
+function show_coin_menu() {
+    pause_menu_goto_layer(3,1);
+    pause_menu.is_coin_menu = true;
+    pause_menu.rect.alpha = pause_bg_alpha;
+    pause_menu.layer_titles.forEach(function(d) { d.alpha = 1; });
+    pause_menu.button_labels.forEach(function(d) { d.alpha = 1; });
+    pause_menu.buttons.forEach(function(d) { d.alpha = 1; d.inputEnabled = true; });
+    pause_menu.is_active = true;
+    game.tweens.pauseAll();
+    pause_menu.pause_button.alpha = 0;
+    pause_menu.pause_button.inputEnabled = false;
 }
 
 function activate_pause_button() {
@@ -206,23 +245,45 @@ function activate_pause_button() {
 
 function create_spend_buttons () {
 
+    // this is a dummy. get options from firebase
     let options = [ 
         { 
             name: "Bildung",
             key: "34sve5ubd6"
         }, 
         { 
-            name: "EU",
+            name: "Europaeische Union",
             key: "sb4795n"
+        }, 
+        { 
+            name: "Krankenversicherung",
+            key: "h6876og"
+        }, 
+        { 
+            name: "Rentenversicherung",
+            key: "voiur5c0"
         } 
     ];
 
     for(let i=0; i<options.length; i++) {
+        let key = options[i].key;
         pause_buttons.push({
             label: options[i].name,
             layer: 1,
             on_click: function() {
                 update_coin_counter(-coin_counter);
+                //firebase_send_coins(key,coin_counter);
+            }
+        });
+        pause_buttons.push({
+            label: options[i].name,
+            layer: 3,
+            on_click: function() {
+                update_coin_counter(-coin_counter);
+                //firebase_send_coins(key,coin_counter);
+                hide_pause_menu();
+                if (!pause_menu.is_coin_menu)
+                    next_level("end");
             }
         });
     }
