@@ -59,7 +59,7 @@ let last_eu_star_collision_time = 0;
 // ===================== DEFINE CONTROL VARIABLES ==============================
 // swipe handling
 let IOS_MODE;
-let swipe_direction;
+var swipe_direction;
 let swipe_gesture_recognizer;
 
 // input keys
