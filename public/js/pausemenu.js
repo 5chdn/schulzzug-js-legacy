@@ -1,4 +1,5 @@
 let pause_bg_alpha = 0.5;
+let pause_pause_button_alpha = 0.5;
 let pause_button_alpha = 1;
 
 let pause_menu = {};
@@ -77,6 +78,17 @@ let pause_style = {
         }
 
 function create_pause_menu () {
+
+    pause_menu.pause_button = game.add.button(20,20,"pause_button",
+                                 function() {
+                                     show_pause_menu();
+                                 },
+                                 this);
+    let p_button_scale = 48/ pause_menu.pause_button.width;
+    pause_menu.pause_button.scale.setTo(p_button_scale);
+    pause_menu.pause_button.alpha = 0;
+    pause_menu.pause_button.inputEnabled = false;
+
     pause_menu.is_active = false;
 
     pause_menu.rect = game.add.sprite(0,0,"black");
@@ -117,7 +129,10 @@ function create_pause_menu () {
                 button_label.alpha = 0;
                 button.alpha = 0;
                 button.anchor.setTo(0.5,0.5);
+                //button.width *= button_scale;
+                //button.height = dy;
                 button.scale.setTo(button_scale,button_scale);
+                button.inputEnabled = false;
                 pause_menu.buttons.push(button);
                 pause_menu.button_labels.push(button_label);
                 button_count++;
@@ -133,6 +148,7 @@ function destroy_pause_menu () {
         pause_menu.button_labels.forEach(function(d) { d.destroy(); });
         pause_menu.buttons.forEach(function(d) { d.destroy() });
         pause_menu.is_active = false;
+        pause_menu.pause_button.destroy();
     }
 }
 
@@ -168,6 +184,8 @@ function show_pause_menu() {
     pause_menu.buttons.forEach(function(d) { d.alpha = 1; d.inputEnabled = true; });
     pause_menu.is_active = true;
     game.tweens.pauseAll();
+    pause_menu.pause_button.alpha = 0;
+    pause_menu.pause_button.inputEnabled = false;
 }
 
 function hide_pause_menu() {
@@ -177,6 +195,13 @@ function hide_pause_menu() {
     pause_menu.buttons.forEach(function(d) { d.alpha = 0; d.inputEnabled = false; });
     pause_menu.is_active = false;
     game.tweens.resumeAll();
+    pause_menu.pause_button.alpha = pause_pause_button_alpha;
+    pause_menu.pause_button.inputEnabled = true;
+}
+
+function activate_pause_button() {
+    pause_menu.pause_button.alpha = pause_pause_button_alpha;
+    pause_menu.pause_button.inputEnabled = true;
 }
 
 function create_spend_buttons () {
