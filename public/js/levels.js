@@ -116,18 +116,18 @@ let level_populist_probabilities = {
         'coin': 0.6
     },
     turkey: {
-        'erdogan': 0.2,
-        'wall': 0.2,
+        //'erdogan': 0.2,
+        'wall': 0.4,
         'coin': 0.6
     },
     netherlands: {
-        'geert': 0.2,
-        'wall': 0.2,
+        //'geert': 0.2,
+        'wall': 0.4,
         'coin': 0.6
     },
     russia: {
-        'putin': 0.2,
-        'wall': 0.2,
+        //'putin': 0.2,
+        'wall': 0.4,
         'coin': 0.6
     }
 }
