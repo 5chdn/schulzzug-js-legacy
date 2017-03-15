@@ -177,6 +177,8 @@ function pause_menu_goto_layer(layer,layer_change_duration) {
     // if it is null, use the standard transition duration 
     if (layer_change_duration == null)
         layer_change_duration = 1000;
+    else if (layer_change_duration == 1) {
+    }
 
 
     if ((layer == 1 || layer == 3) && !used_coin_menu_already) {
@@ -195,11 +197,15 @@ function pause_menu_goto_layer(layer,layer_change_duration) {
 
      arrs.forEach( function (arr) {
          arr.forEach( function (obj) {
-             let tween = game.add.tween(obj).to({ x: obj.x + dlayer * canvas_width},
-                                                layer_change_duration,
-                                                Phaser.Easing.Cubic.InOut
-                                               );
-             tween.start();
+             if (layer_change_duration == 1){
+                 obj.x = obj.x + dlayer * canvas_width;
+             }else {
+                 let tween = game.add.tween(obj).to({ x: obj.x + dlayer * canvas_width},
+                                                    layer_change_duration,
+                                                    Phaser.Easing.Cubic.InOut
+                                                   );
+                 tween.start();
+             }
          });
      });
 
