@@ -163,7 +163,16 @@ function core_update() {
     let direction = null;
     // don't update large time deltas (e.g. when paused)
     if (time_delta > 500 || pause_menu.is_active)
+    {
+        last_bad_wall_collision_time += time_delta;
+        last_eu_star_collision_time += time_delta;
+        last_velocity_scale_time += time_delta;
+        key_change_time += time_delta;
+        train_up_jump_start += time_delta;
+        rail_jump_start += time_delta;
+
         return;
+    }
 
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
