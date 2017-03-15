@@ -196,3 +196,9 @@ let state_transition_duration = 1000;
 let is_fading_to_next_level = false;
 
 let last_esc_use_time;
+
+// =========================== COIN MENU NOTIFICATION ==========================
+let used_coin_menu_already = false;
+let total_lost_coins = 0;
+const lost_coins_at_which_to_start_notifying = 200;
+let coin_notifier;

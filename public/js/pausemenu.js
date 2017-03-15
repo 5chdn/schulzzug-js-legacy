@@ -173,9 +173,16 @@ function destroy_pause_menu () {
 
 function pause_menu_goto_layer(layer,layer_change_duration) {
 
+    // if it is not null, then the event does not come from a menu internal event.
+    // if it is null, use the standard transition duration 
     if (layer_change_duration == null)
         layer_change_duration = 1000;
 
+
+    if ((layer == 1 || layer == 3) && !used_coin_menu_already) {
+        coin_notifier.animations.play("disappear");
+        used_coin_menu_already = true;
+    }
 
     let dlayer =   pause_layers[pause_menu.current_layer].layer_position
                  - pause_layers[layer].layer_position;

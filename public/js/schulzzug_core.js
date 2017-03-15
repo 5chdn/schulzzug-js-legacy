@@ -134,6 +134,7 @@ function core_create() {
 
     create_pause_menu();
 
+    //open coin menu when clicking on coin label
     game.input.onDown.add(function(event) {
         if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
             if (pause_menu.is_active && pause_menu.is_coin_menu) {
@@ -145,6 +146,11 @@ function core_create() {
     },this);
 
 
+    //
+    coin_notifier = game.add.sprite(0,canvas_height-72,"coin_notifier");
+    coin_notifier.animations.add("disappear",[1],1,false);
+    coin_notifier.animations.add("blink",[0,1],8,true);
+    coin_notifier.animations.play("disappear");
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -180,6 +186,8 @@ function core_update() {
         key_change_time += time_delta;
         train_up_jump_start += time_delta;
         rail_jump_start += time_delta;
+        rail_object_time += time_delta;
+        dam_object_time += time_delta;
 
         return;
     }
@@ -697,7 +705,7 @@ function collision_update(object, train) {
                                                          Phaser.Easing.Cubic.Out
                                                          );
             coin_collect.onComplete.add(function () {
-                                        update_coin_counter(1);
+                                        update_coin_counter(1,train);
                                         sprite.destroy();
                                         });
 
@@ -1097,12 +1105,14 @@ function activateIosMode() {
 
 function update_coin_counter(coins,from_object) {
 
+    let is_from_spending = false;
     if (from_object == null){
         from_object = text_score;
+        is_from_spending = true;
     }
 
     // only update if not a single coin
-    if (Math.abs(coins) > 1){
+    if ((Math.abs(coins) > 1 && !is_from_spending) || is_from_spending){
         let style = {align:"center",
             font:'30px SilkScreen monospace'}
         let base_text = "";
@@ -1135,6 +1145,15 @@ function update_coin_counter(coins,from_object) {
                                text_coin.destroy()
                                });
         coin_up.start();
+    }
+
+    // if the player loses too much coins and doesn't know 
+    if (!used_coin_menu_already &&
+        coins < 0 ) {
+        total_lost_coins += Math.abs(coins);
+        if (total_lost_coins >= lost_coins_at_which_to_start_notifying) {
+            coin_notifier.animations.play("blink");
+        }
     }
 
     //check if too negative
