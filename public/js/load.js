@@ -1,3 +1,4 @@
+"use strict";
 // the load state
 //
 let started_loading_time;

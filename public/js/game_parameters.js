@@ -1,3 +1,4 @@
+"use strict";
 // ===================== DEFINE WORLD CONSTANTS ================================
 // canvas size (half iphone 7 retina resolution)
 const canvas_width = 375;
@@ -21,7 +22,7 @@ const rail_distance_inner = 10;
 const rail_distance_outer = 6;
 
 // schulzzug velocity
-let v_initial = 10          // default velocity for the whole game
+let v_initial = 10;          // default velocity for the whole game
 let v_default = v_initial;  // default velocity for the current level
 let v = v_default;   // current velocity
 
@@ -203,3 +204,6 @@ let used_coin_menu_already = false;
 let total_lost_coins = 0;
 const lost_coins_at_which_to_start_notifying = 200;
 let coin_notifier;
+
+let flying_coin_group;
+var is_android = false;

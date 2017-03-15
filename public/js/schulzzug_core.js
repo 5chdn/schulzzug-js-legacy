@@ -1,3 +1,4 @@
+"use strict";
 // =============== PHASER CREATE GAME ENVIRONMENT ==============================
 
 function core_create() {
@@ -1132,7 +1133,7 @@ function update_coin_counter(coins,from_object) {
     }
 
     // only update if not a single coin
-    if ((Math.abs(coins) > 1 && !is_from_spending) || is_from_spending){
+    if ((Math.abs(coins) > 1 && !is_from_spending) || ((Math.abs(coins)>0) && is_from_spending) ){
         let style = {align:"center",
             font:'30px SilkScreen monospace'}
         let base_text = "";

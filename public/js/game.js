@@ -1,3 +1,4 @@
+"use strict";
 // ======================================= CREATE GAME ENGINE ==================
 let game = new Phaser.Game(
                            canvas_width,

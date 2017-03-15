@@ -1,3 +1,4 @@
+"use strict";
 let pause_bg_alpha = 0.5;
 let pause_pause_button_alpha = 0.5;
 let pause_button_alpha = 1;
