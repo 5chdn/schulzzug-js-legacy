@@ -1,3 +1,4 @@
+"use strict";
 let webservice = {
 	baseUrl: "http://example.com",
 	updateScore: function(score) {

@@ -1,3 +1,4 @@
+"use strict";
 // this array contains the level names in the order they will appear in
 // its last element has to be "ende" though (or some other state that will appear
 // after the laste level)
@@ -184,13 +185,13 @@ for(let i=0; i<number_of_levels; i++)
 function norm_probabilities(probabilities) {
     //norm the sum of those probabilities to one
     let probability_norm = 0;
-    for (kind in probabilities)
+    for (let kind in probabilities)
     {
         if (!probabilities.hasOwnProperty(kind)) continue;
 
         probability_norm += probabilities[kind];
     }
-    for (kind in probabilities)
+    for (let kind in probabilities)
     {
         if (!probabilities.hasOwnProperty(kind)) continue;
 

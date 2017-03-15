@@ -1,3 +1,4 @@
+"use strict";
 let end_state = {
 
     create: function () {
