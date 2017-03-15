@@ -134,7 +134,25 @@ function core_create() {
 
     create_pause_menu();
 
+    //open coin menu when clicking on coin label
+    game.input.onDown.add(function(event) {
+        if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
+            if (pause_menu.is_active && pause_menu.is_coin_menu) {
+                hide_pause_menu();
+            } else {
+                show_coin_menu();
+            }
+        }
+    },this);
 
+
+    //
+    coin_notifier = game.add.sprite(0,canvas_height-100,"coin_notifier");
+    coin_notifier.width = 180;
+    coin_notifier.height = 100;
+    coin_notifier.animations.add("disappear",[1],1,false);
+    coin_notifier.animations.add("blink",[0,1],8,true);
+    coin_notifier.animations.play("disappear");
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -163,7 +181,18 @@ function core_update() {
     let direction = null;
     // don't update large time deltas (e.g. when paused)
     if (time_delta > 500 || pause_menu.is_active)
+    {
+        last_bad_wall_collision_time += time_delta;
+        last_eu_star_collision_time += time_delta;
+        last_velocity_scale_time += time_delta;
+        key_change_time += time_delta;
+        train_up_jump_start += time_delta;
+        rail_jump_start += time_delta;
+        rail_object_time += time_delta;
+        dam_object_time += time_delta;
+
         return;
+    }
 
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
@@ -425,13 +454,19 @@ function core_update() {
                 kind = 'coin';
             }
         } else {
-            if (random_float < 0.2) {
-                kind = 'wall_donald';
-            }
-            else if (random_float < 0.4) {
-                kind = 'wall_frauke';
-            } else {
-                kind = 'coin';
+            let total_populist_probability = 0;
+            for (let populist in populist_probabilities) {
+                // skip loop if the property is from prototype
+                if (!populist_probabilities.hasOwnProperty(populist)) continue;
+
+                total_populist_probability += populist_probabilities[populist];
+
+                if (random_float < total_populist_probability) {
+                    kind = populist;
+
+                    // get out of for loop
+                    break;
+                }
             }
 
         }
@@ -678,7 +713,7 @@ function collision_update(object, train) {
                                                          Phaser.Easing.Cubic.Out
                                                          );
             coin_collect.onComplete.add(function () {
-                                        update_coin_counter(1);
+                                        update_coin_counter(1,train);
                                         sprite.destroy();
                                         });
 
@@ -759,6 +794,9 @@ function collision_update(object, train) {
     if (train.star_phase) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
+            object.kind == "erdogan" ||
+            object.kind == "geert" ||
+            object.kind == "putin" ||
             object.kind == "wall_donald") {
             let time_delta = time_now - object.time_start;
             if (time_delta > wall_animation_length) {
@@ -782,6 +820,9 @@ function collision_update(object, train) {
     }  else {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
+            object.kind == "erdogan" ||
+            object.kind == "geert" ||
+            object.kind == "putin" ||
             object.kind == "wall_donald") {
             let time_delta = time_now - object.time_start;
             if (time_delta > wall_animation_length) {
@@ -950,6 +991,12 @@ function get_rail_object(kind,spawn_at_rail)
         object_height = rail_distance_inner * 1.50;
     } else if (kind == 'wall_donald') {
         object_height = rail_distance_inner * 1.55;
+    } else if (kind == "erdogan") {
+        object_height = 25;
+    } else if (kind == "putin") {
+        object_height = 25;
+    } else if (kind == "geert") {
+        object_height = 25;
     } else if (kind == 'eurostar') {
         object_height = rail_distance_inner;
         sprite.animations.add("blink",[0,1,2],8,true);
@@ -1078,12 +1125,14 @@ function activateIosMode() {
 
 function update_coin_counter(coins,from_object) {
 
+    let is_from_spending = false;
     if (from_object == null){
         from_object = text_score;
+        is_from_spending = true;
     }
 
     // only update if not a single coin
-    if (Math.abs(coins) > 1){
+    if ((Math.abs(coins) > 1 && !is_from_spending) || is_from_spending){
         let style = {align:"center",
             font:'30px SilkScreen monospace'}
         let base_text = "";
@@ -1116,6 +1165,15 @@ function update_coin_counter(coins,from_object) {
                                text_coin.destroy()
                                });
         coin_up.start();
+    }
+
+    // if the player loses too much coins and doesn't know 
+    if (!used_coin_menu_already &&
+        coins < 0 ) {
+        total_lost_coins += Math.abs(coins);
+        if (total_lost_coins >= lost_coins_at_which_to_start_notifying) {
+            coin_notifier.animations.play("blink");
+        }
     }
 
     //check if too negative
