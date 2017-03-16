@@ -66,3 +66,6 @@ function fade(in_or_out,callback,transition_duration,state_key) {
     fade_out.start();
 }
 
+function is_mobile() {
+    return (is_android || IOS_MODE);
+}
