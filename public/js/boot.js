@@ -17,16 +17,8 @@ let boot_state = {
 
         //check for localStorage
         if (is_mobile()){
-            let check = localStorage.getItem('used_coin_menu_already');
-            if (check !== null) {
-                used_coin_menu_already = check;
-            }
-
-            check = localStorage.getItem('mute')
-            if (check !== null) {
-                game.sound.mute = check;
-            }
-
+            used_coin_menu_already = (localStorage.getItem('used_coin_menu_already') == 'true');
+            game.sound.mute = (localStorage.getItem('mute') == 'true');
         }
     },
 

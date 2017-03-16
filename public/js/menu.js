@@ -38,7 +38,7 @@ let menu_state = {
         loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
 
-        game.sound.mute = false;
+        //game.sound.mute = false;
 
         // sounds
         sound_bling = game.add.audio('bling');
