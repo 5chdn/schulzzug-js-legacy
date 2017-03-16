@@ -1,4 +1,5 @@
-var webservice = {
+"use strict";
+let webservice = {
 	baseUrl: "http://example.com",
 	updateScore: function(score) {
 		return request("POST", "/score", {"score": score})
@@ -11,7 +12,7 @@ var webservice = {
 	},
 	request: function(method, route, data = null) {
 		return new Promise(function(resolve, reject) {
-			var url = baseUrl + route
+			let url = baseUrl + route
 			$.ajax({
 				type: method,
 				url: url,
