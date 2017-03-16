@@ -13,7 +13,7 @@ let menu_state = {
         logo.scale.setTo(logo_scale,logo_scale);
         logo.angle = 30;
 
-        let menu_start_button = game.add.button(canvas_width/2, 
+        let menu_start_button = game.add.button(canvas_width/2,
                                             canvas_height*(1-1/4),
                                             "button",
                                             start_core_game,
@@ -28,7 +28,7 @@ let menu_state = {
         let menu_button_scale = canvas_width*0.6 / menu_start_button.width;
         menu_start_button.scale.setTo(menu_button_scale,menu_button_scale);
 
-        
+
         let style = {
             align:"center",
             font:"30px SilkScreen monospace",
@@ -55,7 +55,8 @@ let menu_state = {
         sound_eu_star.onPlay.add( function () {
             switch_bg_music();
         });
-        // sound_win = game.add.audio('tada');                                      // never used @TODO #36
+        sound_tada = game.add.audio('tada');
+        sound_tada.volume = 0.2;
         sound_whistle = game.add.audio('whistle');
         sound_whistle.volume = 1;
         sound_background = game.add.audio('ratter');

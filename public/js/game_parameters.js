@@ -167,7 +167,7 @@ const train_spacing_y = 360;
 let sound_bling;
 let sound_smash;
 let sound_jump;
-// let sound_win;                                                               // never used @TODO #36
+let sound_tada;
 let sound_whistle;
 let sound_background;
 let sound_eu_star;
@@ -203,7 +203,8 @@ let last_esc_use_time;
 let used_coin_menu_already = false;
 let total_lost_coins = 0;
 const lost_coins_at_which_to_start_notifying = 200;
-let coin_notifier;
+const min_coins_at_which_to_start_notifying = 100;
+//let coin_notifier;
 
 let flying_coin_group;
 var is_android = false;
