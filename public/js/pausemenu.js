@@ -24,6 +24,14 @@ let pause_buttons = [
     },
 
     { 
+        label: "Ton aus/an",
+        layer: 0,
+        on_click: function () {
+            game.sound.mute = !game.sound.mute;
+        }
+    },
+
+    { 
         label: "Weiterfahren",
         layer: 0,
         on_click: hide_pause_menu
