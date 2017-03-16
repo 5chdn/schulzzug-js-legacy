@@ -41,6 +41,10 @@ let menu_state = {
         //game.sound.mute = false;
 
         // sounds
+        sound_bg_menu = game.add.audio('bg_menu');
+        sound_bg_menu.volume = 0.2;
+        sound_bg_menu.loop = 0.2;
+        sound_bg_menu.play();
         sound_bling = game.add.audio('bling');
         sound_bling.volume = 0.2;
         sound_smash = game.add.audio('smash');
@@ -63,7 +67,7 @@ let menu_state = {
         sound_background.volume = 0.21;
 
         sound_bg_music = game.add.audio('bg_music');
-        sound_bg_music.volume = 0.5;
+        sound_bg_music.volume = 0.4;
         sound_bg_music.loop = true;
 
         // start background train sound as loop
@@ -94,6 +98,7 @@ function start_core_game () {
          function() {
             sound_bg_music.play();
             sound_background.play();
+            sound_bg_menu.stop();
          },
          state_transition_duration/2,
          level_names[current_level]
