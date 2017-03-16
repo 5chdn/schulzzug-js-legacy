@@ -266,26 +266,8 @@ function activate_pause_button() {
 }
 
 function create_spend_buttons () {
-
-    // this is a dummy. get options from firebase
-    let options = [ 
-        { 
-            name: "Bildung",
-            key: "34sve5ubd6"
-        }, 
-        { 
-            name: "Europaeische Union",
-            key: "sb4795n"
-        }, 
-        { 
-            name: "Krankenversicherung",
-            key: "h6876og"
-        }, 
-        { 
-            name: "Rentenversicherung",
-            key: "voiur5c0"
-        } 
-    ];
+    
+    let options = get_coin_spending_options_from_firebird();
 
     for(let i=0; i<options.length; i++) {
         let key = options[i].key;
@@ -294,7 +276,7 @@ function create_spend_buttons () {
             layer: 1,
             on_click: function() {
                 update_coin_counter(-coin_counter);
-                //firebase_send_coins(key,coin_counter);
+                firebase_send_coins(key,coin_counter);
             }
         });
         pause_buttons.push({
@@ -302,7 +284,7 @@ function create_spend_buttons () {
             layer: 3,
             on_click: function() {
                 update_coin_counter(-coin_counter);
-                //firebase_send_coins(key,coin_counter);
+                firebase_send_coins(key,coin_counter);
                 hide_pause_menu();
                 if (!pause_menu.is_coin_menu)
                     next_level("end");
