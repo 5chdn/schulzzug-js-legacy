@@ -147,13 +147,14 @@ function core_create() {
     },this);
 
 
-    //
+    /*
     coin_notifier = game.add.sprite(0,canvas_height-100,"coin_notifier");
     coin_notifier.width = 180;
     coin_notifier.height = 100;
     coin_notifier.animations.add("disappear",[1],1,false);
     coin_notifier.animations.add("blink",[0,1],8,true);
     coin_notifier.animations.play("disappear");
+    */
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -1172,8 +1173,10 @@ function update_coin_counter(coins,from_object) {
     if (!used_coin_menu_already &&
         coins < 0 ) {
         total_lost_coins += Math.abs(coins);
-        if (total_lost_coins >= lost_coins_at_which_to_start_notifying) {
-            coin_notifier.animations.play("blink");
+        if (total_lost_coins >= lost_coins_at_which_to_start_notifying &&
+            coin_counter >= min_coins_at_which_to_start_notifying) {
+            //coin_notifier.animations.play("blink");
+            show_coin_notifier();
         }
     }
 
