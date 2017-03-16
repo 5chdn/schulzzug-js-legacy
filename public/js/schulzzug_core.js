@@ -199,6 +199,9 @@ function core_update() {
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
+        if (is_mobile()) {
+            localStorage.setItem('mute',game.sound.mute); 
+        }
         key_mute_block -= 10;
     } else if (key_mute_block < key_change_time_block &&
                key_mute_block > 0) {

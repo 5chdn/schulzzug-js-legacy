@@ -14,6 +14,20 @@ let boot_state = {
             game.load.image("logo","assets/schulzzug_logo.png");
         else
             game.load.image("logo","assets/schulzzug_logo.50.png");
+
+        //check for localStorage
+        if (is_mobile()){
+            let check = localStorage.getItem('used_coin_menu_already');
+            if (check !== null) {
+                used_coin_menu_already = check;
+            }
+
+            check = localStorage.getItem('mute')
+            if (check !== null) {
+                game.sound.mute = check;
+            }
+
+        }
     },
 
     create: function () {
