@@ -797,6 +797,8 @@ function collision_update(object, train) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
+            object.kind == "wall_erdogan" ||
+            object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
             object.kind == "wall_donald") {
@@ -823,6 +825,8 @@ function collision_update(object, train) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
+            object.kind == "wall_erdogan" ||
+            object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
             object.kind == "wall_donald") {
@@ -990,13 +994,13 @@ function get_rail_object(kind,spawn_at_rail)
     if (kind == 'wall') {
         object_height = rail_distance_inner * 0.80;
     } else if (kind == 'wall_frauke') {
-        object_height = rail_distance_inner * 1.50;
+        object_height = rail_distance_inner * 1.55;
     } else if (kind == 'wall_donald') {
         object_height = rail_distance_inner * 1.55;
     } else if (kind == 'wall_erdogan') {
-        object_height = rail_distance_inner * 1.55;
+        object_height = rail_distance_inner * 1.6;
     } else if (kind == 'wall_wilders') {
-        object_height = rail_distance_inner * 1.55;
+        object_height = rail_distance_inner * 1.6;
     } else if (kind == "erdogan") {
         object_height = 25;
     } else if (kind == "putin") {

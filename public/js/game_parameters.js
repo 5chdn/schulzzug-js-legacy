@@ -38,7 +38,7 @@ const eu_position = {
     'x': canvas_width / 2,
     'y': horizon_height / 2
 };
-const eu_stars_count = 12;
+const eu_stars_count = 1;
 const delta_phi = 360 / eu_stars_count;
 let eu_stars_indices = Array();
 for (let i = 0; i < eu_stars_count; i++) {
