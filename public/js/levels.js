@@ -16,7 +16,7 @@ let level_names = [
 // the level we want the game to start with
 const number_of_levels = level_names.length;
 //let current_level = number_of_levels - 1; // debugging
-const default_start_level = 0;
+const default_start_level = 2;
 let current_level = default_start_level;
 
 // each level has different object to appear on the dam
@@ -117,18 +117,18 @@ let level_populist_probabilities = {
         'coin': 0.6
     },
     turkey: {
-        //'erdogan': 0.2,
-        'wall': 0.4,
+        'wall_erdogan': 0.2,
+        'wall': 0.2,
         'coin': 0.6
     },
     netherlands: {
-        //'geert': 0.2,
-        'wall': 0.4,
+        'wall_wilders': 0.2,
+        'wall': 0.2,
         'coin': 0.6
     },
     russia: {
-        //'putin': 0.2,
-        'wall': 0.4,
+        'putin': 0.2,
+        'wall': 0.2,
         'coin': 0.6
     }
 }

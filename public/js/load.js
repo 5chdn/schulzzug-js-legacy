@@ -82,6 +82,8 @@ function preload_all_assets() {
 
         game.load.image('wall_frauke','assets/afd-wall.png');
         game.load.image('wall_donald','assets/Trump-Wall.png');
+        game.load.image('wall_erdogan','assets/turkey/erdogan_wall.png');
+        game.load.image('wall_wilders','assets/netherlands/wilders_wall.png');
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('wall',       'assets/wall.png');
@@ -151,6 +153,8 @@ function preload_all_assets() {
 
         game.load.image('wall_frauke','assets/afd-wall.50.png');
         game.load.image('wall_donald','assets/usa/Trump-Wall.50.png');
+        game.load.image('wall_erdogan','assets/turkey/erdogan_wall.50.png');
+        game.load.image('wall_wilders','assets/netherlands/wilders_wall.50.png');
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('erdogan',    'assets/turkey/Erdogan.50.png');

@@ -992,6 +992,10 @@ function get_rail_object(kind,spawn_at_rail)
         object_height = rail_distance_inner * 1.50;
     } else if (kind == 'wall_donald') {
         object_height = rail_distance_inner * 1.55;
+    } else if (kind == 'wall_erdogan') {
+        object_height = rail_distance_inner * 1.55;
+    } else if (kind == 'wall_wilders') {
+        object_height = rail_distance_inner * 1.55;
     } else if (kind == "erdogan") {
         object_height = 25;
     } else if (kind == "putin") {
