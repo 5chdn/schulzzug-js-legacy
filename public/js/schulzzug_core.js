@@ -200,7 +200,7 @@ function core_update() {
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
         if (is_mobile()) {
-            localStorage.setItem('mute',game.sound.mute); 
+            localStorage.setItem('mute',game.sound.mute);
         }
         key_mute_block -= 10;
     } else if (key_mute_block < key_change_time_block &&
@@ -534,10 +534,6 @@ function core_update() {
         updateGameResult(coin_counter, meter_counter);
         firebase_submission_time = firebase_time_now;
         updateStatistics();
-        window.console.log("user online: " + get_metric_prefix(firebaseActiveUsers, 3) +
-        ", user total: " + get_metric_prefix(firebaseTotalUsers, 3) +
-        ", distance total: " + get_metric_prefix(firebaseTotalDistance, 3) +
-        "m, score total: " + get_metric_prefix(firebaseTotalScore, 3));
     }
 
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
@@ -1180,7 +1176,7 @@ function update_coin_counter(coins,from_object) {
         coin_up.start();
     }
 
-    // if the player loses too much coins and doesn't know 
+    // if the player loses too much coins and doesn't know
     if (!used_coin_menu_already &&
         coins < 0 ) {
         total_lost_coins += Math.abs(coins);
