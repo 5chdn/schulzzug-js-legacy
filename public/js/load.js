@@ -233,6 +233,10 @@ function preload_all_assets() {
                                 'sounds/die_internationale_8bit_simple_loop.mp3',
                                 'sounds/die_internationale_8bit_simple_loop.ogg'
                                 ]);
+    game.load.audio('bg_menu', [
+                                'sounds/menu_loop.mp3',
+                                'sounds/menu_loop.ogg'
+                                ]);
 }
 function is_retina() {
     let query = "(-webkit-min-device-pixel-ratio: 2), "

@@ -172,6 +172,7 @@ let sound_whistle;
 let sound_background;
 let sound_eu_star;
 let sound_bg_music;
+let sound_bg_menu;
 let bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
 
 // ============================ COLLISIONS =====================================
