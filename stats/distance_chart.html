@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+
+.line {
+      fill: none;
+        stroke: #000;
+          stroke-width: 1.5px;
+}
+
+</style>
+</head>
+<body>
+</body>
+<svg width="500" height="400"></svg>
+<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
+<script src="../public/js/firebase.js"></script>
+<script src="../public/js/schulzzug_core.js"></script>
+<script>
+var check_firebase_time_delta = 1000;
+function get_latest_data_point() {
+    updateStatistics();
+    return firebaseTotalDistance;
+}
+
+var n = 40,
+    data = Array(),
+    start_value = get_latest_data_point();
+
+var start_min_y = 622;
+var start_max_y = 622+5;
+
+for(let i=0; i<n; i++){
+    data.push(start_min_y);
+}
+
+</script>
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="js/line_chart.js"></script>
+<body>
+</html>
