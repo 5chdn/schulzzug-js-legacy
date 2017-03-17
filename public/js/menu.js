@@ -13,7 +13,7 @@ let menu_state = {
         logo.scale.setTo(logo_scale,logo_scale);
         logo.angle = 30;
 
-        let menu_start_button = game.add.button(canvas_width/2, 
+        let menu_start_button = game.add.button(canvas_width/2,
                                             canvas_height*(1-1/4),
                                             "button",
                                             start_core_game,
@@ -28,7 +28,7 @@ let menu_state = {
         let menu_button_scale = canvas_width*0.6 / menu_start_button.width;
         menu_start_button.scale.setTo(menu_button_scale,menu_button_scale);
 
-        
+
         let style = {
             align:"center",
             font:"30px SilkScreen monospace",
@@ -38,9 +38,13 @@ let menu_state = {
         loading_label.font = 'SilkScreen';
         loading_label.anchor.setTo(0.5,0.5);
 
-        game.sound.mute = false;
+        //game.sound.mute = false;
 
         // sounds
+        sound_bg_menu = game.add.audio('bg_menu');
+        sound_bg_menu.volume = 0.2;
+        sound_bg_menu.loop = 0.2;
+        sound_bg_menu.play();
         sound_bling = game.add.audio('bling');
         sound_bling.volume = 0.2;
         sound_smash = game.add.audio('smash');
@@ -55,14 +59,15 @@ let menu_state = {
         sound_eu_star.onPlay.add( function () {
             switch_bg_music();
         });
-        // sound_win = game.add.audio('tada');                                      // never used @TODO #36
+        sound_tada = game.add.audio('tada');
+        sound_tada.volume = 0.2;
         sound_whistle = game.add.audio('whistle');
         sound_whistle.volume = 1;
         sound_background = game.add.audio('ratter');
         sound_background.volume = 0.21;
 
         sound_bg_music = game.add.audio('bg_music');
-        sound_bg_music.volume = 0.5;
+        sound_bg_music.volume = 0.4;
         sound_bg_music.loop = true;
 
         // start background train sound as loop
@@ -93,6 +98,7 @@ function start_core_game () {
          function() {
             sound_bg_music.play();
             sound_background.play();
+            sound_bg_menu.stop();
          },
          state_transition_duration/2,
          level_names[current_level]

@@ -80,8 +80,10 @@ function preload_all_assets() {
         game.load.image('cloud1',     'assets/cloud02.png');
         game.load.image('cloud2',     'assets/cloud03.png');
 
-        game.load.image('wall_frauke','assets/afd-wall.png');
+        game.load.image('wall_frauke','assets/germany/afd-wall.png');
         game.load.image('wall_donald','assets/Trump-Wall.png');
+        game.load.image('wall_erdogan','assets/turkey/erdogan_wall.png');
+        game.load.image('wall_wilders','assets/netherlands/wilders_wall.png');
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('wall',       'assets/wall.png');
@@ -149,8 +151,10 @@ function preload_all_assets() {
         game.load.image('cloud1',     'assets/cloud02.50.png');
         game.load.image('cloud2',     'assets/cloud03.50.png');
 
-        game.load.image('wall_frauke','assets/afd-wall.50.png');
+        game.load.image('wall_frauke','assets/germany/afd-wall.50.png');
         game.load.image('wall_donald','assets/usa/Trump-Wall.50.png');
+        game.load.image('wall_erdogan','assets/turkey/erdogan_wall.50.png');
+        game.load.image('wall_wilders','assets/netherlands/wilders_wall.50.png');
         game.load.image('frauke',     'assets/Petry.png');
         game.load.image('donald',     'assets/Trump.png');
         game.load.image('erdogan',    'assets/turkey/Erdogan.50.png');
@@ -228,6 +232,10 @@ function preload_all_assets() {
     game.load.audio('bg_music', [
                                 'sounds/die_internationale_8bit_simple_loop.mp3',
                                 'sounds/die_internationale_8bit_simple_loop.ogg'
+                                ]);
+    game.load.audio('bg_menu', [
+                                'sounds/menu_loop.mp3',
+                                'sounds/menu_loop.ogg'
                                 ]);
 }
 function is_retina() {

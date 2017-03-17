@@ -24,6 +24,17 @@ let pause_buttons = [
     },
 
     { 
+        label: "Ton aus/an",
+        layer: 0,
+        on_click: function () {
+            game.sound.mute = !game.sound.mute;
+            if (is_mobile()) {
+                localStorage.setItem('mute',game.sound.mute); 
+            }
+        }
+    },
+
+    { 
         label: "Weiterfahren",
         layer: 0,
         on_click: hide_pause_menu
@@ -64,6 +75,13 @@ let pause_buttons = [
             if (!pause_menu.is_coin_menu)
                 next_level("end");
         }
+    },
+    { 
+        label: "Ja",
+        layer: 4,
+        on_click: function () {
+            pause_menu_goto_layer(3);
+        }
     }
 
 ];
@@ -85,7 +103,16 @@ let pause_layers = [
     {
         layer_position: -2,
         title: "Wofuer moechtest du\ndeine gesammelten\nSchulzcoins ausgeben?"
+    },
+    {
+        layer_position: -3,
+        title: "Du hast schon eine Menge\n"+
+               "Schulzcoins durch Crashes\n" + 
+               "verloren! willst du sie nicht\n"+
+               "lieber fuer die Solidar-\n" +
+               "gemeinschaft ausgeben?\n"
     }
+
 ];
 
 pause_menu.button_layer_count = pause_layers.length;
@@ -183,8 +210,9 @@ function pause_menu_goto_layer(layer,layer_change_duration) {
 
 
     if ((layer == 1 || layer == 3) && !used_coin_menu_already) {
-        coin_notifier.animations.play("disappear");
+        //coin_notifier.animations.play("disappear");
         used_coin_menu_already = true;
+        localStorage.setItem('used_coin_menu_already',true);
     }
 
     let dlayer =   pause_layers[pause_menu.current_layer].layer_position
@@ -252,32 +280,27 @@ function show_coin_menu() {
     pause_menu.pause_button.inputEnabled = false;
 }
 
+function show_coin_notifier() {
+    pause_menu_goto_layer(4,1);
+    pause_menu.is_coin_menu = true;
+    pause_menu.rect.alpha = pause_bg_alpha;
+    pause_menu.layer_titles.forEach(function(d) { d.alpha = 1; });
+    pause_menu.button_labels.forEach(function(d) { d.alpha = 1; });
+    pause_menu.buttons.forEach(function(d) { d.alpha = 1; d.inputEnabled = true; });
+    pause_menu.is_active = true;
+    game.tweens.pauseAll();
+    pause_menu.pause_button.alpha = 0;
+    pause_menu.pause_button.inputEnabled = false;
+}
+
 function activate_pause_button() {
     pause_menu.pause_button.alpha = pause_pause_button_alpha;
     pause_menu.pause_button.inputEnabled = true;
 }
 
 function create_spend_buttons () {
-
-    // this is a dummy. get options from firebase
-    let options = [ 
-        { 
-            name: "Bildung",
-            key: "34sve5ubd6"
-        }, 
-        { 
-            name: "Europaeische Union",
-            key: "sb4795n"
-        }, 
-        { 
-            name: "Krankenversicherung",
-            key: "h6876og"
-        }, 
-        { 
-            name: "Rentenversicherung",
-            key: "voiur5c0"
-        } 
-    ];
+    
+    let options = get_coin_spending_options_from_firebird();
 
     for(let i=0; i<options.length; i++) {
         let key = options[i].key;
@@ -285,16 +308,20 @@ function create_spend_buttons () {
             label: options[i].name,
             layer: 1,
             on_click: function() {
+                if (coin_counter>0)
+                    sound_tada.play();
                 update_coin_counter(-coin_counter);
-                //firebase_send_coins(key,coin_counter);
+                firebase_send_coins(key,coin_counter);
             }
         });
         pause_buttons.push({
             label: options[i].name,
             layer: 3,
             on_click: function() {
+                if (coin_counter>0)
+                    sound_tada.play();
                 update_coin_counter(-coin_counter);
-                //firebase_send_coins(key,coin_counter);
+                firebase_send_coins(key,coin_counter);
                 hide_pause_menu();
                 if (!pause_menu.is_coin_menu)
                     next_level("end");
