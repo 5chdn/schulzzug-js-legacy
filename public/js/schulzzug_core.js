@@ -136,15 +136,17 @@ function core_create() {
     create_pause_menu();
 
     //open coin menu when clicking on coin label
-    game.input.onDown.add(function(event) {
-        if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
-            if (pause_menu.is_active && pause_menu.is_coin_menu) {
-                hide_pause_menu();
-            } else {
-                show_coin_menu();
+    if (!is_mobile()) {
+        game.input.onDown.add(function(event) {
+            if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
+                if (pause_menu.is_active && pause_menu.is_coin_menu) {
+                    hide_pause_menu();
+                } else {
+                    show_coin_menu();
+                }
             }
-        }
-    },this);
+        },this);
+    }
 
 
     /*
