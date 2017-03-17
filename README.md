@@ -1,8 +1,8 @@
 # Schulzzug – Bremsenloser Spielspaß
 
-- Direkt zum Spiel? Hier: [schulzzug.eu](http://schulzzug.eu)
-- Apple Store? Hier: [itunes.apple.com/us/app/schulzzug/id1215647421](https://itunes.apple.com/us/app/schulzzug/id1215647421)
-- Google Play? Hier: [play.google.com/store/apps/details?id=eu.schulzzug.cordova.schulzzug](https://play.google.com/store/apps/details?id=eu.schulzzug.cordova.schulzzug)
+- Direkt zum Spiel: [schulzzug.eu](http://schulzzug.eu)
+- App Store für iOS: [itunes.apple.com/us/app/schulzzug/id1215647421](https://itunes.apple.com/us/app/schulzzug/id1215647421)
+- Google Play für Android: [play.google.com/store/apps/details?id=eu.schulzzug.cordova.schulzzug](https://play.google.com/store/apps/details?id=eu.schulzzug.cordova.schulzzug)
 
 Glück auf, Glück auf!
 Der Schulzzug rollt!
