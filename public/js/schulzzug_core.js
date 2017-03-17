@@ -147,13 +147,14 @@ function core_create() {
     },this);
 
 
-    //
+    /*
     coin_notifier = game.add.sprite(0,canvas_height-100,"coin_notifier");
     coin_notifier.width = 180;
     coin_notifier.height = 100;
     coin_notifier.animations.add("disappear",[1],1,false);
     coin_notifier.animations.add("blink",[0,1],8,true);
     coin_notifier.animations.play("disappear");
+    */
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -198,6 +199,9 @@ function core_update() {
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
+        if (is_mobile()) {
+            localStorage.setItem('mute',game.sound.mute); 
+        }
         key_mute_block -= 10;
     } else if (key_mute_block < key_change_time_block &&
                key_mute_block > 0) {
@@ -796,6 +800,8 @@ function collision_update(object, train) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
+            object.kind == "wall_erdogan" ||
+            object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
             object.kind == "wall_donald") {
@@ -822,6 +828,8 @@ function collision_update(object, train) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
+            object.kind == "wall_erdogan" ||
+            object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
             object.kind == "wall_donald") {
@@ -989,9 +997,13 @@ function get_rail_object(kind,spawn_at_rail)
     if (kind == 'wall') {
         object_height = rail_distance_inner * 0.80;
     } else if (kind == 'wall_frauke') {
-        object_height = rail_distance_inner * 1.50;
+        object_height = rail_distance_inner * 1.55;
     } else if (kind == 'wall_donald') {
         object_height = rail_distance_inner * 1.55;
+    } else if (kind == 'wall_erdogan') {
+        object_height = rail_distance_inner * 1.6;
+    } else if (kind == 'wall_wilders') {
+        object_height = rail_distance_inner * 1.6;
     } else if (kind == "erdogan") {
         object_height = 25;
     } else if (kind == "putin") {
@@ -1172,8 +1184,10 @@ function update_coin_counter(coins,from_object) {
     if (!used_coin_menu_already &&
         coins < 0 ) {
         total_lost_coins += Math.abs(coins);
-        if (total_lost_coins >= lost_coins_at_which_to_start_notifying) {
-            coin_notifier.animations.play("blink");
+        if (total_lost_coins >= lost_coins_at_which_to_start_notifying &&
+            coin_counter >= min_coins_at_which_to_start_notifying) {
+            //coin_notifier.animations.play("blink");
+            show_coin_notifier();
         }
     }
 
