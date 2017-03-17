@@ -448,13 +448,15 @@ function core_update() {
             if (eu_star_can_spawn &&
                 rail_objects.length > 0 &&
                 rail_objects[rail_objects.length-1].kind == 'wall' &&
-                random_float < eu_star_appearance_probability) {
+                random_float < eu_star_appearance_probability()) {
                 kind = 'eurostar';
                 eu_star_can_spawn = false;
                 spawn_at_rail = rail_objects[rail_objects.length-1].rail;
             }
-            else if (random_float < eu_star_appearance_probability + 0.3) {
+            else if (random_float < eu_star_appearance_probability() + 0.2) {
                 kind = 'wall';
+            } else if (random_float < eu_star_appearance_probability() + 0.24) {
+                kind = 'gate';
             } else {
                 kind = 'coin';
             }
@@ -801,6 +803,7 @@ function collision_update(object, train) {
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
             object.kind == "wall_erdogan" ||
+            object.kind == "gate" ||
             object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
@@ -829,6 +832,7 @@ function collision_update(object, train) {
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
             object.kind == "wall_erdogan" ||
+            object.kind == "gate" ||
             object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
@@ -910,7 +914,7 @@ function get_dam_object(kind) {
     } else if (kind == "tree2") {
         object_height = 35;
     } else if (kind == "tree3") {
-        object_height = 35;
+        object_height = 55;
     } else if (kind == "bush") {
         object_height = 10;
     } else if (kind == "sign") {
@@ -981,14 +985,17 @@ function get_rail_object(kind,spawn_at_rail)
     else
         random_rail = spawn_at_rail;
 
+    if (kind == 'gate')
+        random_rail = 1;
+
     //get corresponding starting position
     let point_start_x = canvas_width / 2
     - rail_distance_outer - rail_distance_inner
     + random_rail * (rail_distance_outer
                      + rail_distance_inner);
 
-    let object_height;
-    let object_width;
+    let object_height = null;
+    let object_width = null;
     let object_height_original;
     let object_width_original;
 
@@ -1004,6 +1011,8 @@ function get_rail_object(kind,spawn_at_rail)
         object_height = rail_distance_inner * 1.6;
     } else if (kind == 'wall_wilders') {
         object_height = rail_distance_inner * 1.6;
+    } else if (kind == 'gate') {
+        object_width = rail_distance_inner * 3 + rail_distance_outer*4;
     } else if (kind == "erdogan") {
         object_height = 25;
     } else if (kind == "putin") {
@@ -1033,9 +1042,15 @@ function get_rail_object(kind,spawn_at_rail)
     object_width_original = sprite.width;
 
     // get and set new scale
-    let scale_next = object_height / object_height_original;
-    sprite.scale.setTo(scale_next, scale_next);
-    object_width = sprite.width;
+    if (object_width == null) {
+        let scale_next = object_height / object_height_original;
+        sprite.scale.setTo(scale_next, scale_next);
+        object_width = sprite.width;
+    } else if (object_height == null) {
+        let scale_next = object_width / object_width_original;
+        sprite.scale.setTo(scale_next, scale_next);
+        object_height = sprite.height;
+    }
 
     let rail_object = {
 
@@ -1116,7 +1131,13 @@ function update_rail_object(object, schulzzug, time_delta) {
         y > y_collision_range_start &&
         y < y_collision_range_end &&
         !schulzzug.indefeatable &&
-        object.rail == schulzzug.rail ){
+         ( object.rail == schulzzug.rail ||
+          ( object.kind == 'gate' && schulzzug.rail != -1 )
+         )
+       ){
+            if (object.kind == 'gate')
+                object.rail = schulzzug.rail;
+
             object.collision = true;
             object.active = false;
     }
