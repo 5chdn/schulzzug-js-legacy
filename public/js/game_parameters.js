@@ -50,7 +50,12 @@ let eu_star_can_spawn = true;
 const eu_event_delta_v = 5;
 
 // each time it's possible, a star will appear
-const eu_star_appearance_probability = .1; // std: 0.1, debug: 1.0
+const eu_star_appearance_probability_level_infinite = .1; // std: 0.1, debug: 1.0
+const eu_star_appearance_probability_level_zero = .3; // std: 0.1, debug: 1.0
+function eu_star_appearance_probability () {
+    let dp = eu_star_appearance_probability_level_zero - eu_star_appearance_probability_level_infinite;
+    return eu_star_appearance_probability_level_infinite + dp * Math.pow(0.8,current_level);
+}
 
 // ===================== STERNPHASE DEFINTIIONS ================================
 const eu_star_phase_duration = 8000; // std: 8000, debug: 4000
