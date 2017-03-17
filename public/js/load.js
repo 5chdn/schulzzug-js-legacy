@@ -104,6 +104,7 @@ function preload_all_assets() {
         game.load.image('olivetree',  'assets/turkey/Olive.png');
         game.load.image('goat',       'assets/turkey/Goat.png');
         game.load.image('tulips',     'assets/netherlands/Tulips.png');
+        game.load.image('gate',       'assets/gate.50.png');
 
         game.load.spritesheet(
                               'rails',
@@ -161,6 +162,7 @@ function preload_all_assets() {
         game.load.image('geert',      'assets/netherlands/Wilders.50.png');
         game.load.image('putin',      'assets/russia/Putin_bear.50.png');
         game.load.image('wall',       'assets/wall.png');
+        game.load.image('gate',       'assets/gate.png');
 
         game.load.image('tree0',      'assets/Tree01.50.png');
         game.load.image('tree1',      'assets/Tree02.50.png');
