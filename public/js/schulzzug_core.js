@@ -738,7 +738,7 @@ function collision_update(object, train) {
 
             //gameplay actions
             sound_eu_star.play();
-            update_coin_counter(10,train);
+            update_coin_counter(25,train);
             object.sprite.animations.play("static");
 
             //set new object properties

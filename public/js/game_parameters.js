@@ -181,7 +181,7 @@ let sound_bg_menu;
 let bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
 
 // ============================ COLLISIONS =====================================
-const wall_coin_penalty = -100;
+const wall_coin_penalty = -50;
 const eu_wall_collision_reward = 10;
 const wall_animation_length = 2000;
 const time_until_full_velocity = 8000;
