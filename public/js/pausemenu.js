@@ -28,6 +28,9 @@ let pause_buttons = [
         layer: 0,
         on_click: function () {
             game.sound.mute = !game.sound.mute;
+            if (is_mobile()) {
+                localStorage.setItem('mute',game.sound.mute); 
+            }
         }
     },
 
@@ -209,6 +212,7 @@ function pause_menu_goto_layer(layer,layer_change_duration) {
     if ((layer == 1 || layer == 3) && !used_coin_menu_already) {
         //coin_notifier.animations.play("disappear");
         used_coin_menu_already = true;
+        localStorage.setItem('used_coin_menu_already',true);
     }
 
     let dlayer =   pause_layers[pause_menu.current_layer].layer_position
