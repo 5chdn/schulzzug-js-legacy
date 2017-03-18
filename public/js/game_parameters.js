@@ -50,7 +50,12 @@ let eu_star_can_spawn = true;
 const eu_event_delta_v = 5;
 
 // each time it's possible, a star will appear
-const eu_star_appearance_probability = .1; // std: 0.1, debug: 1.0
+const eu_star_appearance_probability_level_infinite = .1; // std: 0.1, debug: 1.0
+const eu_star_appearance_probability_level_zero = .3; // std: 0.1, debug: 1.0
+function eu_star_appearance_probability () {
+    let dp = eu_star_appearance_probability_level_zero - eu_star_appearance_probability_level_infinite;
+    return eu_star_appearance_probability_level_infinite + dp * Math.pow(0.8,current_level);
+}
 
 // ===================== STERNPHASE DEFINTIIONS ================================
 const eu_star_phase_duration = 8000; // std: 8000, debug: 4000
@@ -167,11 +172,12 @@ const train_spacing_y = 360;
 let sound_bling;
 let sound_smash;
 let sound_jump;
-// let sound_win;                                                               // never used @TODO #36
+let sound_tada;
 let sound_whistle;
 let sound_background;
 let sound_eu_star;
 let sound_bg_music;
+let sound_bg_menu;
 let bg_music_bpm = 120; //the bg_music has 120 BPM (beats per minute)
 
 // ============================ COLLISIONS =====================================
@@ -203,7 +209,8 @@ let last_esc_use_time;
 let used_coin_menu_already = false;
 let total_lost_coins = 0;
 const lost_coins_at_which_to_start_notifying = 200;
-let coin_notifier;
+const min_coins_at_which_to_start_notifying = 100;
+//let coin_notifier;
 
 let flying_coin_group;
 var is_android = false;

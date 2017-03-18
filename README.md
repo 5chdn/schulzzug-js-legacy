@@ -1,6 +1,8 @@
-# Schulzzug-JS – Bremsenloser Spielspaß
+# Schulzzug – Bremsenloser Spielspaß
 
-Direkt zum Spiel? Hier: [schulzzug.eu/public](http://schulzzug.eu/public)
+- Direkt zum Spiel: [schulzzug.eu](http://schulzzug.eu)
+- AppStore für iOS: [itunes.apple.com/us/app/schulzzug/id1215647421](https://itunes.apple.com/us/app/schulzzug/id1215647421)
+- Google PlayStore für Android: [play.google.com/store/apps/details?id=eu.schulzzug.cordova.schulzzug](https://play.google.com/store/apps/details?id=eu.schulzzug.cordova.schulzzug)
 
 Glück auf, Glück auf!
 Der Schulzzug rollt!
@@ -23,7 +25,7 @@ Und er rettet die deutsche Sozialdemokratie!
 Mit hoher Energie!
 Mit hoher Energie!
 
-###Berichte über das Schulzzug-Game:
+# Berichte über das Schulzzug-Game
 
 - [wired.de/collection/life/digital-ist-besser-beschert-uns-die-spd-doch-noch-einen-spannenden-wahlkampf](https://www.wired.de/collection/life/digital-ist-besser-beschert-uns-die-spd-doch-noch-einen-spannenden-wahlkampf)
 - [heute.de/40-programmierer-entwickeln-wahlkampfideen-in-der-spd-zentrale-46693686](http://www.heute.de/40-programmierer-entwickeln-wahlkampfideen-in-der-spd-zentrale-46693686.html)

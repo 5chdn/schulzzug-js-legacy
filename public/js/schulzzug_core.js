@@ -136,24 +136,27 @@ function core_create() {
     create_pause_menu();
 
     //open coin menu when clicking on coin label
-    game.input.onDown.add(function(event) {
-        if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
-            if (pause_menu.is_active && pause_menu.is_coin_menu) {
-                hide_pause_menu();
-            } else {
-                show_coin_menu();
+    if (!is_mobile()) {
+        game.input.onDown.add(function(event) {
+            if(event.x >= 0 && event.x <= canvas_width/2 && event.y > canvas_height-panel.height && event.y <= canvas_height ){
+                if (pause_menu.is_active && pause_menu.is_coin_menu) {
+                    hide_pause_menu();
+                } else {
+                    show_coin_menu();
+                }
             }
-        }
-    },this);
+        },this);
+    }
 
 
-    //
+    /*
     coin_notifier = game.add.sprite(0,canvas_height-100,"coin_notifier");
     coin_notifier.width = 180;
     coin_notifier.height = 100;
     coin_notifier.animations.add("disappear",[1],1,false);
     coin_notifier.animations.add("blink",[0,1],8,true);
     coin_notifier.animations.play("disappear");
+    */
 }
 
 // =============== PHASER UPDATE GAME ENVIRONMENT ==============================
@@ -198,6 +201,9 @@ function core_update() {
     // mute and unmute sound
     if (key_mute.isDown && key_mute_block == key_change_time_block) {
         game.sound.mute = !game.sound.mute;
+        if (is_mobile()) {
+            localStorage.setItem('mute',game.sound.mute);
+        }
         key_mute_block -= 10;
     } else if (key_mute_block < key_change_time_block &&
                key_mute_block > 0) {
@@ -444,13 +450,15 @@ function core_update() {
             if (eu_star_can_spawn &&
                 rail_objects.length > 0 &&
                 rail_objects[rail_objects.length-1].kind == 'wall' &&
-                random_float < eu_star_appearance_probability) {
+                random_float < eu_star_appearance_probability()) {
                 kind = 'eurostar';
                 eu_star_can_spawn = false;
                 spawn_at_rail = rail_objects[rail_objects.length-1].rail;
             }
-            else if (random_float < eu_star_appearance_probability + 0.3) {
+            else if (random_float < eu_star_appearance_probability() + 0.2) {
                 kind = 'wall';
+            } else if (random_float < eu_star_appearance_probability() + 0.24) {
+                kind = 'gate';
             } else {
                 kind = 'coin';
             }
@@ -530,10 +538,6 @@ function core_update() {
         updateGameResult(coin_counter, meter_counter);
         firebase_submission_time = firebase_time_now;
         updateStatistics();
-        window.console.log("user online: " + get_metric_prefix(firebaseActiveUsers, 3) +
-        ", user total: " + get_metric_prefix(firebaseTotalUsers, 3) +
-        ", distance total: " + get_metric_prefix(firebaseTotalDistance, 3) +
-        "m, score total: " + get_metric_prefix(firebaseTotalScore, 3));
     }
 
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);
@@ -796,6 +800,9 @@ function collision_update(object, train) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
+            object.kind == "wall_erdogan" ||
+            object.kind == "gate" ||
+            object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
             object.kind == "wall_donald") {
@@ -822,6 +829,9 @@ function collision_update(object, train) {
         if (object.kind == "wall" ||
             object.kind == "wall_frauke" ||
             object.kind == "erdogan" ||
+            object.kind == "wall_erdogan" ||
+            object.kind == "gate" ||
+            object.kind == "wall_wilders" ||
             object.kind == "geert" ||
             object.kind == "putin" ||
             object.kind == "wall_donald") {
@@ -902,7 +912,7 @@ function get_dam_object(kind) {
     } else if (kind == "tree2") {
         object_height = 35;
     } else if (kind == "tree3") {
-        object_height = 35;
+        object_height = 55;
     } else if (kind == "bush") {
         object_height = 10;
     } else if (kind == "sign") {
@@ -973,14 +983,17 @@ function get_rail_object(kind,spawn_at_rail)
     else
         random_rail = spawn_at_rail;
 
+    if (kind == 'gate')
+        random_rail = 1;
+
     //get corresponding starting position
     let point_start_x = canvas_width / 2
     - rail_distance_outer - rail_distance_inner
     + random_rail * (rail_distance_outer
                      + rail_distance_inner);
 
-    let object_height;
-    let object_width;
+    let object_height = null;
+    let object_width = null;
     let object_height_original;
     let object_width_original;
 
@@ -989,9 +1002,15 @@ function get_rail_object(kind,spawn_at_rail)
     if (kind == 'wall') {
         object_height = rail_distance_inner * 0.80;
     } else if (kind == 'wall_frauke') {
-        object_height = rail_distance_inner * 1.50;
+        object_height = rail_distance_inner * 1.55;
     } else if (kind == 'wall_donald') {
         object_height = rail_distance_inner * 1.55;
+    } else if (kind == 'wall_erdogan') {
+        object_height = rail_distance_inner * 1.6;
+    } else if (kind == 'wall_wilders') {
+        object_height = rail_distance_inner * 1.6;
+    } else if (kind == 'gate') {
+        object_width = rail_distance_inner * 3 + rail_distance_outer*4;
     } else if (kind == "erdogan") {
         object_height = 25;
     } else if (kind == "putin") {
@@ -1021,9 +1040,15 @@ function get_rail_object(kind,spawn_at_rail)
     object_width_original = sprite.width;
 
     // get and set new scale
-    let scale_next = object_height / object_height_original;
-    sprite.scale.setTo(scale_next, scale_next);
-    object_width = sprite.width;
+    if (object_width == null) {
+        let scale_next = object_height / object_height_original;
+        sprite.scale.setTo(scale_next, scale_next);
+        object_width = sprite.width;
+    } else if (object_height == null) {
+        let scale_next = object_width / object_width_original;
+        sprite.scale.setTo(scale_next, scale_next);
+        object_height = sprite.height;
+    }
 
     let rail_object = {
 
@@ -1104,7 +1129,13 @@ function update_rail_object(object, schulzzug, time_delta) {
         y > y_collision_range_start &&
         y < y_collision_range_end &&
         !schulzzug.indefeatable &&
-        object.rail == schulzzug.rail ){
+         ( object.rail == schulzzug.rail ||
+          ( object.kind == 'gate' && schulzzug.rail != -1 )
+         )
+       ){
+            if (object.kind == 'gate')
+                object.rail = schulzzug.rail;
+
             object.collision = true;
             object.active = false;
     }
@@ -1168,12 +1199,14 @@ function update_coin_counter(coins,from_object) {
         coin_up.start();
     }
 
-    // if the player loses too much coins and doesn't know 
+    // if the player loses too much coins and doesn't know
     if (!used_coin_menu_already &&
         coins < 0 ) {
         total_lost_coins += Math.abs(coins);
-        if (total_lost_coins >= lost_coins_at_which_to_start_notifying) {
-            coin_notifier.animations.play("blink");
+        if (total_lost_coins >= lost_coins_at_which_to_start_notifying &&
+            coin_counter >= min_coins_at_which_to_start_notifying) {
+            //coin_notifier.animations.play("blink");
+            show_coin_notifier();
         }
     }
 

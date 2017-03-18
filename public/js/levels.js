@@ -108,27 +108,32 @@ let level_backgrounds = {
 let level_populist_probabilities = {
     germany: {
         'wall_frauke': 0.2,
+        'gate': 0.1,
         'wall': 0.2,
         'coin': 0.6
     },
     usa: {
         'wall_donald': 0.2,
+        'gate': 0.1,
         'wall': 0.2,
         'coin': 0.6
     },
     turkey: {
-        //'erdogan': 0.2,
-        'wall': 0.4,
+        'wall_erdogan': 0.2,
+        'gate': 0.1,
+        'wall': 0.2,
         'coin': 0.6
     },
     netherlands: {
-        //'geert': 0.2,
-        'wall': 0.4,
+        'wall_wilders': 0.2,
+        'gate': 0.1,
+        'wall': 0.2,
         'coin': 0.6
     },
     russia: {
-        //'putin': 0.2,
-        'wall': 0.4,
+        'putin': 0.2,
+        'gate': 0.1,
+        'wall': 0.2,
         'coin': 0.6
     }
 }
