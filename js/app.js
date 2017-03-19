@@ -30,9 +30,9 @@ function updateStatistics() {
         firebaseTotalScore += games[v].score;
       }
     }
-    document.getElementById("schlzzg-player").textContent = get_metric_prefix(firebaseTotalUsers, 0);
-    document.getElementById("schlzzg-scorrr").textContent = get_metric_prefix(firebaseTotalScore, 0);
-    document.getElementById("schlzzg-distnc").textContent = get_metric_prefix(firebaseTotalDistance, 0) + "m";
+    document.getElementById("schlzzg-player").textContent = firebaseTotalUsers;
+    document.getElementById("schlzzg-scorrr").textContent = firebaseTotalScore;
+    document.getElementById("schlzzg-distnc").textContent = "" + (firebaseTotalDistance/1000).toFixed(1) + " km" //get_metric_prefix(firebaseTotalDistance, 0) + "m";
 
   });
   var connections = firebase.database().ref('connections');
