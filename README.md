@@ -36,9 +36,9 @@ _Mit hoher Energie!_
 - [spd.de/aktuelles/detail/news/spd-hackathon-spdhack/10/03/2017](https://www.spd.de/aktuelles/detail/news/spd-hackathon-spdhack/10/03/2017/)
 - [https://schulztools.org/tools/schulzzug-the-game/](https://schulztools.org/tools/schulzzug-the-game/)
 
-# Hinweis
+# Haftungshinweis
 
-Die Inhalte dieses Spiels sind satirisch und frei erfunden iSd Art. 5 GG. Ähnlichkeiten mit real existierenden lebenden oder toten Personen sind rein zufällig und nicht beabsichtigt.
+Die Inhalte dieses Spiels sind satirisch und frei erfunden i.S.d. Art. 5 GG. Ähnlichkeiten mit real existierenden lebenden oder toten Personen sind rein zufällig und nicht beabsichtigt.
 
 # Lizenzen
 
