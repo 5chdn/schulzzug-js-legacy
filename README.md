@@ -34,3 +34,4 @@ Mit hoher Energie!
 - [mdr.de/nachrichten/politik/inland/spd-hackathon-100](http://www.mdr.de/nachrichten/politik/inland/spd-hackathon-100.html)
 - [youtube.com/watch?v=p0xuObKLegA](https://youtube.com/watch?v=p0xuObKLegA)
 - [spd.de/aktuelles/detail/news/spd-hackathon-spdhack/10/03/2017](https://www.spd.de/aktuelles/detail/news/spd-hackathon-spdhack/10/03/2017/)
+- [https://schulztools.org/tools/schulzzug-the-game/](https://schulztools.org/tools/schulzzug-the-game/)
