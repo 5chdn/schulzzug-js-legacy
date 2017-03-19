@@ -131,8 +131,6 @@ function core_create() {
 
     fade_out.start();
 
-    updateStatistics();
-
     create_pause_menu();
 
     //open coin menu when clicking on coin label
@@ -537,7 +535,6 @@ function core_update() {
     if (firebase_submission_time + firebase_submission_delay < firebase_time_now) {
         updateGameResult(coin_counter, meter_counter);
         firebase_submission_time = firebase_time_now;
-        updateStatistics();
     }
 
     text_score.x = Math.floor(panel.x + panel.width / 4 + 16);

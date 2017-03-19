@@ -8,11 +8,6 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var firebaseTotalDistance = 0;
-var firebaseTotalScore = 0;
-var firebaseTotalUsers = 0;
-var firebaseActiveUsers = 0;
-
 firebase.auth().signInAnonymously().then(function() {
     configurePresence();
 }).catch(function(error) {
@@ -45,22 +40,31 @@ function updateGameResult(score, distance) {
 }
 
 // EXPORTED FUNCTIONS
-function updateStatistics() {
+function listenToGameResultCount(callback) {
   var gamesRef = firebase.database().ref('game-results');
   gamesRef.on('value', function(snapshot) {
-    var games = snapshot.val();
-    firebaseTotalDistance = 0;
-    firebaseTotalScore = 0;
-    firebaseTotalUsers = snapshot.numChildren();
-    for (var v in games) {
-      if (games.hasOwnProperty(v)) {
-        firebaseTotalDistance += games[v].distance;
-        firebaseTotalScore += games[v].score;
-      }
-    }
-  });
-  var connections = firebase.database().ref('connections');
-  connections.on('value', function(snapshot) {
-    firebaseActiveUsers = snapshot.numChildren();
+    callback(snapshot.numChildren());
   });
 }
+
+function listenToActiveUserCount(callback) {
+  var connectionsRef = firebase.database().ref('connections');
+  connectionsRef.on('value', function(snapshot) {
+    callback(snapshot.numChildren());
+  });
+}
+
+function listenToTotalDistance(callback) {
+  var totalDistanceRef = firebase.database().ref('statistics/total-distance');
+  totalDistanceRef.on('value', function(snapshot) {
+    callback(snapshot.val());
+  });
+}
+
+function listenToTotalScore(callback) {
+  var totalScoreRef = firebase.database().ref('statistics/total-score');
+  totalScoreRef.on('value', function(snapshot) {
+    callback(snapshot.val());
+  });
+}
+

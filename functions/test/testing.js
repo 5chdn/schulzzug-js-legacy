@@ -8,7 +8,6 @@ describe('Test Cloud Functions', () => {
 	var myFunctions, configStub, adminInitStub, functions, admin;
 
 	before(() => {
-
 	  admin =  require('firebase-admin');
 	  adminInitStub = sinon.stub(admin, 'initializeApp');
 
@@ -19,11 +18,12 @@ describe('Test Cloud Functions', () => {
 	        storageBucket: 'not-a-project.appspot.com',
 	      }
 	    });
+
 	  myFunctions = require('../index');
 	});
 
 	describe('updateTotalScore', () => {
-
+		
 	});
 
 	describe('updateTotalDistance', () => {

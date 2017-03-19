@@ -10,9 +10,7 @@ var config = {
 firebase.initializeApp(config);
 
 firebase.auth().signInAnonymously().then(function() {
-  window.setInterval(function(){
     updateStatistics();
-  }, 5000);
 }).catch(function(error) {
     console.log(error.message);
 });
