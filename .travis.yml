@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "6"
+install:
+  - cd functions
+  - npm install
+scripts:
+  - npm test
