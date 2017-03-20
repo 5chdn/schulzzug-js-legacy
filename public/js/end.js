@@ -18,7 +18,7 @@ let end_state = {
         let remaining_space = canvas_height - byebye.height;
         let ende_label = game.add.text(canvas_width/2, 
                                        canvas_height - 0.5*remaining_space,
-                                       'Danke fuer deine \n Hilfe, Genosse!\n Von hier ueber-\nnehme ich wieder.\nGlueck auf!',
+                                       'Danke fuer deine \n Hilfe, Genoss*in!\n Von hier ueber-\nnehme ich wieder.\nGlueck auf!',
                                        style) ;
         ende_label.font = 'SilkScreen';
         ende_label.anchor.setTo(0.5,0.5);
