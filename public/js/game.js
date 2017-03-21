@@ -1,5 +1,8 @@
 "use strict";
 // ======================================= CREATE GAME ENGINE ==================
+
+//PIXI.glCore.VertexArrayObject.FORCE_NATIVE = true;
+
 let game = new Phaser.Game(
                            canvas_width,
                            canvas_height,
