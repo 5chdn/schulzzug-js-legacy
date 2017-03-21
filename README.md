@@ -38,6 +38,9 @@ _Mit hoher Energie!_
 - [http://www.br.de/nachrichten/schulzzug-onlinespiel-100.html] http://www.br.de/nachrichten/schulzzug-onlinespiel-100.html
 - [https://www.wr.de/politik/wie-der-schulzzug-petry-und-trump-aus-dem-weg-raeumt-id209993727.html] https://www.wr.de/politik/wie-der-schulzzug-petry-und-trump-aus-dem-weg-raeumt-id209993727.html
 - [http://www.morgenpost.de/politik/article209993727/Wie-der-Schulzzug-Petry-und-Trump-aus-dem-Weg-raeumt.html] http://www.morgenpost.de/politik/article209993727/Wie-der-Schulzzug-Petry-und-Trump-aus-dem-Weg-raeumt.html
+- [http://info-direkt.eu/2017/03/21/mit-dem-schulzzug-petry-trump-und-putin-aus-dem-weg-raeumen/] http://info-direkt.eu/2017/03/21/mit-dem-schulzzug-petry-trump-und-putin-aus-dem-weg-raeumen/
+- [https://www.swr3.de/aktuell/nachrichten/Der-Schulzzug-raeumt-Petry-und-Trump-aus-dem-Weg/-/id=47428/did=4369156/hw2fic/index.html] https://www.swr3.de/aktuell/nachrichten/Der-Schulzzug-raeumt-Petry-und-Trump-aus-dem-Weg/-/id=47428/did=4369156/hw2fic/index.html
+- [https://www.reddit.com/r/de/comments/60ih24/den_schulzzug_gibt_es_jetzt_auch_als_spiel_bei/] https://www.reddit.com/r/de/comments/60ih24/den_schulzzug_gibt_es_jetzt_auch_als_spiel_bei/
 
 # Haftungshinweis
 
