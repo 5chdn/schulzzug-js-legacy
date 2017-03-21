@@ -19,7 +19,7 @@ firebase.auth().signInAnonymously().then(function() {
 
 function updateStatistics() {
   var gamesRef = firebase.database().ref('game-results');
-  gamesRef.on('value', function(snapshot) {
+  gamesRef.once('value', function(snapshot) {
     var games = snapshot.val();
     var firebaseTotalDistance = 0;
     var firebaseTotalScore = 0;
@@ -36,7 +36,7 @@ function updateStatistics() {
 
   });
   var connections = firebase.database().ref('connections');
-  connections.on('value', function(snapshot) {
+  connections.once('value', function(snapshot) {
     var firebaseActiveUsers = snapshot.numChildren();
     document.getElementById("schlzzg-online").textContent = get_metric_prefix(firebaseActiveUsers, 0);
   });

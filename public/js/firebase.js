@@ -22,7 +22,7 @@ firebase.auth().signInAnonymously().then(function() {
 function configurePresence() {
   var connections = firebase.database().ref('connections');
   var connectedRef = firebase.database().ref('.info/connected');
-  connectedRef.on('value', function(snap) {
+  connectedRef.once('value', function(snap) {
       if (snap.val() === true) {
         var con = connections.push(true);
         con.onDisconnect().remove();
@@ -47,7 +47,7 @@ function updateGameResult(score, distance) {
 // EXPORTED FUNCTIONS
 function updateStatistics() {
   var gamesRef = firebase.database().ref('game-results');
-  gamesRef.on('value', function(snapshot) {
+  gamesRef.once('value', function(snapshot) {
     var games = snapshot.val();
     firebaseTotalDistance = 0;
     firebaseTotalScore = 0;
@@ -60,7 +60,7 @@ function updateStatistics() {
     }
   });
   var connections = firebase.database().ref('connections');
-  connections.on('value', function(snapshot) {
+  connections.once('value', function(snapshot) {
     firebaseActiveUsers = snapshot.numChildren();
   });
 }
