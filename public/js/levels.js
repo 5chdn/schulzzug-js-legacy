@@ -27,7 +27,7 @@ let level_dam_probabilities = {
         "tree2" : 0.0002, // owls :)
         "bush"  : 0.0200,
         "sign"  : 0.0020,
-        "frauke": 0.0000
+        "frauke": 0.0020
     },
     usa: {
         "cactus0" : 0.0200,
@@ -107,33 +107,33 @@ let level_backgrounds = {
 
 let level_populist_probabilities = {
     germany: {
-        'wall_frauke': 0.0,
+        'wall_frauke': 0.2,
         'gate': 0.1,
-        'wall': 0.4,
+        'wall': 0.2,
         'coin': 0.6
     },
     usa: {
-        'wall_donald': 0.0,
+        'wall_donald': 0.2,
         'gate': 0.1,
-        'wall': 0.4,
+        'wall': 0.2,
         'coin': 0.6
     },
     turkey: {
-        'wall_erdogan': 0.0,
+        'wall_erdogan': 0.2,
         'gate': 0.1,
-        'wall': 0.4,
+        'wall': 0.2,
         'coin': 0.6
     },
     netherlands: {
-        'wall_wilders': 0.0,
+        'wall_wilders': 0.2,
         'gate': 0.1,
-        'wall': 0.4,
+        'wall': 0.2,
         'coin': 0.6
     },
     russia: {
-        'putin': 0.0,
+        'putin': 0.2,
         'gate': 0.1,
-        'wall': 0.4,
+        'wall': 0.2,
         'coin': 0.6
     }
 }
