@@ -81,11 +81,11 @@ function preload_all_assets() {
         game.load.image('cloud2',     'assets/cloud03.png');
 
         game.load.image('wall_franka','assets/germany/Franka-wall.png');
-        game.load.image('wall_dagobert','assets/Dagobert-Wall.png');
+        game.load.image('wall_dagobert','assets/usa/Dagobert-Wall.png');
         game.load.image('wall_rezzep','assets/turkey/Rezzep_wall.png');
         game.load.image('wall_gerd','assets/netherlands/Gerd_wall.png');
-        game.load.image('franka',     'assets/Franka.png');
-        game.load.image('dagobert',     'assets/Dagobert.png');
+        game.load.image('franka',     'assets/germany/Franka.png');
+        game.load.image('dagobert',     'assets/usa/Dagobert.png');
         game.load.image('wall',       'assets/wall.png');
         game.load.image('rezzep',    'assets/turkey/Rezzep.png');
         game.load.image('mirovich',      'assets/russia/Mirovich_bear.png');
@@ -156,8 +156,8 @@ function preload_all_assets() {
         game.load.image('wall_dagobert','assets/usa/Dagobert-Wall.50.png');
         game.load.image('wall_rezzep','assets/turkey/Rezzep_wall.50.png');
         game.load.image('wall_gerd','assets/netherlands/Gerd_wall.50.png');
-        game.load.image('franka',     'assets/Franka.png');
-        game.load.image('dagobert',     'assets/Dagobert.png');
+        game.load.image('franka',     'assets/germany/Franka.png');
+        game.load.image('dagobert',     'assets/usa/Dagobert.png');
         game.load.image('rezzep',    'assets/turkey/Rezzep.50.png');
         game.load.image('gerd',      'assets/netherlands/Gerd.50.png');
         game.load.image('mirovich',      'assets/russia/Mirovich_bear.50.png');
