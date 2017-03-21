@@ -798,14 +798,14 @@ function collision_update(object, train) {
     //
     if (train.star_phase) {
         if (object.kind == "wall" ||
-            object.kind == "wall_frauke" ||
-            object.kind == "erdogan" ||
-            object.kind == "wall_erdogan" ||
+            object.kind == "wall_franke" ||
+            object.kind == "rezzep" ||
+            object.kind == "wall_rezzep" ||
             object.kind == "gate" ||
-            object.kind == "wall_wilders" ||
-            object.kind == "geert" ||
-            object.kind == "putin" ||
-            object.kind == "wall_donald") {
+            object.kind == "wall_gerd" ||
+            object.kind == "gerd" ||
+            object.kind == "mirovich" ||
+            object.kind == "wall_dagbert") {
             let time_delta = time_now - object.time_start;
             if (time_delta > wall_animation_length) {
                 object.sprite.destroy();
@@ -827,14 +827,14 @@ function collision_update(object, train) {
         }
     }  else {
         if (object.kind == "wall" ||
-            object.kind == "wall_frauke" ||
-            object.kind == "erdogan" ||
-            object.kind == "wall_erdogan" ||
+            object.kind == "wall_franke" ||
+            object.kind == "rezzep" ||
+            object.kind == "wall_rezzep" ||
             object.kind == "gate" ||
-            object.kind == "wall_wilders" ||
-            object.kind == "geert" ||
-            object.kind == "putin" ||
-            object.kind == "wall_donald") {
+            object.kind == "wall_gerd" ||
+            object.kind == "gerd" ||
+            object.kind == "mirovich" ||
+            object.kind == "wall_dagbert") {
             let time_delta = time_now - object.time_start;
             if (time_delta > wall_animation_length) {
                 object.sprite.destroy();
@@ -917,15 +917,15 @@ function get_dam_object(kind) {
         object_height = 10;
     } else if (kind == "sign") {
         object_height = 20;
-    } else if (kind == "frauke") {
+    } else if (kind == "franke") {
         object_height = 25;
-    } else if (kind == "donald") {
+    } else if (kind == "dagbert") {
         object_height = 25;
-    } else if (kind == "erdogan") {
+    } else if (kind == "rezzep") {
         object_height = 25;
-    } else if (kind == "putin") {
+    } else if (kind == "mirovich") {
         object_height = 25;
-    } else if (kind == "geert") {
+    } else if (kind == "gerd") {
         object_height = 25;
     } else if (kind == "cactus0") {
         object_height = 35;
@@ -1001,21 +1001,21 @@ function get_rail_object(kind,spawn_at_rail)
 
     if (kind == 'wall') {
         object_height = rail_distance_inner * 0.80;
-    } else if (kind == 'wall_frauke') {
+    } else if (kind == 'wall_franke') {
         object_height = rail_distance_inner * 1.55;
-    } else if (kind == 'wall_donald') {
+    } else if (kind == 'wall_dagbert') {
         object_height = rail_distance_inner * 1.55;
-    } else if (kind == 'wall_erdogan') {
+    } else if (kind == 'wall_rezzep') {
         object_height = rail_distance_inner * 1.6;
-    } else if (kind == 'wall_wilders') {
+    } else if (kind == 'wall_gerd') {
         object_height = rail_distance_inner * 1.6;
     } else if (kind == 'gate') {
         object_width = rail_distance_inner * 3 + rail_distance_outer*4;
-    } else if (kind == "erdogan") {
+    } else if (kind == "rezzep") {
         object_height = 25;
-    } else if (kind == "putin") {
+    } else if (kind == "mirovich") {
         object_height = 25;
-    } else if (kind == "geert") {
+    } else if (kind == "gerd") {
         object_height = 25;
     } else if (kind == 'eurostar') {
         object_height = rail_distance_inner;
