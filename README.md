@@ -35,6 +35,9 @@ _Mit hoher Energie!_
 - [youtube.com/watch?v=p0xuObKLegA](https://youtube.com/watch?v=p0xuObKLegA)
 - [spd.de/aktuelles/detail/news/spd-hackathon-spdhack/10/03/2017](https://www.spd.de/aktuelles/detail/news/spd-hackathon-spdhack/10/03/2017/)
 - [https://schulztools.org/tools/schulzzug-the-game/](https://schulztools.org/tools/schulzzug-the-game/)
+- [http://www.br.de/nachrichten/schulzzug-onlinespiel-100.html] http://www.br.de/nachrichten/schulzzug-onlinespiel-100.html
+- [https://www.wr.de/politik/wie-der-schulzzug-petry-und-trump-aus-dem-weg-raeumt-id209993727.html] https://www.wr.de/politik/wie-der-schulzzug-petry-und-trump-aus-dem-weg-raeumt-id209993727.html
+- [http://www.morgenpost.de/politik/article209993727/Wie-der-Schulzzug-Petry-und-Trump-aus-dem-Weg-raeumt.html] http://www.morgenpost.de/politik/article209993727/Wie-der-Schulzzug-Petry-und-Trump-aus-dem-Weg-raeumt.html
 
 # Haftungshinweis
 
