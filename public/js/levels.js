@@ -27,7 +27,7 @@ let level_dam_probabilities = {
         "tree2" : 0.0002, // owls :)
         "bush"  : 0.0200,
         "sign"  : 0.0020,
-        "frauke": 0.0020
+        "franka": 0.0020
     },
     usa: {
         "cactus0" : 0.0200,
@@ -35,7 +35,7 @@ let level_dam_probabilities = {
         "tumbleweed" : 0.01,
         "bush"  : 0.0200,
         "sign"  : 0.0020,
-        "donald": 0.0020
+        "dagobert": 0.0020
     },
     turkey: {
         "tree0"     : 0.0200,
@@ -44,7 +44,7 @@ let level_dam_probabilities = {
         "bush"   : 0.0200,
         "sign"   : 0.0020,
         "goat"   : 0.0020,
-        "erdogan": 0.0020
+        "rezzep": 0.0020
     },
     netherlands: {
         "tree0"  : 0.0002,
@@ -53,7 +53,7 @@ let level_dam_probabilities = {
         "bush"   : 0.0200,
         "sign"   : 0.0020,
         "tulips" : 0.0800,
-        "geert"  : 0.0020
+        "gerd"  : 0.0020
     },
     russia: {
         "tree0"  : 0.01,
@@ -62,7 +62,7 @@ let level_dam_probabilities = {
         "bush"   : 0.02,
         "sign"   : 0.002,
         "tulips" : 0.0002,
-        "putin"  : 0.002,
+        "mirovich"  : 0.002,
         "tumbleweed" : 0.02
     }
     /*
@@ -72,7 +72,7 @@ let level_dam_probabilities = {
         "tree2" : 0.0002, // owls :)
         "bush"  : 0.0200,
         "sign"  : 0.0020,
-        "frauke": 0.0020,
+        "maria": 0.0020,
     }*/
 }
 
@@ -107,28 +107,33 @@ let level_backgrounds = {
 
 let level_populist_probabilities = {
     germany: {
-        'wall_frauke': 0.2,
-        'wall': 0.2,
+        'wall_franka': 0.0,
+        'gate': 0.1,
+        'wall': 0.4,
         'coin': 0.6
     },
     usa: {
-        'wall_donald': 0.2,
-        'wall': 0.2,
+        'wall_dagobert': 0.0,
+        'gate': 0.1,
+        'wall': 0.4,
         'coin': 0.6
     },
     turkey: {
-        'wall_erdogan': 0.2,
-        'wall': 0.2,
+        'wall_rezzep': 0.0,
+        'gate': 0.1,
+        'wall': 0.4,
         'coin': 0.6
     },
     netherlands: {
-        'wall_wilders': 0.2,
-        'wall': 0.2,
+        'wall_gerd': 0.0,
+        'gate': 0.1,
+        'wall': 0.4,
         'coin': 0.6
     },
     russia: {
-        'putin': 0.2,
-        'wall': 0.2,
+        'mirovich': 0.0,
+        'gate': 0.1,
+        'wall': 0.4,
         'coin': 0.6
     }
 }

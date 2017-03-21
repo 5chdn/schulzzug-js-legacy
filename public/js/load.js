@@ -80,16 +80,16 @@ function preload_all_assets() {
         game.load.image('cloud1',     'assets/cloud02.png');
         game.load.image('cloud2',     'assets/cloud03.png');
 
-        game.load.image('wall_frauke','assets/germany/afd-wall.png');
-        game.load.image('wall_donald','assets/Trump-Wall.png');
-        game.load.image('wall_erdogan','assets/turkey/erdogan_wall.png');
-        game.load.image('wall_wilders','assets/netherlands/wilders_wall.png');
-        game.load.image('frauke',     'assets/Petry.png');
-        game.load.image('donald',     'assets/Trump.png');
+        game.load.image('wall_franka','assets/germany/Franka-wall.png');
+        game.load.image('wall_dagobert','assets/usa/Dagobert-Wall.png');
+        game.load.image('wall_rezzep','assets/turkey/Rezzep_wall.png');
+        game.load.image('wall_gerd','assets/netherlands/Gerd_wall.png');
+        game.load.image('franka',     'assets/germany/Franka.png');
+        game.load.image('dagobert',     'assets/usa/Dagobert.png');
         game.load.image('wall',       'assets/wall.png');
-        game.load.image('erdogan',    'assets/turkey/Erdogan.png');
-        game.load.image('putin',      'assets/russia/Putin_bear.png');
-        game.load.image('geert',      'assets/netherlands/Wilders.png');
+        game.load.image('rezzep',    'assets/turkey/Rezzep.png');
+        game.load.image('mirovich',      'assets/russia/Mirovich_bear.png');
+        game.load.image('gerd',      'assets/netherlands/Gerd.png');
 
         game.load.image('tree0',      'assets/Tree01.png');
         game.load.image('tree1',      'assets/Tree02.png');
@@ -104,6 +104,7 @@ function preload_all_assets() {
         game.load.image('olivetree',  'assets/turkey/Olive.png');
         game.load.image('goat',       'assets/turkey/Goat.png');
         game.load.image('tulips',     'assets/netherlands/Tulips.png');
+        game.load.image('gate',       'assets/gate.50.png');
 
         game.load.spritesheet(
                               'rails',
@@ -151,16 +152,17 @@ function preload_all_assets() {
         game.load.image('cloud1',     'assets/cloud02.50.png');
         game.load.image('cloud2',     'assets/cloud03.50.png');
 
-        game.load.image('wall_frauke','assets/germany/afd-wall.50.png');
-        game.load.image('wall_donald','assets/usa/Trump-Wall.50.png');
-        game.load.image('wall_erdogan','assets/turkey/erdogan_wall.50.png');
-        game.load.image('wall_wilders','assets/netherlands/wilders_wall.50.png');
-        game.load.image('frauke',     'assets/Petry.png');
-        game.load.image('donald',     'assets/Trump.png');
-        game.load.image('erdogan',    'assets/turkey/Erdogan.50.png');
-        game.load.image('geert',      'assets/netherlands/Wilders.50.png');
-        game.load.image('putin',      'assets/russia/Putin_bear.50.png');
+        game.load.image('wall_franka','assets/germany/Franka-wall.50.png');
+        game.load.image('wall_dagobert','assets/usa/Dagobert-Wall.50.png');
+        game.load.image('wall_rezzep','assets/turkey/Rezzep_wall.50.png');
+        game.load.image('wall_gerd','assets/netherlands/Gerd_wall.50.png');
+        game.load.image('franka',     'assets/germany/Franka.png');
+        game.load.image('dagobert',     'assets/usa/Dagobert.png');
+        game.load.image('rezzep',    'assets/turkey/Rezzep.50.png');
+        game.load.image('gerd',      'assets/netherlands/Gerd.50.png');
+        game.load.image('mirovich',      'assets/russia/Mirovich_bear.50.png');
         game.load.image('wall',       'assets/wall.png');
+        game.load.image('gate',       'assets/gate.png');
 
         game.load.image('tree0',      'assets/Tree01.50.png');
         game.load.image('tree1',      'assets/Tree02.50.png');
